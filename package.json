@@ -1,0 +1,60 @@
+{
+  "name": "ms3converter",
+  "version": "0.0.1",
+  "description": "Converts between MS3, OAS(Swagger), Blueprint",
+  "main": "dist/index.js",
+  "scripts": {    
+    "start": "npm run build-ts && npm run watch-ts",
+    "test": "jest --forceExit",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "jest": {
+    "globals": {
+      "__TS_CONFIG__": "tsconfig.json"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/test/**/*.test.(ts|js)"
+    ],
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MS3Inc/MS3Converter.git"
+  },
+  "keywords": [
+    "api",
+    "converter",
+    "ms3",
+    "oas",
+    "swagger",
+    "blueprint"
+  ],
+  "author": "MS3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MS3Inc/MS3Converter/issues"
+  },
+  "homepage": "https://github.com/MS3Inc/MS3Converter#readme",
+
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^19.2.2",
+    "@types/lodash": "^4.14.63",
+    "@types/node": "^7.0.12",
+    "jest": "^19.0.2",
+    "ts-jest": "^19.0.8",
+    "tslint": "^5.0.0",
+    "typescript": "^2.4.0"
+  }
+}
