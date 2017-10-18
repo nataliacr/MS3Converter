@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run build-ts && npm run watch-ts",
-    "test": "node ./node_modules/.bin/jest --forceExit",
+    "test": "npm run build-ts && node ./node_modules/.bin/jest --forceExit",
     "build-ts": "node ./node_modules/.bin/tsc",
     "watch-ts": "node ./node_modules/.bin/tsc -w",
     "tslint": "node ./node_modules/.bin/tslint -c tslint.json -p tsconfig.json"
@@ -22,10 +22,13 @@
       "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
     },
     "testMatch": [
-      "**/test/**/*.test.(ts|js)"
+      "**/test/**/*.test.js"
     ],
     "testEnvironment": "node"
   },
+  "pre-commit": [
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MS3Inc/MS3Converter.git"
@@ -52,6 +55,7 @@
     "@types/lodash": "^4.14.63",
     "@types/node": "^7.0.12",
     "jest": "^19.0.2",
+    "pre-commit": "^1.2.2",
     "ts-jest": "^19.0.8",
     "tslint": "^5.0.0",
     "typescript": "^2.5.0"
