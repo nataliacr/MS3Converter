@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "description": "Converts between MS3, OAS(Swagger), Blueprint",
   "main": "dist/index.js",
-  "scripts": {    
+  "scripts": {
     "start": "npm run build-ts && npm run watch-ts",
-    "test": "jest --forceExit",
-    "build-ts": "tsc",
-    "watch-ts": "tsc -w",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "test": "node ./node_modules/.bin/jest --forceExit",
+    "build-ts": "node ./node_modules/.bin/tsc",
+    "watch-ts": "node ./node_modules/.bin/tsc -w",
+    "tslint": "node ./node_modules/.bin/tslint -c tslint.json -p tsconfig.json"
   },
   "jest": {
     "globals": {
@@ -44,7 +44,6 @@
     "url": "https://github.com/MS3Inc/MS3Converter/issues"
   },
   "homepage": "https://github.com/MS3Inc/MS3Converter#readme",
-
   "dependencies": {
     "lodash": "^4.17.4"
   },
@@ -55,6 +54,6 @@
     "jest": "^19.0.2",
     "ts-jest": "^19.0.8",
     "tslint": "^5.0.0",
-    "typescript": "^2.4.0"
+    "typescript": "^2.5.0"
   }
 }
