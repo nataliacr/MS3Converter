@@ -1,3 +1,5 @@
+import * as MS3v1Library from './ms3-v1-library-interface';
+
 /**
  * all structure of ms3 should be described in this interface
  */
@@ -195,24 +197,10 @@ interface settings {
     annotations?: annotation[]
 }
 
-interface librarySettings extends settings {
-    usage?: string,
-}
-
-interface overlaySettings extends settings {
-    usage?: string,
-    extends: string | MS3v1API
-}
-
-interface extensionSettings extends settings {
-    usage?: string,
-    extends: string | MS3v1API
-}
-
 interface library {
     _id: string,
     refName: string,
-    library: MS3v1Library
+    library: MS3v1Library.MS3v1Library
 }
 
 interface MS3v1API {
@@ -230,54 +218,17 @@ interface MS3v1API {
     libraries?: library[]
 }
 
-interface MS3v1Library {
-    entityTypeName: entityName,
-    settings: librarySettings,
-    folder?: string[],
-    dataTypes?: dataType[],
-    resources?: resource[],
-    securitySchemes?: securityScheme[],
-    resourcesTypes?: resourcesType[],
-    traits?: trait[],
-    documentation?: documentation[],
-    annotationTypes?: annotationType[],
-    examples?: example[],
-    libraries?: library[]
-}
-
-interface MS3v1Overlay {
-    entityTypeName: entityName,
-    settings: overlaySettings,
-    folder?: string[],
-    dataTypes?: dataType[],
-    resources?: resource[],
-    securitySchemes?: securityScheme[],
-    resourcesTypes?: resourcesType[],
-    traits?: trait[],
-    documentation?: documentation[],
-    annotationTypes?: annotationType[],
-    examples?: example[],
-    libraries?: library[]
-}
-
-interface MS3v1Extension {
-    entityTypeName: entityName,
-    settings: extensionSettings,
-    folder?: string[],
-    dataTypes?: dataType[],
-    resources?: resource[],
-    securitySchemes?: securityScheme[],
-    resourcesTypes?: resourcesType[],
-    traits?: trait[],
-    documentation?: documentation[],
-    annotationTypes?: annotationType[],
-    examples?: example[],
-    libraries?: library[]
-}
-
 export {
-    MS3v1API as MS3v1API,
-    MS3v1Library as MS3v1Library,
-    MS3v1Overlay as MS3v1Overlay,
-    MS3v1Extension as MS3v1Extension
+    MS3v1API,
+    settings,
+    entityName, 
+    dataType,
+    resource,
+    securityScheme,
+    resourcesType,
+    trait,
+    documentation,
+    annotationType,
+    example,
+    library
 };
