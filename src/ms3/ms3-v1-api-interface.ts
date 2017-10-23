@@ -30,10 +30,10 @@ interface parameter {
     pattern?: string,
     repeat?: boolean,
     required?: boolean,
-    enum?: (string | number)[]
+    enum?: string[] | number[]
 }
 
-interface primitiveDataType {
+interface dataTypePrimitive {
     type: datatypeType,
     name?: string,
     description?: string,
@@ -53,21 +53,21 @@ interface primitiveDataType {
     uniqueItems?: boolean
 }
 
-interface dataTypeProperty extends primitiveDataType {
+interface dataTypeObject extends dataTypePrimitive {
     required?: boolean,
-    properties?: (dataTypeProperty | primitiveDataType | dataTypeArray)[]
+    properties?: (dataTypeObject | dataTypePrimitive | dataTypeArray)[]
 }
 
-interface dataTypeArray extends primitiveDataType {
+interface dataTypeArray extends dataTypePrimitive {
     includes?: boolean | string,
-    items?: dataTypeArray | primitiveDataType | dataTypeProperty
+    items?: dataTypeArray | dataTypePrimitive | dataTypeObject
 }
 
-interface dataType extends primitiveDataType {
+interface dataType extends dataTypePrimitive {
     __id: string,
     name: string,
-    properties?: (dataTypeProperty | primitiveDataType)[],
-    items?: dataTypeArray | primitiveDataType
+    properties?: (dataTypeObject | dataTypePrimitive)[],
+    items?: dataTypeArray | dataTypePrimitive
 }
 
 interface body {
@@ -86,20 +86,21 @@ interface response {
 }
 
 interface trait {
+    __id: string,
     name: string | methodType,
     description?: string,
     body?: body[],
     headers?: parameter[],
     queryParameters?: parameter[],
     responses?: response[],
-    annotations?: annotation[]
+    annotations?: annotation[],
+    selectedTraits?: string[]
 }
 
 interface method extends trait {
     active: boolean,
     name: methodType,
-    securedBy?: string, 
-    selectedTraits?: string
+    securedBy?: string
 }
 
 interface resourcesType {
@@ -179,7 +180,6 @@ interface annotationType extends basicAnnotationType {
 interface example {
     __id: string,
     title: string, //CHANGE TO NAME
-    description?: string,
     format: exampleFormat,
     content: string,
     annotations: annotation[]
