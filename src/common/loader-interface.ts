@@ -1,4 +1,3 @@
-
 export interface loaderInterface {
-    load():any
+  load(): any
 }

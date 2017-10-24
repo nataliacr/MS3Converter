@@ -1,3 +1,3 @@
 export interface convertorInterface {
-    convert(source:any):any
+  convert(source: any): any
 }
