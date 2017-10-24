@@ -1,22 +1,22 @@
 import * as apiInterfaces from './ms3-v1-api-interface';
 
 interface librarySettings extends apiInterfaces.settings {
-    usage?: string,
+  usage?: string,
 }
 
-interface MS3v1Library {
-    entityTypeName: apiInterfaces.entityName,
-    settings: librarySettings,
-    folder?: string[],
-    dataTypes?: apiInterfaces.dataType[],
-    resources?: apiInterfaces.resource[],
-    securitySchemes?: apiInterfaces.securityScheme[],
-    resourcesTypes?: apiInterfaces.resourcesType[],
-    traits?: apiInterfaces.trait[],
-    documentation?: apiInterfaces.documentation[],
-    annotationTypes?: apiInterfaces.annotationType[],
-    examples?: apiInterfaces.example[],
-    libraries?: apiInterfaces.library[]
+interface Library {
+  entityTypeName: apiInterfaces.entityName,
+  settings: librarySettings,
+  folder?: string[],
+  dataTypes?: apiInterfaces.dataType[],
+  resources?: apiInterfaces.resource[],
+  securitySchemes?: apiInterfaces.securityScheme[],
+  resourcesTypes?: apiInterfaces.resourcesType[],
+  traits?: apiInterfaces.trait[],
+  documentation?: apiInterfaces.documentation[],
+  annotationTypes?: apiInterfaces.annotationType[],
+  examples?: apiInterfaces.example[],
+  libraries?: apiInterfaces.library[]
 }
 
-export { MS3v1Library };
+export { Library };
