@@ -15,7 +15,7 @@ export class Ms3Loader implements LoaderInterface {
     try {
       fileContent = await readFilePromise(this.path, 'utf-8');
     } catch (error) {
-      throw new Error('Error reading Ms3 file:' + error.message);
+      throw new Error(`Error reading Ms3 file: ${error.message}`);
     }
     return fileContent;
   }
@@ -26,7 +26,7 @@ export class Ms3Loader implements LoaderInterface {
     try {
       result = JSON.parse(fileContents);
     } catch (error) {
-      throw new Error('Error parsing ms3 file:' + error.message);
+      throw new Error('Wrong JSON content');
     }
     return result;
   }
