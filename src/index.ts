@@ -1,22 +1,22 @@
 import * as _ from 'lodash';
 import * as Blueprint from './blueprint';
 import * as Ms3 from './ms3/index';
-import {loaderInterface} from './common/loader-interface';
-import {convertorInterface} from './common/convertor-interface';
+import { loaderInterface } from './common/loader-interface';
+import { convertorInterface } from './common/convertor-interface';
 
 console.log(Ms3);
 
-type format = "ms3_1" | "oas" | "blueprint" | "raml_08" | "raml_10";
+type format = 'ms3_1' | 'oas' | 'blueprint' | 'raml_08' | 'raml_10';
 
 function validateConvertFormats(from: format, to: format) {
   if (from === to) throw new Error(`Cannot convert from ${from} to ${to}`);
 }
 
-function getLoaderByFormat(format: format):loaderInterface {
+function getLoaderByFormat(format: format): loaderInterface {
   return;
 }
 
-function getConverterByFormat(format: format):convertorInterface {
+function getConverterByFormat(format: format): convertorInterface {
   return;
 }
 
