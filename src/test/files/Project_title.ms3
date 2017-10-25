@@ -1,0 +1,107 @@
+{
+  "__v": 0,
+  "_deleted": false,
+  "examples": [],
+  "schemas": [],
+  "annotationTypes": [],
+  "documentation": [],
+  "traits": [],
+  "resourcesTypes": [],
+  "securitySchemes": [],
+  "resources": [
+    {
+      "path": "/path",
+      "name": "",
+      "type": null,
+      "description": "",
+      "pathVariables": [],
+      "securedBy": [],
+      "queryParameters": [],
+      "resources": [],
+      "annotations": [],
+      "methods": [
+        {
+          "active": false,
+          "name": "GET",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": [],
+          "annotations": []
+        },
+        {
+          "active": false,
+          "name": "POST",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        },
+        {
+          "active": false,
+          "name": "PUT",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        },
+        {
+          "active": false,
+          "name": "DELETE",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        },
+        {
+          "active": false,
+          "name": "PATCH",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        },
+        {
+          "active": false,
+          "name": "OPTIONS",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        },
+        {
+          "active": false,
+          "name": "HEAD",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        },
+        {
+          "active": false,
+          "name": "TRACE",
+          "description": "",
+          "queryParameters": [],
+          "headers": [],
+          "responses": []
+        }
+      ],
+      "__id": "852b8e29-c4f2-4927-8645-d11bcd4d5095",
+      "selectedTraits": []
+    }
+  ],
+  "dataTypes": [],
+  "libraries": [],
+  "settings": {
+    "mediaType": "application/json",
+    "description": "Project description",
+    "baseUri": "http://project.test",
+    "version": "0.1",
+    "title": "Project title",
+    "annotations": [],
+    "protocols": [],
+    "baseUriParameters": [],
+    "securedBy": []
+  },
+  "entityTypeName": "api"
+}
