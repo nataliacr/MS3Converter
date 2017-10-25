@@ -1,12 +1,11 @@
 import { Ms3Loader } from './../ms3/loader';
 import * as path from 'path';
-const filePath = path.join(__dirname, '..', '..', 'src', 'test', 'files', 'Project_title.ms3');
 
 test('File should load without errors', async() => {
+  const filePath = path.join(__dirname, '..', '..', 'src', 'test', 'files', 'Project_title.ms3');
   let error;
   try {
-    const ms3Loader = new Ms3Loader(filePath);
-    await ms3Loader.load();
+    await Ms3Loader.create(filePath).load();
   } catch (err) {
     error = err.message;
   }
@@ -21,4 +20,17 @@ test('Load file should fail with empty path', async () => {
   } catch (err) {
     expect(err.message).toBe(expected);
   }
+});
+
+test('Should fail with incorrect path', async () => {
+  try {
+    await Ms3Loader.create('wrong/path').load();
+  } catch (err) {
+    expect(err.message).toBe("Error reading Ms3 file: ENOENT: no such file or directory, open 'wrong/path'");
+  }
+});
+
+test('Should fail with incorrect JSON format', async () => {
+  const filePath = path.join(__dirname, '..', '..', 'src', 'test', 'files', 'wrong-json.ms3');
+  return expect(Ms3Loader.create(filePath).load()).rejects.toBeDefined();
 });
