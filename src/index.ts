@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as Blueprint from './blueprint';
 import * as Ms3 from './ms3/index';
-import { loaderInterface } from './common/loader-interface';
-import { convertorInterface } from './common/convertor-interface';
+import { LoaderInterface } from './common/loader-interface';
+import { ConvertorInterface } from './common/convertor-interface';
 
 console.log(Ms3);
 
@@ -12,15 +12,15 @@ function validateConvertFormats(from: format, to: format) {
   if (from === to) throw new Error(`Cannot convert from ${from} to ${to}`);
 }
 
-function getLoaderByFormat(format: format): loaderInterface {
+function getLoaderByFormat(format: format): LoaderInterface {
   return;
 }
 
-function getConverterByFormat(format: format): convertorInterface {
+function getConverterByFormat(format: format): ConvertorInterface {
   return;
 }
 
-export async function convert(source: string | Ms3.interfaces.MS3v1, from: format, to: format, options?: object) {
+export async function convert(source: string | Ms3.apiInterfaces.API, from: format, to: format, options?: object) {
   validateConvertFormats(from, to);
   if (typeof source == 'string') {
     source = await getLoaderByFormat(from).load();

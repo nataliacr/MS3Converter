@@ -1,23 +1,23 @@
 import * as apiInterfaces from './ms3-v1-api-interface';
 
-interface extensionSettings extends apiInterfaces.settings {
-  usage?: string,
-  extends: string | apiInterfaces.API
+interface ExtensionSettings extends apiInterfaces.Settings {
+  usage?: string;
+  extends: string | apiInterfaces.API;
 }
 
 interface Extension {
-  entityTypeName: apiInterfaces.entityName,
-  settings: extensionSettings,
-  folder?: string[],
-  dataTypes?: apiInterfaces.dataType[],
-  resources?: apiInterfaces.resource[],
-  securitySchemes?: apiInterfaces.securityScheme[],
-  resourcesTypes?: apiInterfaces.resourcesType[],
-  traits?: apiInterfaces.trait[],
-  documentation?: apiInterfaces.documentation[],
-  annotationTypes?: apiInterfaces.annotationType[],
-  examples?: apiInterfaces.example[],
-  libraries?: apiInterfaces.library[]
+  entityTypeName: apiInterfaces.entityName;
+  settings: ExtensionSettings;
+  folder?: string[];
+  dataTypes?: apiInterfaces.DataType[];
+  resources?: apiInterfaces.Resource[];
+  securitySchemes?: apiInterfaces.SecurityScheme[];
+  resourcesTypes?: apiInterfaces.ResourcesType[];
+  traits?: apiInterfaces.Trait[];
+  documentation?: apiInterfaces.Documentation[];
+  annotationTypes?: apiInterfaces.AnnotationType[];
+  examples?: apiInterfaces.Example[];
+  libraries?: apiInterfaces.Library[];
 }
 
 export { Extension };
