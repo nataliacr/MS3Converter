@@ -48,12 +48,15 @@
   },
   "homepage": "https://github.com/MS3Inc/MS3Converter#readme",
   "dependencies": {
-    "lodash": "^4.17.4"
+    "fs": "0.0.1-security",
+    "lodash": "^4.17.4",
+    "path": "^0.12.7",
+    "util": "^0.10.3"
   },
   "devDependencies": {
     "@types/jest": "^19.2.2",
     "@types/lodash": "^4.14.63",
-    "@types/node": "^7.0.12",
+    "@types/node": "^8.0.47",
     "jest": "^19.0.2",
     "pre-commit": "^1.2.2",
     "ts-jest": "^19.0.8",
