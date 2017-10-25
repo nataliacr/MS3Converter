@@ -1,7 +1,6 @@
 /**
  * all structure of oas should be described in this interface
  */
-import { SIGTERM } from 'constants';
 
 type type = 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
@@ -19,7 +18,7 @@ interface License {
 }
 
 interface ReferenceObject {
-  '$ref'?: string;
+  '$ref': string;
 }
 
 interface SchemaObject {

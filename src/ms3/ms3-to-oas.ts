@@ -2,33 +2,21 @@ import { API as MS3 } from './ms3-v1-api-interface';
 import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
 
 interface MS3toOASInterface {
-  ms3API: MS3;
-  infoObject: object;
+  oasAPI: OAS;
   convert(): OAS;
 }
 
 export default class MS3toOAS implements MS3toOASInterface {
-  ms3API: MS3;
-  infoObject: InfoObject;
+  oasAPI: OAS;
 
-  constructor(private api: MS3) {
-    this.ms3API = api;
+  constructor(private ms3API: MS3) {}
+
+  convert(): OAS {
+    this.oasAPI.infoObject = this.convertSettings();
+    return this.oasAPI;
   }
 
-  convert() {
-    this.convertSettings();
-    return this.composeApiParts();
-  }
-
-  private composeApiParts(): OAS {
-    const API: OAS = {
-      infoObject: this.infoObject
-    };
-
-    return API;
-  }
-
-  private convertSettings(): void {
+  private convertSettings(): InfoObject {
     if (!this.ms3API.settings.title) {
       throw new Error('MS3 API settings must contain title property.');
     }
@@ -39,7 +27,7 @@ export default class MS3toOAS implements MS3toOASInterface {
       version: this.ms3API.settings.version
     };
 
-    this.infoObject = settings;
+    return settings;
   }
 
   static create(api: MS3) {
