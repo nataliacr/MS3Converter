@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import * as Blueprint from './blueprint';
 import * as Ms3 from './ms3/index';
+import * as OAS from './oas/index';
 import { LoaderInterface } from './common/loader-interface';
 import { ConvertorInterface } from './common/convertor-interface';
 

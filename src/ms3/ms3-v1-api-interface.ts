@@ -191,7 +191,7 @@ interface Settings {
   baseUri: string;
   description?: string;
   mediaType?: mediaType[];
-  protolos?: protocol[];
+  protocols?: protocol[];
   baseUriParameters?: Parameter[];
   securedBy?: string[];
   annotations?: Annotation[];
@@ -221,7 +221,6 @@ interface API {
 export {
   API,
   Settings,
-  entityName,
   DataType,
   Resource,
   SecurityScheme,
@@ -230,5 +229,6 @@ export {
   Documentation,
   AnnotationType,
   Example,
-  Library
+  Library,
+  entityName
 };
