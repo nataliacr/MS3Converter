@@ -17,218 +17,218 @@ type entityName = 'api' | 'library' | 'overlay' | 'extension';
 type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
 type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
 
-interface parameter {
-  type: parameterType,
-  displayName: string,
-  description?: string,
-  default?: string | boolean | number,
-  example?: string | boolean | number,
-  maxLength?: string | number,
-  minLength?: string | number,
-  minimum?: string | number,
-  maximum?: string | number,
-  pattern?: string,
-  repeat?: boolean,
-  required?: boolean,
-  enum?: string[] | number[]
+interface Parameter {
+  type: parameterType;
+  displayName: string;
+  description?: string;
+  default?: string | boolean | number;
+  example?: string | boolean | number;
+  maxLength?: string | number;
+  minLength?: string | number;
+  minimum?: string | number;
+  maximum?: string | number;
+  pattern?: string;
+  repeat?: boolean;
+  required?: boolean;
+  enum?: string[] | number[];
 }
 
-interface dataTypePrimitive {
-  type: datatypeType,
-  name?: string,
-  description?: string,
-  default?: string | number | boolean,
-  example?: string | number | boolean,
-  maxLength?: number,
-  minLength?: number,
-  minimum?: number,
-  maximum?: number,
-  minProperties?: number,
-  maxProperties?: number,
-  multipleOf: string | number,
-  enum?: string[] | number[],
-  fileTypes?: string[],
-  pattern?: string,
-  format?: numberFormat | dateFormat,
-  uniqueItems?: boolean
+interface DataTypePrimitive {
+  type: datatypeType;
+  name?: string;
+  description?: string;
+  default?: string | number | boolean;
+  example?: string | number | boolean;
+  maxLength?: number;
+  minLength?: number;
+  minimum?: number;
+  maximum?: number;
+  minProperties?: number;
+  maxProperties?: number;
+  multipleOf: string | number;
+  enum?: string[] | number[];
+  fileTypes?: string[];
+  pattern?: string;
+  format?: numberFormat | dateFormat;
+  uniqueItems?: boolean;
 }
 
-interface dataTypeObject extends dataTypePrimitive {
-  required?: boolean,
-  properties?: (dataTypeObject | dataTypePrimitive | dataTypeArray)[]
+interface DataTypeObject extends DataTypePrimitive {
+  required?: boolean;
+  properties?: (DataTypeObject | DataTypePrimitive | DataTypeArray)[];
 }
 
-interface dataTypeArray extends dataTypePrimitive {
-  includes?: boolean | string,
-  items?: dataTypeArray | dataTypePrimitive | dataTypeObject
+interface DataTypeArray extends DataTypePrimitive {
+  includes?: boolean | string;
+  items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }
 
-interface dataType extends dataTypePrimitive {
-  __id: string,
-  name: string,
-  properties?: (dataTypeObject | dataTypePrimitive)[],
-  items?: dataTypeArray | dataTypePrimitive
+interface DataType extends DataTypePrimitive {
+  __id: string;
+  name: string;
+  properties?: (DataTypeObject | DataTypePrimitive)[];
+  items?: DataTypeArray | DataTypePrimitive;
 }
 
-interface body {
-  contentType: contentType,
-  selectedExamples?: string[],
-  type?: string,
-  annotations?: annotation[]
+interface Body {
+  contentType: contentType;
+  selectedExamples?: string[];
+  type?: string;
+  annotations?: Annotation[];
 }
 
-interface response {
-  code: string,
-  description?: string,
-  annotations?: annotation[],
-  headers?: parameter[],
-  body?: body[]
+interface Response {
+  code: string;
+  description?: string;
+  annotations?: Annotation[];
+  headers?: Parameter[];
+  body?: Body[];
 }
 
-interface trait {
-  __id: string,
-  name: string | methodType,
-  description?: string,
-  body?: body[],
-  headers?: parameter[],
-  queryParameters?: parameter[],
-  responses?: response[],
-  annotations?: annotation[],
-  selectedTraits?: string[]
+interface Trait {
+  __id: string;
+  name: string | methodType;
+  description?: string;
+  body?: Body[];
+  headers?: Parameter[];
+  queryParameters?: Parameter[];
+  responses?: Response[];
+  annotations?: Annotation[];
+  selectedTraits?: string[];
 }
 
-interface method extends trait {
-  active: boolean,
-  name: methodType,
-  securedBy?: string
+interface Method extends Trait {
+  active: boolean;
+  name: methodType;
+  securedBy?: string;
 }
 
-interface resourcesType {
-  name: string,
-  description?: string,
-  methods: method[],
-  annotations?: annotation[]
+interface ResourcesType {
+  name: string;
+  description?: string;
+  methods: Method[];
+  annotations?: Annotation[];
 }
 
-interface resource extends resourcesType {
-  __id: string,
-  path: string,
-  pathVariables?: parameter[],
-  securedBy?: string,
-  selectedTraits?: string,
-  type?: string,
-  resources?: resource[],
-  parentId?: string
+interface Resource extends ResourcesType {
+  __id: string;
+  path: string;
+  pathVariables?: Parameter[];
+  securedBy?: string;
+  selectedTraits?: string;
+  type?: string;
+  resources?: Resource[];
+  parentId?: string;
 }
 
-interface securityScheme {
-  __id: string,
-  name: string,
-  type: securitySchemeType,
-  description?: string,
+interface SecurityScheme {
+  __id: string;
+  name: string;
+  type: securitySchemeType;
+  description?: string;
   describedBy?: {
-    headers?: parameter[],
-    queryParameters?: parameter[],
-    responses?: response[]
-  },
-  annotations?: annotation[],
+    headers?: Parameter[];
+    queryParameters?: Parameter[];
+    responses?: Response[]
+  };
+  annotations?: Annotation[];
   settings?: {
-    accessTokenUri?: string,
-    authorizationUri?: string,
-    requestTokenUri?: string,
-    tokenCredentialsUri?: string,
-    authorizationGrants?: string[],
-    scopes?: string[],
+    accessTokenUri?: string;
+    authorizationUri?: string;
+    requestTokenUri?: string;
+    tokenCredentialsUri?: string;
+    authorizationGrants?: string[];
+    scopes?: string[];
     signatures?: signatures[]
-  }
+  };
 }
 
-interface documentation {
-  __id: string,
-  name: string,
-  description?: string,
-  annotations: annotation[]
+interface Documentation {
+  __id: string;
+  name: string;
+  description?: string;
+  annotations: Annotation[];
 }
 
-interface basicAnnotationType {
-  type: 'object' | 'string' | 'integer',
-  name: string,
-  description?: string,
-  pattern?: string,
-  enum?: string[]
+interface BasicAnnotationType {
+  type: 'object' | 'string' | 'integer';
+  name: string;
+  description?: string;
+  pattern?: string;
+  enum?: string[];
 }
 
-interface primitiveAnnotation extends basicAnnotationType {
-  value?: string | number
+interface PrimitiveAnnotation extends BasicAnnotationType {
+  value?: string | number;
 }
 
-interface annotation extends basicAnnotationType {
-  allowedTargets?: string[],
-  value?: string | number,
-  properties?: primitiveAnnotation[]
+interface Annotation extends BasicAnnotationType {
+  allowedTargets?: string[];
+  value?: string | number;
+  properties?: PrimitiveAnnotation[];
 }
 
-interface primitiveAnnotationType extends basicAnnotationType {
-  type: 'string' | 'integer'
+interface PrimitiveAnnotationType extends BasicAnnotationType {
+  type: 'string' | 'integer';
 }
 
-interface annotationType extends basicAnnotationType {
-  allowedTargets?: string[],
-  properties?: primitiveAnnotationType[]
+interface AnnotationType extends BasicAnnotationType {
+  allowedTargets?: string[];
+  properties?: PrimitiveAnnotationType[];
 }
 
-interface example {
-  __id: string,
-  title: string, //CHANGE TO NAME
-  format: exampleFormat,
-  content: string,
-  annotations: annotation[]
+interface Example {
+  __id: string;
+  title: string; // CHANGE TO NAME
+  format: exampleFormat;
+  content: string;
+  annotations: Annotation[];
 }
 
-interface settings {
-  title: string,
-  version: string,
-  baseUri: string,
-  description?: string,
-  mediaType?: mediaType[],
-  protolos?: protocol[],
-  baseUriParameters?: parameter[],
-  securedBy?: string[],
-  annotations?: annotation[]
+interface Settings {
+  title: string;
+  version: string;
+  baseUri: string;
+  description?: string;
+  mediaType?: mediaType[];
+  protolos?: protocol[];
+  baseUriParameters?: Parameter[];
+  securedBy?: string[];
+  annotations?: Annotation[];
 }
 
-interface library {
-  _id: string,
-  refName: string,
-  library: Library.Library
+interface Library {
+  _id: string;
+  refName: string;
+  library: Library.Library;
 }
 
 interface API {
-  entityTypeName: entityName,
-  settings: settings,
-  folder?: string[],
-  dataTypes?: dataType[],
-  resources?: resource[],
-  securitySchemes?: securityScheme[],
-  resourcesTypes?: resourcesType[],
-  traits?: trait[],
-  documentation?: documentation[],
-  annotationTypes?: annotationType[],
-  examples?: example[],
-  libraries?: library[]
+  entityTypeName: entityName;
+  settings: Settings;
+  folder?: string[];
+  dataTypes?: DataType[];
+  resources?: Resource[];
+  securitySchemes?: SecurityScheme[];
+  resourcesTypes?: ResourcesType[];
+  traits?: Trait[];
+  documentation?: Documentation[];
+  annotationTypes?: AnnotationType[];
+  examples?: Example[];
+  libraries?: Library[];
 }
 
 export {
   API,
-  settings,
+  Settings,
   entityName,
-  dataType,
-  resource,
-  securityScheme,
-  resourcesType,
-  trait,
-  documentation,
-  annotationType,
-  example,
-  library
+  DataType,
+  Resource,
+  SecurityScheme,
+  ResourcesType,
+  Trait,
+  Documentation,
+  AnnotationType,
+  Example,
+  Library
 };
