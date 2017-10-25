@@ -12,7 +12,12 @@ export default class MS3toOAS implements MS3toOASInterface {
   constructor(private ms3API: MS3) {}
 
   convert(): OAS {
-    this.oasAPI.infoObject = this.convertSettings();
+    if (this.ms3API.entityTypeName != 'api') {
+      throw new Error('Only APIs can be converted to swagger.');
+    }
+    this.oasAPI = {
+      infoObject: this.convertSettings()
+    };
     return this.oasAPI;
   }
 

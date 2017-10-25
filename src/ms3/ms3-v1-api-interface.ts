@@ -190,11 +190,11 @@ interface Settings {
   version: string;
   baseUri: string;
   description?: string;
-  mediaType?: mediaType[];
-  protocols?: protocol[];
-  baseUriParameters?: Parameter[];
-  securedBy?: string[];
-  annotations?: Annotation[];
+  mediaType?: mediaType[] | '';
+  protocols?: protocol[] | undefined;
+  baseUriParameters?: Parameter[] | undefined;
+  securedBy?: string[] | undefined;
+  annotations?: Annotation[] | undefined;
 }
 
 interface Library {
