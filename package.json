@@ -4,9 +4,9 @@
   "description": "Converts between MS3, OAS(Swagger), Blueprint",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run build-ts && npm run watch-ts",
-    "test": "npm run build-ts && node ./node_modules/.bin/jest --forceExit",
-    "build-ts": "node ./node_modules/.bin/tsc",
+    "start": "npm run build && npm run watch-ts",
+    "test": "npm run build && node ./node_modules/.bin/jest --forceExit",
+    "build": "node ./node_modules/.bin/tsc",
     "watch-ts": "node ./node_modules/.bin/tsc -w",
     "tslint": "node ./node_modules/.bin/tslint -c tslint.json -p tsconfig.json"
   },
