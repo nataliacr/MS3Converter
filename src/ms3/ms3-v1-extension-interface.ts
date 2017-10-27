@@ -7,6 +7,7 @@ interface ExtensionSettings extends apiInterfaces.Settings {
 
 interface Extension {
   entityTypeName: apiInterfaces.entityName;
+  ms3_version: string;
   settings: ExtensionSettings;
   folder?: string[];
   dataTypes?: apiInterfaces.DataType[];
@@ -17,7 +18,7 @@ interface Extension {
   documentation?: apiInterfaces.Documentation[];
   annotationTypes?: apiInterfaces.AnnotationType[];
   examples?: apiInterfaces.Example[];
-  libraries?: apiInterfaces.Library[];
+  libraries?: apiInterfaces.IncludedLibrary[];
 }
 
 export { Extension };
