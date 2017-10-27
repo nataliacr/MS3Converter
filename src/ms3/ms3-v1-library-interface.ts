@@ -1,7 +1,7 @@
 import * as apiInterfaces from './ms3-v1-api-interface';
 
 interface LibrarySettings extends apiInterfaces.Settings {
-  usage: string;
+  usage?: string;
 }
 
 interface Library {

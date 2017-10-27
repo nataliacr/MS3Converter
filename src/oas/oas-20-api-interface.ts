@@ -173,7 +173,7 @@ interface LinkObject {
   parameters?: any;
   requestBody?: any;
   description?: string;
-  server?: object; // TODO
+  server?: object; // TODO: describe server object
 }
 
 interface Link {
@@ -199,7 +199,7 @@ interface InfoObject {
   contact?: Contact;
   license?: License;
   version: string;
-  server?: object; // TODO
+  server?: object; // TODO: describe server object
 }
 
 interface API {

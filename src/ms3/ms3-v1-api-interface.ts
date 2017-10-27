@@ -190,7 +190,7 @@ export interface Settings {
   version?: string;
   baseUri: string;
   description?: string;
-  mediaType?: mediaType | '';
+  mediaType?: mediaType;
   protocols?: protocol[];
   baseUriParameters?: Parameter[];
   securedBy?: string[];

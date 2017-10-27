@@ -49,8 +49,8 @@ export default class MS3toOAS implements MS3toOASInterface {
 
     const settings: InfoObject = {
       title: this.ms3API.settings.title,
-      description: this.ms3API.settings.description,
-      version: this.ms3API.settings.version
+      description: this.ms3API.settings.description || 'API description',
+      version: this.ms3API.settings.version || '2.0'
     };
 
     return settings;
