@@ -7,6 +7,7 @@ interface OverlaySettings extends apiInterfaces.Settings {
 
 interface Overlay {
   entityTypeName: apiInterfaces.entityName;
+  ms3_version: string;
   settings: OverlaySettings;
   folder?: string[];
   dataTypes?: apiInterfaces.DataType[];
@@ -17,7 +18,7 @@ interface Overlay {
   documentation?: apiInterfaces.Documentation[];
   annotationTypes?: apiInterfaces.AnnotationType[];
   examples?: apiInterfaces.Example[];
-  libraries?: apiInterfaces.Library[];
+  libraries?: apiInterfaces.IncludedLibrary[];
 }
 
 export { Overlay };

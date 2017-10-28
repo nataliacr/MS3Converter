@@ -13,11 +13,11 @@ type dateFormat = 'rfc3339' | 'rfc2616';
 type exampleFormat = 'json' | 'xml' | 'txt';
 type contentType = 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD';
-type entityName = 'api' | 'library' | 'overlay' | 'extension';
+export type entityName = 'api' | 'library' | 'overlay' | 'extension';
 type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
 type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
 
-interface Parameter {
+export interface Parameter {
   type: parameterType;
   displayName: string;
   description?: string;
@@ -63,7 +63,7 @@ interface DataTypeArray extends DataTypePrimitive {
   items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }
 
-interface DataType extends DataTypePrimitive {
+export interface DataType extends DataTypePrimitive {
   __id: string;
   name: string;
   properties?: (DataTypeObject | DataTypePrimitive)[];
@@ -85,7 +85,7 @@ interface Response {
   body?: Body[];
 }
 
-interface Trait {
+export interface Trait {
   __id: string;
   name: string | methodType;
   description?: string;
@@ -103,14 +103,14 @@ interface Method extends Trait {
   securedBy?: string;
 }
 
-interface ResourcesType {
+export interface ResourcesType {
   name: string;
   description?: string;
   methods: Method[];
   annotations?: Annotation[];
 }
 
-interface Resource extends ResourcesType {
+export interface Resource extends ResourcesType {
   __id: string;
   path: string;
   pathVariables?: Parameter[];
@@ -121,7 +121,7 @@ interface Resource extends ResourcesType {
   parentId?: string;
 }
 
-interface SecurityScheme {
+export interface SecurityScheme {
   __id: string;
   name: string;
   type: securitySchemeType;
@@ -143,7 +143,7 @@ interface SecurityScheme {
   };
 }
 
-interface Documentation {
+export interface Documentation {
   __id: string;
   name: string;
   description?: string;
@@ -162,7 +162,7 @@ interface PrimitiveAnnotation extends BasicAnnotationType {
   value?: string | number;
 }
 
-interface Annotation extends BasicAnnotationType {
+export interface Annotation extends BasicAnnotationType {
   allowedTargets?: string[];
   value?: string | number;
   properties?: PrimitiveAnnotation[];
@@ -172,12 +172,12 @@ interface PrimitiveAnnotationType extends BasicAnnotationType {
   type: 'string' | 'integer';
 }
 
-interface AnnotationType extends BasicAnnotationType {
+export interface AnnotationType extends BasicAnnotationType {
   allowedTargets?: string[];
   properties?: PrimitiveAnnotationType[];
 }
 
-interface Example {
+export interface Example {
   __id: string;
   title: string; // CHANGE TO NAME
   format: exampleFormat;
@@ -185,26 +185,27 @@ interface Example {
   annotations: Annotation[];
 }
 
-interface Settings {
+export interface Settings {
   title: string;
-  version: string;
+  version?: string;
   baseUri: string;
   description?: string;
-  mediaType?: mediaType[];
-  protolos?: protocol[];
+  mediaType?: mediaType;
+  protocols?: protocol[];
   baseUriParameters?: Parameter[];
   securedBy?: string[];
   annotations?: Annotation[];
 }
 
-interface Library {
+export interface IncludedLibrary {
   _id: string;
   refName: string;
   library: Library.Library;
 }
 
-interface API {
+export interface API {
   entityTypeName: entityName;
+  ms3_version: string;
   settings: Settings;
   folder?: string[];
   dataTypes?: DataType[];
@@ -215,20 +216,5 @@ interface API {
   documentation?: Documentation[];
   annotationTypes?: AnnotationType[];
   examples?: Example[];
-  libraries?: Library[];
+  libraries?: IncludedLibrary[];
 }
-
-export {
-  API,
-  Settings,
-  entityName,
-  DataType,
-  Resource,
-  SecurityScheme,
-  ResourcesType,
-  Trait,
-  Documentation,
-  AnnotationType,
-  Example,
-  Library
-};
