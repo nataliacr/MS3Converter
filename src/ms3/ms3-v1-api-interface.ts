@@ -12,7 +12,7 @@ type numberFormat = 'Int64' | 'Int32' | 'Int16' | 'Int8' | 'Double' | 'Float';
 type dateFormat = 'rfc3339' | 'rfc2616';
 type exampleFormat = 'json' | 'xml' | 'txt';
 type contentType = 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
-type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD';
+type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
 export type entityName = 'api' | 'library' | 'overlay' | 'extension';
 type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
 type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
@@ -97,17 +97,29 @@ export interface Trait {
   selectedTraits?: string[];
 }
 
-interface Method extends Trait {
-  active: boolean;
+export interface Method {
   name: methodType;
+  active: boolean;
   securedBy?: string;
+  description?: string;
+  body?: Body[];
+  headers?: Parameter[];
+  queryParameters?: Parameter[];
+  responses?: Response[];
+  annotations?: Annotation[];
+  selectedTraits?: string[];
 }
 
 export interface ResourcesType {
-  name: string;
+  name?: string;
   description?: string;
   methods: Method[];
   annotations?: Annotation[];
+}
+
+export interface NestedResource {
+  id: string;
+  path: string;
 }
 
 export interface Resource extends ResourcesType {
@@ -117,7 +129,7 @@ export interface Resource extends ResourcesType {
   securedBy?: string;
   selectedTraits?: string;
   type?: string;
-  resources?: Resource[];
+  resources?: NestedResource[];
   parentId?: string;
 }
 

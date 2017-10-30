@@ -15,6 +15,7 @@ export default class MS3Sanitizer {
 
     if (this.API.folder && this.API.folder.length) this.sanitizedAPI.folder = this.API.folder;
     if (this.API.dataTypes && this.API.dataTypes.length) this.sanitizedAPI.dataTypes = this.sanitizeDataTypes(this.API.dataTypes);
+    if (this.API.resources && this.API.resources.length) this.sanitizedAPI.resources = this.sanitizeResources(this.API.resources);
 
     return this.sanitizedAPI;
   }
@@ -58,6 +59,34 @@ export default class MS3Sanitizer {
       }
       delete sanitizedDataType.mode; // TODO: Remove this after 'mode' property is removed from ms3 format
       return sanitizedDataType;
+    });
+  }
+
+  sanitizeResources(resources: object[]): apiInerfaces.Resource[] {
+    return resources.map( (resource: any) => {
+      const sanitizedResource = this.sanitizeObject(resource);
+      if (sanitizedResource.pathVariables) sanitizedResource.pathVariables = this.sanitizeArrayOfObjects(sanitizedResource.pathVariables);
+      if (sanitizedResource.annotations) sanitizedResource.annotations = this.sanitizeAnnotations(sanitizedResource.annotations);
+      if (sanitizedResource.methods) sanitizedResource.methods = this.sanitizeMethods(sanitizedResource.methods);
+      return sanitizedResource;
+    });
+  }
+
+  sanitizeMethods(methods: object[]): apiInerfaces.Method[] {
+    return methods.map( (method: any) => {
+      const sanitizedMethod = this.sanitizeObject(method);
+      if (sanitizedMethod.headers) sanitizedMethod.headers = this.sanitizeArrayOfObjects(sanitizedMethod.headers);
+      if (sanitizedMethod.queryParameters) sanitizedMethod.queryParameters = this.sanitizeArrayOfObjects(sanitizedMethod.queryParameters);
+      if (sanitizedMethod.annotations) sanitizedMethod.annotations = this.sanitizeAnnotations(sanitizedMethod.annotations);
+      if (sanitizedMethod.body) {
+        sanitizedMethod.body = sanitizedMethod.body.map( (body: any) => {
+          const sanitizedBody = this.sanitizeObject(body);
+          if (sanitizedBody.annotations) sanitizedBody.annotations = this.sanitizeAnnotations(sanitizedBody.annotations);
+          return sanitizedBody;
+        });
+      }
+      if (sanitizedMethod.responses) sanitizedMethod.responses = this.sanitizeMethods(sanitizedMethod.responses);
+      return sanitizedMethod;
     });
   }
 
