@@ -1,18 +1,24 @@
-import MS3toOAS from './../ms3/ms3-to-oas';
+import MS3toOAS, { format } from './../ms3/ms3-to-oas';
 import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
 import * as LibraryInterfaces from './../ms3/ms3-v1-library-interface';
 import * as OASInterfaces from './../oas/oas-20-api-interface';
 
-test('MS3 settings should be converted to OAS successfully', () => {
-  const project: ApiInterfaces.API = {
-    settings: {
-      title: 'params',
-      baseUri: 'http://params',
-    },
-    ms3_version: '1.0.1',
-    entityTypeName: 'api'
-  };
+const fs = require('fs');
+const util = require('util');
+const rmdir = require('rmdir');
+const fileExistsPromise = util.promisify(fs.exists);
+const rmdirPromise = util.promisify(rmdir);
 
+const project: ApiInterfaces.API = {
+  settings: {
+    title: 'params',
+    baseUri: 'http://params',
+  },
+  ms3_version: '1.0.1',
+  entityTypeName: 'api'
+};
+
+test('MS3 settings should be converted to OAS successfully', async() => {
   const expectedResult: OASInterfaces.API = {
     infoObject: {
       title: 'params',
@@ -24,13 +30,13 @@ test('MS3 settings should be converted to OAS successfully', () => {
   let resultAPI;
 
   try {
-    resultAPI = MS3toOAS.create(project).convert();
+    resultAPI = await MS3toOAS.create(project).convert();
   } catch (err) {}
 
   expect(resultAPI).toEqual(expectedResult);
 });
 
-test('MS3 settings to OAS convertion should fail with "library" entity type', () => {
+test('MS3 settings to OAS conversion should fail with "library" entity type', async() => {
   const library: LibraryInterfaces.Library = {
     settings: {
       title: 'params',
@@ -41,5 +47,21 @@ test('MS3 settings to OAS convertion should fail with "library" entity type', ()
     entityTypeName: 'library'
   };
 
-  expect( () => MS3toOAS.create(library).convert() ).toThrowError('Library can not be converted to swagger.');
+  try {
+    await MS3toOAS.create(library).convert();
+  } catch (err) {
+    expect(err.message).toEqual('Library can not be converted to swagger.');
+  }
+});
+
+test('Should create api.yaml file', async() => {
+  const options = {
+    destinationPath: './',
+    asSingleFile: true,
+    fileFormat: 'yaml' as format
+  };
+  await MS3toOAS.create(project, options).convert();
+  const fileExist = await fileExistsPromise(`./api.yaml`);
+  await rmdirPromise('./api.yaml');
+  expect(fileExist).toEqual(true);
 });
