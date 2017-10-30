@@ -1,3 +1,3 @@
-export interface LoaderInterface {
+export default interface LoaderInterface {
   load(): any;
 }
