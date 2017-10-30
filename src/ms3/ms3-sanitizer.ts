@@ -1,5 +1,5 @@
 import * as apiInerfaces from './ms3-v1-api-interface';
-import { isNil, pickBy, isEqual, isArray } from 'lodash';
+import { isNil, pickBy, isEqual, isArray, isBoolean, isNumber } from 'lodash';
 
 export default class MS3Sanitizer {
   private sanitizedAPI: apiInerfaces.API;
@@ -13,11 +13,16 @@ export default class MS3Sanitizer {
       settings: this.sanitizeSettings()
     };
 
+    if (this.API.folder && this.API.folder.length) this.sanitizedAPI.folder = this.API.folder;
+    if (this.API.dataTypes && this.API.dataTypes.length) this.sanitizedAPI.dataTypes = this.sanitizeDataTypes(this.API.dataTypes);
+
     return this.sanitizedAPI;
   }
 
   sanitizeObject(object: object): any {
-    return pickBy(object, predicate => predicate && predicate.length);
+    return pickBy(object, predicate => {
+      return (predicate && predicate.length) || isBoolean(predicate) || isNumber(predicate);
+    });
   }
 
   sanitizeArrayOfObjects(array: object[]): any {
@@ -39,6 +44,20 @@ export default class MS3Sanitizer {
         sanitizedAnnotation.properties = this.sanitizeArrayOfObjects(sanitizedAnnotation.properties);
       }
       return sanitizedAnnotation;
+    });
+  }
+
+  sanitizeDataTypes(dataTypes: object[]): apiInerfaces.DataType[] {
+    return dataTypes.map( (dataType: any) => {
+      const sanitizedDataType = this.sanitizeObject(dataType);
+      if (sanitizedDataType.properties) {
+        sanitizedDataType.properties = this.sanitizeDataTypes(sanitizedDataType.properties);
+      }
+      if (dataType.items) {
+        sanitizedDataType.items = this.sanitizeObject(dataType.items);
+      }
+      delete sanitizedDataType.mode; // TODO: Remove this after 'mode' property is removed from ms3 format
+      return sanitizedDataType;
     });
   }
 

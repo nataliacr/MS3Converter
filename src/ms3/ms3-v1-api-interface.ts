@@ -45,7 +45,7 @@ interface DataTypePrimitive {
   maximum?: number;
   minProperties?: number;
   maxProperties?: number;
-  multipleOf: string | number;
+  multipleOf?: string | number;
   enum?: string[] | number[];
   fileTypes?: string[];
   pattern?: string;
@@ -66,7 +66,7 @@ interface DataTypeArray extends DataTypePrimitive {
 export interface DataType extends DataTypePrimitive {
   __id: string;
   name: string;
-  properties?: (DataTypeObject | DataTypePrimitive)[];
+  properties?: (DataTypeObject | DataTypePrimitive | DataTypeArray)[];
   items?: DataTypeArray | DataTypePrimitive;
 }
 
@@ -187,8 +187,8 @@ export interface Example {
 
 export interface Settings {
   title: string;
-  version?: string;
   baseUri: string;
+  version?: string;
   description?: string;
   mediaType?: mediaType;
   protocols?: protocol[];
