@@ -3,12 +3,14 @@ import * as LibraryInterfaces from './../ms3/ms3-v1-library-interface';
 import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
 import * as OASInterfaces from './../oas/oas-20-api-interface';
 import { format } from '../common/convertor-options-interface';
+import { writeFile, exists } from 'fs';
+import { promisify } from 'util';
 
-const fs = require('fs');
-const util = require('util');
 const rmdir = require('rmdir');
-const fileExistsPromise = util.promisify(fs.exists);
-const rmdirPromise = util.promisify(rmdir);
+const fileExistsPromise = promisify(exists);
+const rmdirPromise = promisify(rmdir);
+const writeFilePromise = promisify(writeFile);
+const YAML = require('yamljs');
 
 const project: ApiInterfaces.API = {
   settings: {

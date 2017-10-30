@@ -3,10 +3,10 @@ import { API as MS3 } from './ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../common/convertor-options-interface';
 import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
 import * as path from 'path';
+import { writeFile } from 'fs';
+import { promisify } from 'util';
 
-const fs = require('fs');
-const util = require('util');
-const writeFilePromise = util.promisify(fs.writeFile);
+const writeFilePromise = promisify(writeFile);
 const YAML = require('yamljs');
 
 interface MS3toOASInterface {
@@ -77,7 +77,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return settings;
   }
 
-  static getDefaultConfig (): ConvertorOptions {
+  static getDefaultConfig(): ConvertorOptions {
     return {
       fileFormat: 'json',
       asSingleFile: true
