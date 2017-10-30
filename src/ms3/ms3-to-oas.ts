@@ -1,5 +1,6 @@
-import { ConvertorInterface } from './../common/convertor-interface';
+import ConvertorInterface from '../common/convertor-interface';
 import { API as MS3 } from './ms3-v1-api-interface';
+import ConvertorOptions, { format } from '../common/convertor-options-interface';
 import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
 import * as path from 'path';
 
@@ -17,14 +18,8 @@ interface DataToWrite {
   path: string;
   content?: OAS;
 }
-export type format = 'json' | 'yaml';
-interface ConvertorOptions {
-  destinationPath?: string;
-  asSingleFile: boolean;
-  fileFormat: format;
-}
 
-export default class MS3toOAS implements MS3toOASInterface {
+export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
   oasAPI: OAS;
 
   constructor(private ms3API: MS3, private options: ConvertorOptions) {}
@@ -89,10 +84,6 @@ export default class MS3toOAS implements MS3toOASInterface {
     };
   }
 
-  static create(api: MS3, options: ConvertorOptions = this.getDefaultConfig() ) {
-    return new MS3toOAS(api, options);
-  }
-
   private async writeToDisc(data: DataToWrite) {
     let result;
     if (this.options.fileFormat == 'yaml') {
@@ -101,5 +92,9 @@ export default class MS3toOAS implements MS3toOASInterface {
       result = JSON.stringify(data.content);
     }
     await writeFilePromise(data.path, result);
+  }
+
+  static create(api: MS3, options: ConvertorOptions = this.getDefaultConfig() ) {
+    return new MS3toOAS(api, options);
   }
 }

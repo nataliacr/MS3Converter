@@ -1,7 +1,8 @@
-import MS3toOAS, { format } from './../ms3/ms3-to-oas';
-import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
+import MS3toOAS from './../ms3/ms3-to-oas';
 import * as LibraryInterfaces from './../ms3/ms3-v1-library-interface';
+import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
 import * as OASInterfaces from './../oas/oas-20-api-interface';
+import { format } from '../common/convertor-options-interface';
 
 const fs = require('fs');
 const util = require('util');

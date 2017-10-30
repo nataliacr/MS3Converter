@@ -1,4 +1,4 @@
-import { Ms3Loader } from './../ms3/loader';
+import Ms3Loader from './../ms3/loader';
 import * as path from 'path';
 
 test('File should load without errors', async() => {
