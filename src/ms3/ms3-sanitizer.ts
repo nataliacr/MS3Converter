@@ -1,5 +1,5 @@
 import * as apiInerfaces from './ms3-v1-api-interface';
-import { isNil, pickBy, isEqual, isArray, isBoolean, isNumber } from 'lodash';
+import { pickBy, isBoolean, isNumber } from 'lodash';
 
 export default class MS3Sanitizer {
   private sanitizedAPI: apiInerfaces.API;
