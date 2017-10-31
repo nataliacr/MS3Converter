@@ -20,6 +20,7 @@ export default class MS3Sanitizer {
     if (this.API.securitySchemes && this.API.securitySchemes.length) this.sanitizedAPI.securitySchemes = this.sanitizeSecuritySchemes(this.API.securitySchemes);
     if (this.API.resourcesTypes && this.API.resourcesTypes.length) this.sanitizedAPI.resourcesTypes = this.sanitizeResources(this.API.resourcesTypes);
     if (this.API.traits && this.API.traits.length) this.sanitizedAPI.traits = this.sanitizeTraits(this.API.traits);
+    if (this.API.documentation && this.API.documentation.length) this.sanitizedAPI.documentation = this.sanitizeDocumentation(this.API.documentation);
 
     return this.sanitizedAPI;
   }
@@ -119,6 +120,14 @@ export default class MS3Sanitizer {
       if (sanitizedSecurityScheme.annotations) sanitizedSecurityScheme.annotations = this.sanitizeAnnotations(sanitizedSecurityScheme.annotations);
       if (sanitizedSecurityScheme.settings) sanitizedSecurityScheme.settings = this.sanitizeObject(sanitizedSecurityScheme.settings);
       return sanitizedSecurityScheme;
+    });
+  }
+
+  sanitizeDocumentation(documentation: object[]): apiInerfaces.Documentation[] {
+    return documentation.map( (documentation: any) => {
+      const sanitizedDocumentation = this.sanitizeObject(documentation);
+      if (sanitizedDocumentation.annotations) sanitizedDocumentation.annotations = this.sanitizeAnnotations(sanitizedDocumentation.annotations);
+      return sanitizedDocumentation;
     });
   }
 
