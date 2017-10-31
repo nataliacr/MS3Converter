@@ -1,15 +1,16 @@
 import { API as MS3 } from './ms3-v1-api-interface';
 import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
+import ConvertorInterface from '../common/convertor-interface';
 
 interface MS3toOASInterface {
   oasAPI: OAS;
   convert(): OAS;
 }
 
-export default class MS3toOAS implements MS3toOASInterface {
+export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
   oasAPI: OAS;
 
-  constructor(private ms3API: MS3) {}
+  constructor(private ms3API: MS3, options: object = {}) {}
 
   convertAPI(): OAS {
     this.oasAPI = {
@@ -56,7 +57,7 @@ export default class MS3toOAS implements MS3toOASInterface {
     return settings;
   }
 
-  static create(api: MS3) {
-    return new MS3toOAS(api);
+  static create(api: MS3, options: object = {}) {
+    return new MS3toOAS(api, options);
   }
 }

@@ -1,3 +1,3 @@
-export interface ConvertorInterface {
-  convert(source: any): any;
+export default interface ConvertorInterface {
+  convert(): any;
 }

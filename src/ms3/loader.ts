@@ -1,10 +1,10 @@
-import { LoaderInterface } from './../common/loader-interface';
+import LoaderInterface from './../common/loader-interface';
 import { apiInterfaces } from '../ms3/index';
 import * as fs from 'fs';
 import * as util from 'util';
 const readFilePromise = util.promisify(fs.readFile);
 
-export class Ms3Loader implements LoaderInterface {
+export default class Ms3Loader implements LoaderInterface {
 
   constructor(private path: string = '') {
     if (!path) throw new Error('Empty path');
