@@ -180,6 +180,10 @@ interface Link {
   [propName: string]: LinkObject | ReferenceObject;
 }
 
+export interface SchemaObjects {
+  [propName: string]: SchemaObject;
+}
+
 interface Components {
   schemas?: Schema[];
   responses?: Response[];
@@ -205,6 +209,7 @@ interface InfoObject {
 interface API {
   infoObject: InfoObject;
   components?: Components;
+  schemaObjects?: SchemaObjects;
 }
 
 export { API, InfoObject };
