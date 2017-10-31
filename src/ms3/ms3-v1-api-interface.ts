@@ -193,7 +193,7 @@ export interface Example {
   title: string; // CHANGE TO NAME
   format: exampleFormat;
   content: string;
-  annotations: Annotation[];
+  annotations?: Annotation[];
 }
 
 export interface Settings {

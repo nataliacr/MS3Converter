@@ -62,7 +62,45 @@ test('MS3 API traits should be sanitized successfully', () => {
   expect(MS3Sanitizer.create(originalTraitsProject).sanitize()).toEqual(resultTraitsProject);
 });
 
-test('MS3 API traits should be sanitized successfully', () => {
+test('MS3 API examples should be sanitized successfully', () => {
+  const originalExamplesProject: any = {
+    'settings': {
+      'title': 'params',
+      'baseUri': 'http://params'
+    },
+    'ms3_version': '1.0.1',
+    'entityTypeName': 'api',
+    'examples': [
+      {
+        'title': 'example',
+        'content': '{}',
+        'format': 'json',
+        'annotations': [],
+        '__id': 'ee86a166-8725-4757-b90c-8c3c3b8fffcf'
+      }
+    ]
+  };
+
+  const resultExamplesProject: ApiInterfaces.API = {
+    'settings': {
+      'title': 'params',
+      'baseUri': 'http://params'
+    },
+    'ms3_version': '1.0.1',
+    'entityTypeName': 'api',
+    'examples': [
+      {
+        'title': 'example',
+        'content': '{}',
+        'format': 'json',
+        '__id': 'ee86a166-8725-4757-b90c-8c3c3b8fffcf'
+      }
+    ]
+  };
+  expect(MS3Sanitizer.create(originalExamplesProject).sanitize()).toEqual(resultExamplesProject);
+});
+
+test('MS3 API documentation should be sanitized successfully', () => {
   const originalDocumentationProject: any = {
     'settings': {
       'title': 'params',

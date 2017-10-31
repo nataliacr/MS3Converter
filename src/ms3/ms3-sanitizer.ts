@@ -21,6 +21,7 @@ export default class MS3Sanitizer {
     if (this.API.resourcesTypes && this.API.resourcesTypes.length) this.sanitizedAPI.resourcesTypes = this.sanitizeResources(this.API.resourcesTypes);
     if (this.API.traits && this.API.traits.length) this.sanitizedAPI.traits = this.sanitizeTraits(this.API.traits);
     if (this.API.documentation && this.API.documentation.length) this.sanitizedAPI.documentation = this.sanitizeDocumentation(this.API.documentation);
+    if (this.API.examples && this.API.examples.length) this.sanitizedAPI.examples = this.sanitizeExamples(this.API.examples);
 
     return this.sanitizedAPI;
   }
@@ -128,6 +129,14 @@ export default class MS3Sanitizer {
       const sanitizedDocumentation = this.sanitizeObject(documentation);
       if (sanitizedDocumentation.annotations) sanitizedDocumentation.annotations = this.sanitizeAnnotations(sanitizedDocumentation.annotations);
       return sanitizedDocumentation;
+    });
+  }
+
+  sanitizeExamples(examples: object[]): apiInerfaces.Example[] {
+    return examples.map( (example: any) => {
+      const sanitizedExample = this.sanitizeObject(example);
+      if (sanitizedExample.annotations) sanitizedExample.annotations = this.sanitizeAnnotations(sanitizedExample.annotations);
+      return sanitizedExample;
     });
   }
 
