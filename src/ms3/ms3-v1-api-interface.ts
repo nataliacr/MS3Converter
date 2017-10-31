@@ -70,14 +70,14 @@ export interface DataType extends DataTypePrimitive {
   items?: DataTypeArray | DataTypePrimitive;
 }
 
-interface Body {
+export interface Body {
   contentType: contentType;
   selectedExamples?: string[];
   type?: string;
   annotations?: Annotation[];
 }
 
-interface Response {
+export interface Response {
   code: string;
   description?: string;
   annotations?: Annotation[];

@@ -1,5 +1,6 @@
+import { SecurityScheme } from './ms3-v1-api-interface';
 import * as apiInerfaces from './ms3-v1-api-interface';
-import { pickBy, isBoolean, isNumber } from 'lodash';
+import { pickBy, isBoolean, isNumber, keys } from 'lodash';
 
 export default class MS3Sanitizer {
   private sanitizedAPI: apiInerfaces.API;
@@ -16,18 +17,27 @@ export default class MS3Sanitizer {
     if (this.API.folder && this.API.folder.length) this.sanitizedAPI.folder = this.API.folder;
     if (this.API.dataTypes && this.API.dataTypes.length) this.sanitizedAPI.dataTypes = this.sanitizeDataTypes(this.API.dataTypes);
     if (this.API.resources && this.API.resources.length) this.sanitizedAPI.resources = this.sanitizeResources(this.API.resources);
+    if (this.API.securitySchemes && this.API.securitySchemes.length) this.sanitizedAPI.securitySchemes = this.sanitizeSecuritySchemes(this.API.securitySchemes);
 
     return this.sanitizedAPI;
   }
 
   sanitizeObject(object: object): any {
     return pickBy(object, predicate => {
-      return (predicate && predicate.length) || isBoolean(predicate) || isNumber(predicate);
+      return (predicate && predicate.length) || isBoolean(predicate) || isNumber(predicate) || (keys(predicate).length != 0);
     });
   }
 
   sanitizeArrayOfObjects(array: object[]): any {
     return array.map(this.sanitizeObject);
+  }
+
+  sanitizeBody(body: object[]): apiInerfaces.Body[] {
+    return body.map( (body: object) => {
+      const sanitizedBody: apiInerfaces.Body = this.sanitizeObject(body);
+      if (sanitizedBody.annotations) sanitizedBody.annotations = this.sanitizeAnnotations(sanitizedBody.annotations);
+      return sanitizedBody;
+    });
   }
 
   sanitizeSettings(): apiInerfaces.Settings {
@@ -78,15 +88,29 @@ export default class MS3Sanitizer {
       if (sanitizedMethod.headers) sanitizedMethod.headers = this.sanitizeArrayOfObjects(sanitizedMethod.headers);
       if (sanitizedMethod.queryParameters) sanitizedMethod.queryParameters = this.sanitizeArrayOfObjects(sanitizedMethod.queryParameters);
       if (sanitizedMethod.annotations) sanitizedMethod.annotations = this.sanitizeAnnotations(sanitizedMethod.annotations);
-      if (sanitizedMethod.body) {
-        sanitizedMethod.body = sanitizedMethod.body.map( (body: any) => {
-          const sanitizedBody = this.sanitizeObject(body);
-          if (sanitizedBody.annotations) sanitizedBody.annotations = this.sanitizeAnnotations(sanitizedBody.annotations);
-          return sanitizedBody;
-        });
-      }
+      if (sanitizedMethod.body) sanitizedMethod.body = this.sanitizeBody(sanitizedMethod.body);
       if (sanitizedMethod.responses) sanitizedMethod.responses = this.sanitizeMethods(sanitizedMethod.responses);
       return sanitizedMethod;
+    });
+  }
+
+  sanitizeSecuritySchemes(securitySchemes: object[]): apiInerfaces.SecurityScheme[] {
+    return securitySchemes.map( (securityScheme: any) => {
+      const sanitizedSecurityScheme: apiInerfaces.SecurityScheme = this.sanitizeObject(securityScheme);
+      if (sanitizedSecurityScheme.describedBy) sanitizedSecurityScheme.describedBy = this.sanitizeObject(sanitizedSecurityScheme.describedBy);
+      if (sanitizedSecurityScheme.describedBy.headers) sanitizedSecurityScheme.describedBy.headers = this.sanitizeArrayOfObjects(sanitizedSecurityScheme.describedBy.headers);
+      if (sanitizedSecurityScheme.describedBy.queryParameters) sanitizedSecurityScheme.describedBy.queryParameters = this.sanitizeArrayOfObjects(sanitizedSecurityScheme.describedBy.queryParameters);
+      if (sanitizedSecurityScheme.describedBy.responses) {
+        sanitizedSecurityScheme.describedBy.responses = sanitizedSecurityScheme.describedBy.responses.map( (response: object) => {
+          const sanitizedResponse: apiInerfaces.Response = this.sanitizeObject(response);
+          if (sanitizedResponse.headers) sanitizedResponse.headers = this.sanitizeArrayOfObjects(sanitizedResponse.headers);
+          if (sanitizedResponse.body) sanitizedResponse.body = this.sanitizeBody(sanitizedResponse.body);
+          return sanitizedResponse;
+        });
+      }
+      if (sanitizedSecurityScheme.annotations) sanitizedSecurityScheme.annotations = this.sanitizeAnnotations(sanitizedSecurityScheme.annotations);
+      if (sanitizedSecurityScheme.settings) sanitizedSecurityScheme.settings = this.sanitizeObject(sanitizedSecurityScheme.settings);
+      return sanitizedSecurityScheme;
     });
   }
 
