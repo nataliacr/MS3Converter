@@ -12,7 +12,7 @@ type numberFormat = 'Int64' | 'Int32' | 'Int16' | 'Int8' | 'Double' | 'Float';
 type dateFormat = 'rfc3339' | 'rfc2616';
 type exampleFormat = 'json' | 'xml' | 'txt';
 type contentType = 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
-type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD';
+type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
 export type entityName = 'api' | 'library' | 'overlay' | 'extension';
 type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
 type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
@@ -45,12 +45,14 @@ interface DataTypePrimitive {
   maximum?: number;
   minProperties?: number;
   maxProperties?: number;
-  multipleOf: string | number;
+  multipleOf?: string | number;
   enum?: string[] | number[];
   fileTypes?: string[];
   pattern?: string;
   format?: numberFormat | dateFormat;
   uniqueItems?: boolean;
+  maxItems?: number;
+  minItems?: number;
 }
 
 interface DataTypeObject extends DataTypePrimitive {
@@ -66,18 +68,18 @@ interface DataTypeArray extends DataTypePrimitive {
 export interface DataType extends DataTypePrimitive {
   __id: string;
   name: string;
-  properties?: (DataTypeObject | DataTypePrimitive)[];
+  properties?: (DataTypeObject | DataTypePrimitive | DataTypeArray)[];
   items?: DataTypeArray | DataTypePrimitive;
 }
 
-interface Body {
+export interface Body {
   contentType: contentType;
   selectedExamples?: string[];
   type?: string;
   annotations?: Annotation[];
 }
 
-interface Response {
+export interface Response {
   code: string;
   description?: string;
   annotations?: Annotation[];
@@ -97,27 +99,41 @@ export interface Trait {
   selectedTraits?: string[];
 }
 
-interface Method extends Trait {
-  active: boolean;
+export interface Method {
   name: methodType;
+  active: boolean;
   securedBy?: string;
+  description?: string;
+  body?: Body[];
+  headers?: Parameter[];
+  queryParameters?: Parameter[];
+  responses?: Response[];
+  annotations?: Annotation[];
+  selectedTraits?: string[];
 }
 
 export interface ResourcesType {
-  name: string;
+  __id: string;
+  name?: string;
+  path?: string;
   description?: string;
+  pathVariables?: Parameter[];
+  queryParameters?: Parameter[];
   methods: Method[];
   annotations?: Annotation[];
 }
 
-export interface Resource extends ResourcesType {
-  __id: string;
+export interface NestedResource {
+  id: string;
   path: string;
-  pathVariables?: Parameter[];
+}
+
+export interface Resource extends ResourcesType {
+  path: string;
   securedBy?: string;
   selectedTraits?: string;
   type?: string;
-  resources?: Resource[];
+  resources?: NestedResource[];
   parentId?: string;
 }
 
@@ -187,8 +203,8 @@ export interface Example {
 
 export interface Settings {
   title: string;
-  version?: string;
   baseUri: string;
+  version?: string;
   description?: string;
   mediaType?: mediaType;
   protocols?: protocol[];
