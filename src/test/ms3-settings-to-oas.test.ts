@@ -5,12 +5,12 @@ import * as OASInterfaces from './../oas/oas-20-api-interface';
 import { format } from '../common/convertor-options-interface';
 import { writeFile, exists } from 'fs';
 import { promisify } from 'util';
+import * as YAML from 'yamljs';
 
 const rmdir = require('rmdir');
 const fileExistsPromise = promisify(exists);
 const rmdirPromise = promisify(rmdir);
 const writeFilePromise = promisify(writeFile);
-const YAML = require('yamljs');
 
 const project: ApiInterfaces.API = {
   settings: {
