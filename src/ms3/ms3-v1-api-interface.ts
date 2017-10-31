@@ -51,6 +51,8 @@ interface DataTypePrimitive {
   pattern?: string;
   format?: numberFormat | dateFormat;
   uniqueItems?: boolean;
+  maxItems?: number;
+  minItems?: number;
 }
 
 interface DataTypeObject extends DataTypePrimitive {
