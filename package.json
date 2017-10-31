@@ -48,10 +48,12 @@
   },
   "homepage": "https://github.com/MS3Inc/MS3Converter#readme",
   "dependencies": {
+    "@types/yamljs": "^0.2.30",
     "fs": "0.0.1-security",
     "lodash": "^4.17.4",
     "path": "^0.12.7",
-    "util": "^0.10.3"
+    "rmdir": "^1.2.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@types/jest": "^21.1.5",

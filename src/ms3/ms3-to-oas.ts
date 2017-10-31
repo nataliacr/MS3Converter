@@ -1,16 +1,28 @@
-import { API as MS3 } from './ms3-v1-api-interface';
-import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
 import ConvertorInterface from '../common/convertor-interface';
+import { API as MS3 } from './ms3-v1-api-interface';
+import ConvertorOptions, { format } from '../common/convertor-options-interface';
+import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
+import * as path from 'path';
+import { writeFile } from 'fs';
+import { promisify } from 'util';
+import * as YAML from 'yamljs';
+
+const writeFilePromise = promisify(writeFile);
 
 interface MS3toOASInterface {
   oasAPI: OAS;
-  convert(): OAS;
+  convert(): Promise<OAS>;
+}
+
+interface DataToWrite {
+  path: string;
+  content?: OAS;
 }
 
 export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
   oasAPI: OAS;
 
-  constructor(private ms3API: MS3, options: object = {}) {}
+  constructor(private ms3API: MS3, private options: ConvertorOptions) {}
 
   convertAPI(): OAS {
     this.oasAPI = {
@@ -29,18 +41,26 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return this.oasAPI;
   }
 
-  convert(): OAS {
+  async convert(): Promise<OAS> {
+    const result: DataToWrite = { path: '' };
     switch (this.ms3API.entityTypeName) {
       case 'api':
-        return this.convertAPI();
+        result.content = this.convertAPI();
+        break;
       case 'overlay':
-        return this.convertOverlay();
+        result.content = this.convertOverlay();
+        break;
       case 'extension':
-        return this.convertExtension();
-      case 'library': {
+        result.content = this.convertExtension();
+        break;
+      case 'library':
         throw new Error('Library can not be converted to swagger.');
-      }
     }
+    if (this.options.destinationPath) {
+      result.path = path.join(this.options.destinationPath, `api.${this.options.fileFormat == 'json' ? 'json' : 'yaml'}`);
+      await this.writeToDisc(result);
+    }
+    return result.content;
   }
 
   private convertSettings(): InfoObject {
@@ -57,7 +77,24 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return settings;
   }
 
-  static create(api: MS3, options: object = {}) {
+  static getDefaultConfig(): ConvertorOptions {
+    return {
+      fileFormat: 'json',
+      asSingleFile: true
+    };
+  }
+
+  private async writeToDisc(data: DataToWrite) {
+    let result;
+    if (this.options.fileFormat == 'yaml') {
+      result = YAML.stringify(data.content, 2);
+    } else {
+      result = JSON.stringify(data.content, undefined, 2);
+    }
+    await writeFilePromise(data.path, result);
+  }
+
+  static create(api: MS3, options: ConvertorOptions = this.getDefaultConfig() ) {
     return new MS3toOAS(api, options);
   }
 }
