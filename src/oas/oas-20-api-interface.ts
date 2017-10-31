@@ -2,7 +2,7 @@
  * all structure of oas should be described in this interface
  */
 
-type type = 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
+type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
 type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
 
@@ -38,12 +38,8 @@ interface SchemaObject {
   minProperties?: number;
   required?: boolean;
   enum?: string[];
-  items?: {
-    [propName: string]: SchemaObject
-  };
-  properties?: {
-    [propName: string]: SchemaObject
-  };
+  items?: Schema | ReferenceObject;
+  properties?: Schema | ReferenceObject;
   description?: string;
   format?: format;
   allOf?: object;
@@ -84,7 +80,7 @@ interface MediaType {
 interface ResponseObject {
   description: string;
   headers?: Header[];
-  content?: MediaType[];
+  content?: MediaType;
   links?: Link[];
 }
 
@@ -114,7 +110,7 @@ interface Example {
 
 interface RequestBodyObject {
   description?: string;
-  content: MediaType[];
+  content: MediaType;
   required: boolean;
 }
 
@@ -140,7 +136,7 @@ interface Header {
 
 interface OAuthFlow {
   authorizationUrl: string;
-  tokenUrl: string;
+  tokenUrl?: string;
   refreshUrl?: string;
   scopes: object;
 }
@@ -155,12 +151,12 @@ interface OAuthFlows {
 interface SecuritySchemeObject {
   type?: securitySchemeType;
   description?: string;
-  name: string;
-  in: 'query' | 'header' | 'cookie';
-  scheme: string;
+  name?: string;
+  in?: 'query' | 'header' | 'cookie';
+  scheme?: string;
   bearerFormat?: string;
-  flows: OAuthFlows;
-  openIdConnectUrl: string;
+  flows?: OAuthFlows;
+  openIdConnectUrl?: string;
 }
 
 interface SecurityScheme {
@@ -190,7 +186,7 @@ interface SecurityRequirement {
 }
 
 interface Operation {
-  operationId: string;
+  operationId?: string;
   summary?: string;
   description?: string;
   parameters?: ParameterObject[];
@@ -228,12 +224,12 @@ interface PathItemObject {
 
 export interface Components {
   schemas?: Schema;
-  responses?: Response[];
-  parameters?: Parameter[];
+  responses?: Response;
+  parameters?: Parameter;
   examples?: Example[];
   requestBodies?: RequestBody[];
   headers?: Header[];
-  securitySchemes?: SecurityScheme[];
+  securitySchemes?: SecurityScheme;
   links?: Link[];
   callbacks?: object; // TODO: create Callback Object interface
 }
