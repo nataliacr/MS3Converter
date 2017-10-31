@@ -33,7 +33,7 @@ interface SchemaObject {
   minLength?: number;
   maxItems?: number;
   minItems?: number;
-  uniqueItems?: string;
+  uniqueItems?: boolean;
   maxProperties?: number;
   minProperties?: number;
   required?: boolean;
@@ -50,7 +50,7 @@ interface SchemaObject {
   default?: SchemaObject;
 }
 
-interface Schema {
+export interface Schema {
   [propName: string]: SchemaObject | ReferenceObject;
 }
 

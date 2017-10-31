@@ -1,7 +1,8 @@
-import ConvertorInterface from '../common/convertor-interface';
-import { API as MS3 } from './ms3-v1-api-interface';
-import ConvertorOptions, { format } from '../common/convertor-options-interface';
-import { API as OAS, Info } from './../oas/oas-20-api-interface';
+import ConvertorInterface from '../../common/convertor-interface';
+import { API as MS3 } from '../ms3-v1-api-interface';
+import ConvertorOptions, { format } from '../../common/convertor-options-interface';
+import { API as OAS, Info } from './../../oas/oas-20-api-interface';
+import convertSchemaObjects from './schema-objects';
 import * as path from 'path';
 import { writeFile } from 'fs';
 import { promisify } from 'util';
@@ -28,8 +29,10 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     this.oasAPI = {
       openapi: '2.0',
       info: this.convertSettings(),
-      paths: {}
+      paths: {},
+      components: {}
     };
+    if (this.ms3API.dataTypes) this.oasAPI.components.schemas = convertSchemaObjects(this.ms3API.dataTypes);
     return this.oasAPI;
   }
 
