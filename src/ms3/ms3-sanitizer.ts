@@ -1,4 +1,4 @@
-import { SecurityScheme } from './ms3-v1-api-interface';
+import { AnnotationType, SecurityScheme } from './ms3-v1-api-interface';
 import * as apiInerfaces from './ms3-v1-api-interface';
 import { pickBy, isBoolean, isNumber, keys } from 'lodash';
 
@@ -22,6 +22,7 @@ export default class MS3Sanitizer {
     if (this.API.traits && this.API.traits.length) this.sanitizedAPI.traits = this.sanitizeTraits(this.API.traits);
     if (this.API.documentation && this.API.documentation.length) this.sanitizedAPI.documentation = this.sanitizeDocumentation(this.API.documentation);
     if (this.API.examples && this.API.examples.length) this.sanitizedAPI.examples = this.sanitizeExamples(this.API.examples);
+    if (this.API.annotationTypes && this.API.annotationTypes.length) this.sanitizedAPI.annotationTypes = this.sanitizeAnnotationTypes(this.API.annotationTypes);
 
     return this.sanitizedAPI;
   }
@@ -138,6 +139,10 @@ export default class MS3Sanitizer {
       if (sanitizedExample.annotations) sanitizedExample.annotations = this.sanitizeAnnotations(sanitizedExample.annotations);
       return sanitizedExample;
     });
+  }
+
+  sanitizeAnnotationTypes(annotationTypes: object[]): apiInerfaces.AnnotationType[] {
+    return <apiInerfaces.AnnotationType[]> this.sanitizeAnnotations(annotationTypes);
   }
 
   static create(api: any) {

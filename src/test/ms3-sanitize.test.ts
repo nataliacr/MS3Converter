@@ -148,3 +148,81 @@ test('MS3 API documentation should be sanitized successfully', () => {
   };
   expect(MS3Sanitizer.create(originalDocumentationProject).sanitize()).toEqual(resultDocumentationProject);
 });
+
+test('MS3 API documentation should be sanitized successfully', () => {
+  const originalAnnotationTypesProject: any = {
+    'settings': {
+      'title': 'params',
+      'baseUri': 'http://params'
+    },
+    'ms3_version': '1.0.1',
+    'entityTypeName': 'api',
+    'annotationTypes': [
+      {
+        'name': 'string',
+        'type': 'string',
+        'enum': [],
+        'pattern': ''
+      },
+      {
+        'name': 'name',
+        'type': 'object',
+        'enum': [],
+        'pattern': '',
+        'properties': [
+          {
+            'name': 'default',
+            'type': 'string',
+            'required': false,
+            'enum': []
+          },
+          {
+            'name': 'default',
+            'type': 'integer',
+            'required': false,
+            'enum': [],
+            'pattern': ''
+          }
+        ],
+        'allowedTargets': [
+          'Method'
+        ]
+      }
+    ]
+  };
+
+  const resultAnnotationTypesProject: ApiInterfaces.API = {
+    'settings': {
+      'title': 'params',
+      'baseUri': 'http://params'
+    },
+    'ms3_version': '1.0.1',
+    'entityTypeName': 'api',
+    'annotationTypes': [
+      {
+        'name': 'string',
+        'type': 'string'
+      },
+      {
+        'name': 'name',
+        'type': 'object',
+        'properties': [
+          {
+            'name': 'default',
+            'type': 'string',
+            'required': false
+          },
+          {
+            'name': 'default',
+            'type': 'integer',
+            'required': false
+          }
+        ],
+        'allowedTargets': [
+          'Method'
+        ]
+      }
+    ]
+  };
+  expect(MS3Sanitizer.create(originalAnnotationTypesProject).sanitize()).toEqual(resultAnnotationTypesProject);
+});

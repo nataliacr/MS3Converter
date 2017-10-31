@@ -167,6 +167,7 @@ interface BasicAnnotationType {
   description?: string;
   pattern?: string;
   enum?: string[];
+  required?: boolean;
 }
 
 interface PrimitiveAnnotation extends BasicAnnotationType {
