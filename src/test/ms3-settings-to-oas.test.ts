@@ -27,8 +27,9 @@ test('MS3 settings should be converted to OAS successfully', async() => {
     info: {
       title: 'params',
       description: 'API description',
-      version: '2.0'
+      version: '2.0',
     },
+    components: {},
     paths: {}
   };
   await expect(MS3toOAS.create(project).convert()).resolves.toEqual(expectedResult);

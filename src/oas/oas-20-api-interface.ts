@@ -54,7 +54,7 @@ interface SchemaObject {
   default?: SchemaObject;
 }
 
-interface Schema {
+export interface Schema {
   [propName: string]: SchemaObject | ReferenceObject;
 }
 
@@ -180,10 +180,6 @@ interface Link {
   [propName: string]: LinkObject | ReferenceObject;
 }
 
-export interface SchemaObjects {
-  [propName: string]: SchemaObject;
-}
-
 interface ResponsesObject {
   default?: ResponseObject | ReferenceObject;
   [propName: string]: ResponseObject | ReferenceObject;
@@ -231,7 +227,7 @@ interface PathItemObject {
 }
 
 export interface Components {
-  schemas?: Schema[];
+  schemas?: Schema;
   responses?: Response[];
   parameters?: Parameter[];
   examples?: Example[];
@@ -257,7 +253,6 @@ export interface Paths {
 }
 
 export interface API {
-  schemaObjects?: SchemaObjects;
   openapi: string;
   info: Info;
   paths: Paths;

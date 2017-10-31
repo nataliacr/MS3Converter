@@ -29,9 +29,10 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     this.oasAPI = {
       openapi: '2.0',
       info: this.convertSettings(),
-      paths: {}
+      paths: {},
+      components: {}
     };
-    if (this.ms3API.dataTypes) this.oasAPI.schemaObjects = convertSchemaObjects(this.ms3API.dataTypes);
+    if (this.ms3API.dataTypes) this.oasAPI.components.schemas = convertSchemaObjects(this.ms3API.dataTypes);
     return this.oasAPI;
   }
 

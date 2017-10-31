@@ -71,9 +71,11 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
       version: '2.0'
     },
     paths: {},
-    schemaObjects: {
-      'name': {
-        'title': 'hello'
+    components: {
+      schemas: {
+        'name': {
+          'title': 'hello'
+        }
       }
     }
   };
