@@ -173,7 +173,7 @@ interface LinkObject {
   parameters?: any;
   requestBody?: any;
   description?: string;
-  server?: object; // TODO: describe server object
+  server?: Server;
 }
 
 interface Link {
@@ -184,7 +184,53 @@ export interface SchemaObjects {
   [propName: string]: SchemaObject;
 }
 
-interface Components {
+interface ResponsesObject {
+  default?: ResponseObject | ReferenceObject;
+  [propName: string]: ResponseObject | ReferenceObject;
+}
+
+interface SecurityRequirement {
+  [propName: string]: string[];
+}
+
+interface Operation {
+  operationId: string;
+  summary?: string;
+  description?: string;
+  parameters?: ParameterObject[];
+  requestBody?: RequestBodyObject | ReferenceObject;
+  responses: ResponsesObject;
+  tags?: string[];
+  deprecated?: boolean;
+  security?: SecurityRequirement[];
+  servers?: Server[];
+  callbacks?: object; // TODO: create Callback Object interface
+  externalDocs?: object; // TODO: create External Documentation Object interface
+}
+
+interface Server {}
+
+interface Tag {}
+
+interface ExternalDocs {}
+
+interface PathItemObject {
+  '$ref'?: string;
+  summary?: string;
+  description?: string;
+  get?: Operation;
+  put?: Operation;
+  post?: Operation;
+  delete?: Operation;
+  options?: Operation;
+  head?: Operation;
+  patch?: Operation;
+  trace?: Operation;
+  servers?: Server[];
+  parameters?: [ ParameterObject | ReferenceObject ];
+}
+
+export interface Components {
   schemas?: Schema[];
   responses?: Response[];
   parameters?: Parameter[];
@@ -193,23 +239,31 @@ interface Components {
   headers?: Header[];
   securitySchemes?: SecurityScheme[];
   links?: Link[];
-  callbacks?: object;
+  callbacks?: object; // TODO: create Callback Object interface
 }
 
-interface InfoObject {
+export interface Info {
   title: string;
   description?: string;
   termsOfService?: string;
   contact?: Contact;
   license?: License;
   version: string;
-  server?: object; // TODO: describe server object
+  server?: Server;
 }
 
-interface API {
-  infoObject: InfoObject;
-  components?: Components;
+export interface Paths {
+  [propName: string]: PathItemObject;
+}
+
+export interface API {
   schemaObjects?: SchemaObjects;
+  openapi: string;
+  info: Info;
+  paths: Paths;
+  servers?: Server[];
+  components?: Components;
+  security?: SecurityRequirement[];
+  tags?: Tag[];
+  externalDocs?: ExternalDocs;
 }
-
-export { API, InfoObject };

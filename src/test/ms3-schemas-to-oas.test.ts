@@ -64,11 +64,13 @@ const project: ApiInterfaces.API = {
 
 test('MS3 schemas should be converted to OAS successfully', async() => {
   const expectedResult: OASInterfaces.API = {
-    infoObject: {
+    openapi: '2.0',
+    info: {
       title: 'params',
       description: 'API description',
       version: '2.0'
     },
+    paths: {},
     schemaObjects: {
       'name': {
         'title': 'hello'
