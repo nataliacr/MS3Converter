@@ -5,9 +5,9 @@ import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
 import * as path from 'path';
 import { writeFile } from 'fs';
 import { promisify } from 'util';
+import * as YAML from 'yamljs';
 
 const writeFilePromise = promisify(writeFile);
-const YAML = require('yamljs');
 
 interface MS3toOASInterface {
   oasAPI: OAS;
@@ -89,7 +89,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     if (this.options.fileFormat == 'yaml') {
       result = YAML.stringify(data.content, 2);
     } else {
-      result = JSON.stringify(data.content);
+      result = JSON.stringify(data.content, undefined, 2);
     }
     await writeFilePromise(data.path, result);
   }

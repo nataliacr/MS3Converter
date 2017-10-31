@@ -6,8 +6,8 @@ import { format } from '../common/convertor-options-interface';
 import { writeFile, exists } from 'fs';
 import { promisify } from 'util';
 import * as YAML from 'yamljs';
+import * as rmdir from 'rmdir';
 
-const rmdir = require('rmdir');
 const fileExistsPromise = promisify(exists);
 const rmdirPromise = promisify(rmdir);
 const writeFilePromise = promisify(writeFile);
@@ -29,14 +29,7 @@ test('MS3 settings should be converted to OAS successfully', async() => {
       version: '2.0'
     }
   };
-
-  let resultAPI;
-
-  try {
-    resultAPI = await MS3toOAS.create(project).convert();
-  } catch (err) {}
-
-  expect(resultAPI).toEqual(expectedResult);
+  await expect(MS3toOAS.create(project).convert()).resolves.toEqual(expectedResult);
 });
 
 test('MS3 settings to OAS conversion should fail with "library" entity type', async() => {
@@ -50,11 +43,7 @@ test('MS3 settings to OAS conversion should fail with "library" entity type', as
     entityTypeName: 'library'
   };
 
-  try {
-    await MS3toOAS.create(library).convert();
-  } catch (err) {
-    expect(err.message).toEqual('Library can not be converted to swagger.');
-  }
+  await expect(MS3toOAS.create(library).convert()).rejects.toEqual(new Error('Library can not be converted to swagger.'));
 });
 
 test('Should create api.yaml file', async() => {
@@ -66,5 +55,17 @@ test('Should create api.yaml file', async() => {
   await MS3toOAS.create(project, options).convert();
   const fileExist = await fileExistsPromise(`./api.yaml`);
   await rmdirPromise('./api.yaml');
+  expect(fileExist).toEqual(true);
+});
+
+test('Should create api.json file', async() => {
+  const options = {
+    destinationPath: './',
+    asSingleFile: true,
+    fileFormat: 'json' as format
+  };
+  await MS3toOAS.create(project, options).convert();
+  const fileExist = await fileExistsPromise(`./api.json`);
+  await rmdirPromise('./api.json');
   expect(fileExist).toEqual(true);
 });
