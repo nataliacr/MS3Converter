@@ -18,6 +18,7 @@ export default class MS3Sanitizer {
     if (this.API.dataTypes && this.API.dataTypes.length) this.sanitizedAPI.dataTypes = this.sanitizeDataTypes(this.API.dataTypes);
     if (this.API.resources && this.API.resources.length) this.sanitizedAPI.resources = this.sanitizeResources(this.API.resources);
     if (this.API.securitySchemes && this.API.securitySchemes.length) this.sanitizedAPI.securitySchemes = this.sanitizeSecuritySchemes(this.API.securitySchemes);
+    if (this.API.resourcesTypes && this.API.resourcesTypes.length) this.sanitizedAPI.resourcesTypes = this.sanitizeResourcesTypes(this.API.resourcesTypes);
 
     return this.sanitizedAPI;
   }
@@ -112,6 +113,14 @@ export default class MS3Sanitizer {
       if (sanitizedSecurityScheme.settings) sanitizedSecurityScheme.settings = this.sanitizeObject(sanitizedSecurityScheme.settings);
       return sanitizedSecurityScheme;
     });
+  }
+
+  sanitizeResourcesTypes(resourcesTypes: object[]): apiInerfaces.ResourcesType[] {
+    return this.sanitizeResources(resourcesTypes);
+    // return resourcesTypes.map( (resourcesType: object) => {
+    //   const sanitizedResourcesType = this.sanitizeObject(resourcesType);
+    //   return sanitizedResourcesType;
+    // });
   }
 
   static create(api: any) {

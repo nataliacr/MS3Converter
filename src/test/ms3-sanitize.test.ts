@@ -3,6 +3,7 @@ import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
 import * as LibraryInterfaces from './../ms3/ms3-v1-library-interface';
 import { originalProject as originalResourcesProject, resultProject as resultResourcesProject } from './files/Project-with-resources';
 import { originalProject as originalSecuritySchemesProject, resultProject as resultSecuritySchemesProject } from './files/Project-with-security-schemes';
+import { originalProject as originalResourcesTypesProject, resultProject as resultResourcesTypesProject } from './files/Project-with-resources-types';
 
 test('MS3 API settings should be sanitized successfully', () => {
   const project: any = {
@@ -183,5 +184,9 @@ test('MS3 API resources should be sanitized successfully', () => {
 });
 
 test('MS3 API security schemes should be sanitized successfully', () => {
+  expect(MS3Sanitizer.create(originalSecuritySchemesProject).sanitize()).toEqual(resultSecuritySchemesProject);
+});
+
+test('MS3 API resources types should be sanitized successfully', () => {
   expect(MS3Sanitizer.create(originalSecuritySchemesProject).sanitize()).toEqual(resultSecuritySchemesProject);
 });

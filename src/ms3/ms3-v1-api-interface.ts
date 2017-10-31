@@ -111,8 +111,12 @@ export interface Method {
 }
 
 export interface ResourcesType {
+  __id: string;
   name?: string;
+  path?: string;
   description?: string;
+  pathVariables?: Parameter[];
+  queryParameters?: Parameter[];
   methods: Method[];
   annotations?: Annotation[];
 }
@@ -123,9 +127,7 @@ export interface NestedResource {
 }
 
 export interface Resource extends ResourcesType {
-  __id: string;
   path: string;
-  pathVariables?: Parameter[];
   securedBy?: string;
   selectedTraits?: string;
   type?: string;
