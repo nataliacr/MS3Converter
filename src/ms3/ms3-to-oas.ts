@@ -1,7 +1,7 @@
 import ConvertorInterface from '../common/convertor-interface';
 import { API as MS3 } from './ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../common/convertor-options-interface';
-import { API as OAS, InfoObject } from './../oas/oas-20-api-interface';
+import { API as OAS, Info } from './../oas/oas-20-api-interface';
 import * as path from 'path';
 import { writeFile } from 'fs';
 import { promisify } from 'util';
@@ -26,7 +26,9 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
 
   convertAPI(): OAS {
     this.oasAPI = {
-      infoObject: this.convertSettings()
+      openapi: '2.0',
+      info: this.convertSettings(),
+      paths: {}
     };
     return this.oasAPI;
   }
@@ -63,12 +65,12 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return result.content;
   }
 
-  private convertSettings(): InfoObject {
+  private convertSettings(): Info {
     if (!this.ms3API.settings.title) {
       throw new Error('MS3 API settings must contain title property.');
     }
 
-    const settings: InfoObject = {
+    const settings: Info = {
       title: this.ms3API.settings.title,
       description: this.ms3API.settings.description || 'API description',
       version: this.ms3API.settings.version || '2.0'

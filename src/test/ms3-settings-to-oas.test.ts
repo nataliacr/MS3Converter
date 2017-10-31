@@ -23,11 +23,13 @@ const project: ApiInterfaces.API = {
 
 test('MS3 settings should be converted to OAS successfully', async() => {
   const expectedResult: OASInterfaces.API = {
-    infoObject: {
+    openapi: '2.0',
+    info: {
       title: 'params',
       description: 'API description',
       version: '2.0'
-    }
+    },
+    paths: {}
   };
   await expect(MS3toOAS.create(project).convert()).resolves.toEqual(expectedResult);
 });
