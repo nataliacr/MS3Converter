@@ -19,6 +19,7 @@ export default class MS3Sanitizer {
     if (this.API.resources && this.API.resources.length) this.sanitizedAPI.resources = this.sanitizeResources(this.API.resources);
     if (this.API.securitySchemes && this.API.securitySchemes.length) this.sanitizedAPI.securitySchemes = this.sanitizeSecuritySchemes(this.API.securitySchemes);
     if (this.API.resourcesTypes && this.API.resourcesTypes.length) this.sanitizedAPI.resourcesTypes = this.sanitizeResources(this.API.resourcesTypes);
+    if (this.API.traits && this.API.traits.length) this.sanitizedAPI.traits = this.sanitizeTraits(this.API.traits);
 
     return this.sanitizedAPI;
   }
@@ -83,16 +84,22 @@ export default class MS3Sanitizer {
     });
   }
 
+  sanitizeMethod(method: object): object {
+    const sanitizedMethod = this.sanitizeObject(method);
+    if (sanitizedMethod.headers) sanitizedMethod.headers = this.sanitizeArrayOfObjects(sanitizedMethod.headers);
+    if (sanitizedMethod.queryParameters) sanitizedMethod.queryParameters = this.sanitizeArrayOfObjects(sanitizedMethod.queryParameters);
+    if (sanitizedMethod.annotations) sanitizedMethod.annotations = this.sanitizeAnnotations(sanitizedMethod.annotations);
+    if (sanitizedMethod.body) sanitizedMethod.body = this.sanitizeBody(sanitizedMethod.body);
+    if (sanitizedMethod.responses) sanitizedMethod.responses = this.sanitizeMethods(sanitizedMethod.responses);
+    return sanitizedMethod;
+  }
+
   sanitizeMethods(methods: object[]): apiInerfaces.Method[] {
-    return methods.map( (method: any) => {
-      const sanitizedMethod = this.sanitizeObject(method);
-      if (sanitizedMethod.headers) sanitizedMethod.headers = this.sanitizeArrayOfObjects(sanitizedMethod.headers);
-      if (sanitizedMethod.queryParameters) sanitizedMethod.queryParameters = this.sanitizeArrayOfObjects(sanitizedMethod.queryParameters);
-      if (sanitizedMethod.annotations) sanitizedMethod.annotations = this.sanitizeAnnotations(sanitizedMethod.annotations);
-      if (sanitizedMethod.body) sanitizedMethod.body = this.sanitizeBody(sanitizedMethod.body);
-      if (sanitizedMethod.responses) sanitizedMethod.responses = this.sanitizeMethods(sanitizedMethod.responses);
-      return sanitizedMethod;
-    });
+    return methods.map( (method) => <apiInerfaces.Method> this.sanitizeMethod(method) );
+  }
+
+  sanitizeTraits(traits: object[]): apiInerfaces.Trait[] {
+    return traits.map( (trait) => <apiInerfaces.Trait> this.sanitizeMethod(trait) );
   }
 
   sanitizeSecuritySchemes(securitySchemes: object[]): apiInerfaces.SecurityScheme[] {

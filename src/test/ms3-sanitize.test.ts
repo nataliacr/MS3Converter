@@ -5,6 +5,7 @@ import { originalProject as originalDataTypesProject, resultProject as resultDat
 import { originalProject as originalResourcesProject, resultProject as resultResourcesProject } from './files/Project-with-resources';
 import { originalProject as originalSecuritySchemesProject, resultProject as resultSecuritySchemesProject } from './files/Project-with-security-schemes';
 import { originalProject as originalResourcesTypesProject, resultProject as resultResourcesTypesProject } from './files/Project-with-resources-types';
+import { originalProject as originalTraitsProject, resultProject as resultTraitsProject } from './files/Project-with-traits';
 
 test('MS3 API settings should be sanitized successfully', () => {
   const project: any = {
@@ -55,4 +56,8 @@ test('MS3 API security schemes should be sanitized successfully', () => {
 
 test('MS3 API resources types should be sanitized successfully', () => {
   expect(MS3Sanitizer.create(originalSecuritySchemesProject).sanitize()).toEqual(resultSecuritySchemesProject);
+});
+
+test('MS3 API traits should be sanitized successfully', () => {
+  expect(MS3Sanitizer.create(originalTraitsProject).sanitize()).toEqual(resultTraitsProject);
 });

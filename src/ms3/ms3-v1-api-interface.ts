@@ -87,8 +87,7 @@ export interface Response {
   body?: Body[];
 }
 
-export interface Trait {
-  __id: string;
+export interface BasicTrait {
   name: string | methodType;
   description?: string;
   body?: Body[];
@@ -99,17 +98,13 @@ export interface Trait {
   selectedTraits?: string[];
 }
 
-export interface Method {
-  name: methodType;
+export interface Trait extends BasicTrait {
+  __id: string;
+}
+
+export interface Method extends BasicTrait {
   active: boolean;
   securedBy?: string;
-  description?: string;
-  body?: Body[];
-  headers?: Parameter[];
-  queryParameters?: Parameter[];
-  responses?: Response[];
-  annotations?: Annotation[];
-  selectedTraits?: string[];
 }
 
 export interface ResourcesType {
