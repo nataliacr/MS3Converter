@@ -72,12 +72,9 @@ const originalProject: MS3 = {
           ],
           'headers': [
             {
-              'displayName': 'header',
+              'displayName': 'response-header',
               'description': 'description',
               'type': 'number',
-              'enum': [
-
-              ],
               'example': '3',
               'default': '5',
               'repeat': false,
@@ -95,7 +92,27 @@ const originalProject: MS3 = {
                   ],
                   'type': 'd0c35029-b545-4ce5-ba73-52b03910a382'
                 }
-              ]
+              ],
+              'headers': [
+                {
+                  'displayName': 'header',
+                  'description': 'description',
+                  'type': 'number',
+                  'example': '3',
+                  'default': '5',
+                  'repeat': false,
+                  'required': false
+                },
+                {
+                  'displayName': 'header2',
+                  'description': 'description2',
+                  'type': 'number',
+                  'example': '3',
+                  'default': '5',
+                  'repeat': false,
+                  'required': false
+                }
+              ],
             },
             {
               'code': '201',
@@ -262,6 +279,16 @@ const resultProject: OAS = {
                   }
                 }
               }
+            },
+            headers: {
+              'header': {
+                description: 'description',
+                required: true
+              },
+              'header2': {
+                description: 'description2',
+                required: true
+              }
             }
           },
           '201': {
@@ -282,7 +309,7 @@ const resultProject: OAS = {
         },
         parameters: [
           {
-            name: 'header',
+            name: 'response-header',
             in: 'header',
             description: 'description',
             required: false

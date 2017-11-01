@@ -56,7 +56,7 @@ export interface Schema {
 
 interface EncodingObject {
   contentType?: string;
-  headers?: Header[];
+  headers?: Headers;
   style?: string;
   explode?: boolean;
   allowReserved?: boolean;
@@ -79,7 +79,7 @@ export interface MediaType {
 
 interface ResponseObject {
   description: string;
-  headers?: Header[];
+  headers?: Headers;
   content?: MediaType;
   links?: Link[];
 }
@@ -114,7 +114,7 @@ export interface RequestBody {
   [propName: string]: RequestBodyObject | ReferenceObject;
 }
 
-interface HeaderObject {
+export interface HeaderObject {
   description?: string;
   required: boolean;
   deprecated?: boolean;
@@ -126,7 +126,7 @@ interface HeaderObject {
   explode?: boolean;
 }
 
-interface Header {
+export interface Headers {
   [propName: string]: HeaderObject | ReferenceObject;
 }
 
@@ -224,7 +224,7 @@ export interface Components {
   parameters?: ParameterObject[];
   examples?: Example;
   requestBodies?: RequestBody[];
-  headers?: Header[];
+  headers?: Headers;
   securitySchemes?: SecurityScheme;
   links?: Link[];
   callbacks?: object; // TODO: create Callback Object interface

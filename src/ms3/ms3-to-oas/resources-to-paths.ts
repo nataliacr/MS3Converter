@@ -42,6 +42,18 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
+  getResponseHeaders(headers: MS3.Parameter[]): OAS.Headers {
+    return headers.reduce( (resultObject: any, header: MS3.Parameter) => {
+      resultObject[header.displayName] = {
+        required: header.required || true
+      };
+
+      if (header.description) resultObject[header.displayName].description = header.description;
+      // add schema to object
+      return resultObject;
+    }, {});
+  }
+
   getResponses(responses: MS3.Response[]): OAS.ResponsesObject {
     return responses.reduce((resultObject: any, response: MS3.Response) => {
       resultObject[response.code] = {
@@ -49,6 +61,7 @@ class ConvertResourcesToPaths {
       };
 
       if (response.body) resultObject[response.code].content = this.getRequestBody(response.body);
+      if (response.headers) resultObject[response.code].headers = this.getResponseHeaders(response.headers);
 
       return resultObject;
     }, {});
@@ -63,18 +76,18 @@ class ConvertResourcesToPaths {
       };
 
       if (parameter.description) convertedParameter.description = parameter.description;
-
+      // add schema to object
       return convertedParameter;
     });
   }
 
-  getParameters(method: MS3.Method): OAS.ParameterObject[] {
-    let convertedParameters: object[] = [];
+  getParameters(method: any): OAS.ParameterObject[] {
+    let convertedParameters: OAS.ParameterObject[] = [];
 
     if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));
     if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'path'));
 
-    return <OAS.ParameterObject[]> convertedParameters;
+    return convertedParameters;
   }
 
   getMethodObject(method: MS3.Method, methodType: string, pathName: string): OAS.Operation {
