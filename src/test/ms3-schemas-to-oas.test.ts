@@ -9,6 +9,18 @@ const project: ApiInterfaces.API = {
   },
   dataTypes: [
     {
+      'name': 'ArrayInclude',
+      'type': 'array',
+      'example': 'ExampleArray',
+      'maxItems': 3,
+      'minItems': 1,
+      'uniqueItems': true,
+      'items': {
+        'includes': 'c6710947-1eed-472d-a4f3-c4807c24fe6b'
+      },
+      '__id': 'e26ffe29-1c82-4852-a472-5f0271955793'
+    },
+    {
       'name': 'ObjectSchema',
       'type': 'object',
       'properties': [
@@ -34,6 +46,11 @@ const project: ApiInterfaces.API = {
           'example': false,
           'default': true,
           'required': true
+        },
+        {
+          'name': 'default-3',
+          'mode': 'include',
+          'includes': 'c6710947-1eed-472d-a4f3-c4807c24fe6b'
         }
       ],
       '__id': 'b204580e-7b57-44b4-85fd-075fca5d68c8'
@@ -73,6 +90,17 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
     paths: {},
     components: {
       schemas: {
+        'ArrayInclude': {
+          'title': 'ArrayInclude',
+          'type': 'array',
+          'example': 'ExampleArray',
+          'maxItems': 3,
+          'minItems': 1,
+          'uniqueItems': true,
+          'items': {
+            '$ref': '#/components/schemas/ArraySchema'
+          },
+        },
         'ArraySchema': {
           'title': 'ArraySchema',
           'type': 'array',
@@ -115,6 +143,9 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
               'example': false,
               'default': true,
               'required': true
+            },
+            'ArraySchema': {
+              '$ref': '#/components/schemas/ArraySchema'
             }
           }
         }

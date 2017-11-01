@@ -34,7 +34,7 @@ export interface Parameter {
 }
 
 export interface DataTypePrimitive {
-  type: datatypeType;
+  type?: datatypeType;
   name?: string;
   description?: string;
   default?: string | number | boolean;
@@ -53,6 +53,7 @@ export interface DataTypePrimitive {
   uniqueItems?: boolean;
   maxItems?: number;
   minItems?: number;
+  includes?: boolean | string;
 }
 
 export interface DataTypeObject extends DataTypePrimitive {
@@ -62,6 +63,7 @@ export interface DataTypeObject extends DataTypePrimitive {
 
 export interface DataTypeArray extends DataTypePrimitive {
   includes?: boolean | string;
+  mode?: string; // Remove this field after front end refactor;
   items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }
 
