@@ -17,11 +17,11 @@ interface License {
   url?: string;
 }
 
-interface ReferenceObject {
+export interface ReferenceObject {
   '$ref': string;
 }
 
-interface SchemaObject {
+export interface SchemaObject {
   title?: string;
   type?: type;
   multipleOf?: string;
@@ -69,11 +69,11 @@ interface Encoding {
 interface MediaTypeObject {
   schema?: SchemaObject | ReferenceObject;
   example?: any;
-  examples?: Example[];
+  examples?: Example;
   encoding?: Encoding[];
 }
 
-interface MediaType {
+export interface MediaType {
   [propName: string]: MediaTypeObject | ReferenceObject;
 }
 
@@ -97,24 +97,24 @@ interface Parameter {
   [propName: string]: ParameterObject | ReferenceObject;
 }
 
-interface ExampleObject {
+export interface ExampleObject {
   summary?: string;
   description?: string;
   value?: any;
   externalValue?: string;
 }
 
-interface Example {
+export interface Example {
   [propName: string]: ExampleObject | ReferenceObject;
 }
 
 interface RequestBodyObject {
   description?: string;
   content: MediaType;
-  required: boolean;
+  required?: boolean;
 }
 
-interface RequestBody {
+export interface RequestBody {
   [propName: string]: RequestBodyObject | ReferenceObject;
 }
 
@@ -226,7 +226,7 @@ export interface Components {
   schemas?: Schema;
   responses?: Response;
   parameters?: Parameter;
-  examples?: Example[];
+  examples?: Example;
   requestBodies?: RequestBody[];
   headers?: Header[];
   securitySchemes?: SecurityScheme;
