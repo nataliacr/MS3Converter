@@ -83,7 +83,11 @@ const originalProject: MS3 = {
               'code': '200',
               'body': [
                 {
-                  'contentType': 'application/pdf',
+                  'contentType': 'application/json',
+                  'selectedExamples': [
+                    '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+                  ],
+                  'type': 'd0c35029-b545-4ce5-ba73-52b03910a382'
                 }
               ]
             }
@@ -198,7 +202,23 @@ const resultProject: OAS = {
             }
           }
         },
-        responses: {}
+        responses: {
+          '200': {
+            description: 'description',
+            content: {
+              'application/json': {
+                schema: {
+                  '$ref': '#/components/schemas/schema'
+                },
+                examples: {
+                  'ex': {
+                    '$ref': '#/components/examples/ex'
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       put: {
         operationId: 'RES_PUT',

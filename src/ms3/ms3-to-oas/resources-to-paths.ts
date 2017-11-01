@@ -1,5 +1,5 @@
-import { Paths, ReferenceObject, MediaType, Example } from './../../oas/oas-20-api-interface';
-import { API, Body, DataType, Resource } from './../ms3-v1-api-interface';
+import { Paths, ReferenceObject, MediaType, Example, ResponsesObject } from './../../oas/oas-20-api-interface';
+import { API, Body, DataType, Resource, Response } from './../ms3-v1-api-interface';
 import { filter, find } from 'lodash';
 
 class ConvertResourcesToPaths {
@@ -45,6 +45,20 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
+  getResponses(responses: Response[]): ResponsesObject {
+    return responses.reduce((resultObject: any, response: Response) => {
+      resultObject = {
+        [response.code]: {
+          description: response.description || 'description' // required field
+        }
+      };
+
+      if (response.body) resultObject[response.code].content = this.getRequestBody(response.body);
+
+      return resultObject;
+    }, {});
+  }
+
   convert(): Paths {
     return this.API.resources.reduce( (resultObject: any, resource: Resource) => {
       resultObject[resource.path] = {};
@@ -61,6 +75,7 @@ class ConvertResourcesToPaths {
 
         if (activeMethod.description) resultObject[resource.path][methodType].description = activeMethod.description;
         if (activeMethod.body) resultObject[resource.path][methodType].requestBody = { content: this.getRequestBody(activeMethod.body) };
+        if (activeMethod.responses) resultObject[resource.path][methodType].responses = this.getResponses(activeMethod.responses);
       });
 
       return resultObject;

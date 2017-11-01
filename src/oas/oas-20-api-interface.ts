@@ -176,7 +176,7 @@ interface Link {
   [propName: string]: LinkObject | ReferenceObject;
 }
 
-interface ResponsesObject {
+export interface ResponsesObject {
   default?: ResponseObject | ReferenceObject;
   [propName: string]: ResponseObject | ReferenceObject;
 }
