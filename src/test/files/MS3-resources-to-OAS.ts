@@ -8,6 +8,23 @@ const originalProject: MS3 = {
   },
   'ms3_version': '1.0.1',
   'entityTypeName': 'api',
+  'dataTypes': [
+    {
+      'type': 'string',
+      'description': 'desc',
+      'name': 'schema',
+      'default': 'default',
+      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+    }
+  ],
+  'examples': [
+    {
+      'title': 'ex',
+      'content': '{}',
+      'format': 'json',
+      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+    }
+  ],
   'resources': [
     {
       'path': '/res',
@@ -167,21 +184,21 @@ const resultProject: OAS = {
       post: {
         operationId: 'RES_POST',
         description: 'description',
-        responses: {},
         requestBody: {
           content: {
             'application/json': {
               schema: {
-                '$ref': '#/components/schemas/d0c35029-b545-4ce5-ba73-52b03910a382'
+                '$ref': '#/components/schemas/schema'
               },
               examples: {
-                '9abcf4a4-98f1-47d9-adaf-b6934c2b30da': {
-                  '$ref': '#/components/examples/9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+                'ex': {
+                  '$ref': '#/components/examples/ex'
                 }
               }
             }
           }
-        }
+        },
+        responses: {}
       },
       put: {
         operationId: 'RES_PUT',
@@ -194,7 +211,13 @@ const resultProject: OAS = {
     },
     '/nested': {}
   },
-  components: {}
+  components: {
+    schemas: {
+      name: {
+        title: 'hello'
+      }
+    }
+  }
 };
 
 export { originalProject, resultProject };

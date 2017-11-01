@@ -3,7 +3,7 @@ import { API as MS3 } from '../ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../../common/convertor-options-interface';
 import { API as OAS, Info } from './../../oas/oas-20-api-interface';
 import convertSchemaObjects from './schema-objects';
-import convertPathObjects from './path-objects';
+import convertResourcesToPaths from './resources-to-paths';
 import * as path from 'path';
 import { writeFile } from 'fs';
 import { promisify } from 'util';
@@ -34,7 +34,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       components: {}
     };
     if (this.ms3API.dataTypes) this.oasAPI.components.schemas = convertSchemaObjects(this.ms3API.dataTypes);
-    if (this.ms3API.resources) this.oasAPI.paths = convertPathObjects(this.ms3API.resources);
+    if (this.ms3API.resources) this.oasAPI.paths = convertResourcesToPaths(this.ms3API);
 
     return this.oasAPI;
   }
