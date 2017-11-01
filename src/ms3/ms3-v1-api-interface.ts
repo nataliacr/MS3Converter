@@ -33,7 +33,7 @@ export interface Parameter {
   enum?: string[] | number[];
 }
 
-interface DataTypePrimitive {
+export interface DataTypePrimitive {
   type: datatypeType;
   name?: string;
   description?: string;
@@ -55,12 +55,12 @@ interface DataTypePrimitive {
   minItems?: number;
 }
 
-interface DataTypeObject extends DataTypePrimitive {
+export interface DataTypeObject extends DataTypePrimitive {
   required?: boolean;
   properties?: (DataTypeObject | DataTypePrimitive | DataTypeArray)[];
 }
 
-interface DataTypeArray extends DataTypePrimitive {
+export interface DataTypeArray extends DataTypePrimitive {
   includes?: boolean | string;
   items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }

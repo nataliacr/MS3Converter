@@ -21,10 +21,10 @@ interface ReferenceObject {
   '$ref': string;
 }
 
-interface SchemaObject {
+export interface SchemaObject {
   title?: string;
   type?: type;
-  multipleOf?: string;
+  multipleOf?: number;
   maximum?: number;
   minimum?: number;
   exclusiveMaximum?: number;
@@ -38,7 +38,7 @@ interface SchemaObject {
   minProperties?: number;
   required?: boolean;
   enum?: string[];
-  items?: Schema | ReferenceObject;
+  items?: SchemaObject | ReferenceObject;
   properties?: Schema | ReferenceObject;
   description?: string;
   format?: format;
@@ -47,7 +47,8 @@ interface SchemaObject {
   anyOf?: object;
   not?: object;
   additionalProperties?: object;
-  default?: SchemaObject;
+  default?: number | string | boolean;
+  example?: any;
 }
 
 export interface Schema {

@@ -73,10 +73,52 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
     paths: {},
     components: {
       schemas: {
-        'name': {
-          'title': 'hello'
+        'ArraySchema': {
+          'title': 'ArraySchema',
+          'type': 'array',
+          'example': '13',
+          'maxItems': 1,
+          'minItems': 1,
+          'uniqueItems': true,
+          'items': {
+            'type': 'integer',
+            'description': '1',
+            'example': 3,
+            'default': 2,
+            'format': 'int32',
+            'minimum': 1,
+            'maximum': 3,
+            'multipleOf': 12
+          }
+        },
+        'ObjectSchema' : {
+          'title': 'ObjectSchema',
+          'type': 'object',
+          'properties': {
+            'StringProperty': {
+              'type': 'string',
+              'description': 'Description here',
+              'example': 'Terry',
+              'default': 'Ted',
+              'pattern': 'Pattern Here',
+              'minLength': 3,
+              'maxLength': 10,
+              'enum': [
+                'Ted',
+                'Bob'
+              ],
+              'required': true
+            },
+            'BooleanProperty': {
+              'type': 'boolean',
+              'description': 'Description here',
+              'example': false,
+              'default': true,
+              'required': true
+            }
+          }
         }
-      }
+      },
     }
   };
   await expect(MS3toOAS.create(project).convert()).resolves.toEqual(expectedResult);
