@@ -185,7 +185,7 @@ interface SecurityRequirement {
   [propName: string]: string[];
 }
 
-interface Operation {
+export interface Operation {
   operationId?: string;
   summary?: string;
   description?: string;

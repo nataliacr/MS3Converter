@@ -23,6 +23,12 @@ const originalProject: MS3 = {
       'content': '{}',
       'format': 'json',
       '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+    },
+    {
+      'title': 'ex2',
+      'content': '<xml></xml>',
+      'format': 'xml',
+      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30db'
     }
   ],
   'resources': [
@@ -90,11 +96,31 @@ const originalProject: MS3 = {
                   'type': 'd0c35029-b545-4ce5-ba73-52b03910a382'
                 }
               ]
+            },
+            {
+              'code': '201',
+              'body': [
+                {
+                  'contentType': 'application/json',
+                  'selectedExamples': [
+                    '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+                  ],
+                  'type': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+                }
+              ]
             }
           ],
           'body': [
             {
               'contentType': 'application/json',
+              'selectedExamples': [
+                '9abcf4a4-98f1-47d9-adaf-b6934c2b30da',
+                '9abcf4a4-98f1-47d9-adaf-b6934c2b30db'
+              ],
+              'type': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+            },
+            {
+              'contentType': 'application/xml',
               'selectedExamples': [
                 '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
               ],
@@ -197,6 +223,19 @@ const resultProject: OAS = {
               examples: {
                 'ex': {
                   '$ref': '#/components/examples/ex'
+                },
+                'ex2': {
+                  '$ref': '#/components/examples/ex2'
+                }
+              }
+            },
+            'application/xml': {
+              schema: {
+                '$ref': '#/components/schemas/schema'
+              },
+              examples: {
+                'ex': {
+                  '$ref': '#/components/examples/ex'
                 }
               }
             }
@@ -204,6 +243,21 @@ const resultProject: OAS = {
         },
         responses: {
           '200': {
+            description: 'description',
+            content: {
+              'application/json': {
+                schema: {
+                  '$ref': '#/components/schemas/schema'
+                },
+                examples: {
+                  'ex': {
+                    '$ref': '#/components/examples/ex'
+                  }
+                }
+              }
+            }
+          },
+          '201': {
             description: 'description',
             content: {
               'application/json': {
