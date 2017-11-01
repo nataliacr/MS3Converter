@@ -54,36 +54,25 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
+  getParametersByType(parameters: MS3.Parameter[], type: string): OAS.ParameterObject[] {
+    return parameters.map( (parameter: MS3.Parameter) => {
+      const convertedParameter: any = {
+        name: parameter.displayName,
+        in: type,
+        required: type == 'path' ? true : parameter.required || false
+      };
+
+      if (parameter.description) convertedParameter.description = parameter.description;
+
+      return convertedParameter;
+    });
+  }
+
   getParameters(method: MS3.Method): OAS.ParameterObject[] {
-    const convertedParameters: object[] = [];
+    let convertedParameters: object[] = [];
 
-    if (method.headers) {
-      method.headers.map( (header: MS3.Parameter) => {
-        const convertedParameter: any = {
-          name: header.displayName,
-          in: 'header',
-          required: header.required || false
-        };
-
-        if (header.description) convertedParameter.description = header.description;
-
-        convertedParameters.push(convertedParameter);
-      });
-    }
-
-    if (method.queryParameters) {
-      method.queryParameters.map( (queryParameter: MS3.Parameter) => {
-        const convertedParameter: any = {
-          name: queryParameter.displayName,
-          in: 'path',
-          required: true
-        };
-
-        if (queryParameter.description) convertedParameter.description = queryParameter.description;
-
-        convertedParameters.push(convertedParameter);
-      });
-    }
+    if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));
+    if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'path'));
 
     return <OAS.ParameterObject[]> convertedParameters;
   }

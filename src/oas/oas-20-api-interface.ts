@@ -93,10 +93,6 @@ export interface ParameterObject extends HeaderObject {
   in: string;
 }
 
-// export interface Parameters {
-//   [propName: string]: ParameterObject | ReferenceObject;
-// }
-
 export interface ExampleObject {
   summary?: string;
   description?: string;
