@@ -17,11 +17,11 @@ interface License {
   url?: string;
 }
 
-interface ReferenceObject {
+export interface ReferenceObject {
   '$ref': string;
 }
 
-interface SchemaObject {
+export interface SchemaObject {
   title?: string;
   type?: type;
   multipleOf?: string;
@@ -69,11 +69,11 @@ interface Encoding {
 interface MediaTypeObject {
   schema?: SchemaObject | ReferenceObject;
   example?: any;
-  examples?: Example[];
+  examples?: Example;
   encoding?: Encoding[];
 }
 
-interface MediaType {
+export interface MediaType {
   [propName: string]: MediaTypeObject | ReferenceObject;
 }
 
@@ -88,33 +88,29 @@ interface Response {
   [propName: string]: ResponseObject | ReferenceObject;
 }
 
-interface ParameterObject extends HeaderObject {
+export interface ParameterObject extends HeaderObject {
   name: string;
   in: string;
 }
 
-interface Parameter {
-  [propName: string]: ParameterObject | ReferenceObject;
-}
-
-interface ExampleObject {
+export interface ExampleObject {
   summary?: string;
   description?: string;
   value?: any;
   externalValue?: string;
 }
 
-interface Example {
+export interface Example {
   [propName: string]: ExampleObject | ReferenceObject;
 }
 
 interface RequestBodyObject {
   description?: string;
   content: MediaType;
-  required: boolean;
+  required?: boolean;
 }
 
-interface RequestBody {
+export interface RequestBody {
   [propName: string]: RequestBodyObject | ReferenceObject;
 }
 
@@ -176,7 +172,7 @@ interface Link {
   [propName: string]: LinkObject | ReferenceObject;
 }
 
-interface ResponsesObject {
+export interface ResponsesObject {
   default?: ResponseObject | ReferenceObject;
   [propName: string]: ResponseObject | ReferenceObject;
 }
@@ -185,7 +181,7 @@ interface SecurityRequirement {
   [propName: string]: string[];
 }
 
-interface Operation {
+export interface Operation {
   operationId?: string;
   summary?: string;
   description?: string;
@@ -225,8 +221,8 @@ interface PathItemObject {
 export interface Components {
   schemas?: Schema;
   responses?: Response;
-  parameters?: Parameter;
-  examples?: Example[];
+  parameters?: ParameterObject[];
+  examples?: Example;
   requestBodies?: RequestBody[];
   headers?: Header[];
   securitySchemes?: SecurityScheme;
