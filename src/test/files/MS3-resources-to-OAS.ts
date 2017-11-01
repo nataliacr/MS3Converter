@@ -209,7 +209,14 @@ const resultProject: OAS = {
       get: {
         operationId: 'RES_GET',
         description: 'desc',
-        responses: {}
+        responses: {},
+        parameters: [
+          {
+            name: 'header',
+            in: 'header',
+            required: false
+          }
+        ]
       },
       post: {
         operationId: 'RES_POST',
@@ -272,7 +279,21 @@ const resultProject: OAS = {
               }
             }
           }
-        }
+        },
+        parameters: [
+          {
+            name: 'header',
+            in: 'header',
+            description: 'description',
+            required: false
+          },
+          {
+            name: 'query',
+            in: 'path',
+            description: 'description',
+            required: true
+          }
+        ]
       },
       put: {
         operationId: 'RES_PUT',

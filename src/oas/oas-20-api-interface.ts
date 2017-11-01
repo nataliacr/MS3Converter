@@ -88,14 +88,14 @@ interface Response {
   [propName: string]: ResponseObject | ReferenceObject;
 }
 
-interface ParameterObject extends HeaderObject {
+export interface ParameterObject extends HeaderObject {
   name: string;
   in: string;
 }
 
-interface Parameter {
-  [propName: string]: ParameterObject | ReferenceObject;
-}
+// export interface Parameters {
+//   [propName: string]: ParameterObject | ReferenceObject;
+// }
 
 export interface ExampleObject {
   summary?: string;
@@ -225,7 +225,7 @@ interface PathItemObject {
 export interface Components {
   schemas?: Schema;
   responses?: Response;
-  parameters?: Parameter;
+  parameters?: ParameterObject[];
   examples?: Example;
   requestBodies?: RequestBody[];
   headers?: Header[];
