@@ -53,7 +53,7 @@ export interface DataTypePrimitive {
   uniqueItems?: boolean;
   maxItems?: number;
   minItems?: number;
-  includes?: boolean | string;
+  includes?: string;
 }
 
 export interface DataTypeObject extends DataTypePrimitive {
@@ -62,7 +62,7 @@ export interface DataTypeObject extends DataTypePrimitive {
 }
 
 export interface DataTypeArray extends DataTypePrimitive {
-  includes?: boolean | string;
+  includes?: string;
   mode?: string; // Remove this field after front end refactor;
   items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }

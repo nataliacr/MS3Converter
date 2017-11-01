@@ -2,7 +2,7 @@ import ConvertorInterface from '../../common/convertor-interface';
 import { API as MS3 } from '../ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../../common/convertor-options-interface';
 import { API as OAS, Info } from './../../oas/oas-20-api-interface';
-import convertSchemaObjects from './schema-objects';
+import convertSchemaObjects from './datatypes-to-schemas';
 import * as path from 'path';
 import { writeFile } from 'fs';
 import { promisify } from 'util';
