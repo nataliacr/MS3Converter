@@ -2,7 +2,7 @@
  * all structure of oas should be described in this interface
  */
 
-type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
+export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
 type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
 
@@ -24,6 +24,7 @@ export interface ReferenceObject {
 export interface SchemaObject {
   title?: string;
   type?: type;
+  pattern?: string;
   multipleOf?: string;
   maximum?: number;
   minimum?: number;
@@ -38,7 +39,7 @@ export interface SchemaObject {
   minProperties?: number;
   required?: boolean;
   enum?: string[];
-  items?: Schema | ReferenceObject;
+  items?: SchemaObject | ReferenceObject;
   properties?: Schema | ReferenceObject;
   description?: string;
   format?: format;
@@ -47,7 +48,7 @@ export interface SchemaObject {
   anyOf?: object;
   not?: object;
   additionalProperties?: object;
-  default?: SchemaObject;
+  default?: string | number | boolean;
 }
 
 export interface Schema {
@@ -56,7 +57,7 @@ export interface Schema {
 
 interface EncodingObject {
   contentType?: string;
-  headers?: Header[];
+  headers?: Headers;
   style?: string;
   explode?: boolean;
   allowReserved?: boolean;
@@ -79,7 +80,7 @@ export interface MediaType {
 
 interface ResponseObject {
   description: string;
-  headers?: Header[];
+  headers?: Headers;
   content?: MediaType;
   links?: Link[];
 }
@@ -114,7 +115,7 @@ export interface RequestBody {
   [propName: string]: RequestBodyObject | ReferenceObject;
 }
 
-interface HeaderObject {
+export interface HeaderObject {
   description?: string;
   required: boolean;
   deprecated?: boolean;
@@ -126,7 +127,7 @@ interface HeaderObject {
   explode?: boolean;
 }
 
-interface Header {
+export interface Headers {
   [propName: string]: HeaderObject | ReferenceObject;
 }
 
@@ -177,7 +178,7 @@ export interface ResponsesObject {
   [propName: string]: ResponseObject | ReferenceObject;
 }
 
-interface SecurityRequirement {
+export interface SecurityRequirement {
   [propName: string]: string[];
 }
 
@@ -190,7 +191,7 @@ export interface Operation {
   responses: ResponsesObject;
   tags?: string[];
   deprecated?: boolean;
-  security?: SecurityRequirement[];
+  security?: SecurityRequirement;
   servers?: Server[];
   callbacks?: object; // TODO: create Callback Object interface
   externalDocs?: object; // TODO: create External Documentation Object interface
@@ -224,7 +225,7 @@ export interface Components {
   parameters?: ParameterObject[];
   examples?: Example;
   requestBodies?: RequestBody[];
-  headers?: Header[];
+  headers?: Headers;
   securitySchemes?: SecurityScheme;
   links?: Link[];
   callbacks?: object; // TODO: create Callback Object interface
@@ -250,7 +251,7 @@ export interface API {
   paths: Paths;
   servers?: Server[];
   components?: Components;
-  security?: SecurityRequirement[];
+  security?: SecurityRequirement;
   tags?: Tag[];
   externalDocs?: ExternalDocs;
 }
