@@ -126,6 +126,7 @@ class ConvertResourcesToPaths {
   getSecurityRequirement(securedBy: string[]): OAS.SecurityRequirement {
     return securedBy.reduce( (resultObject: any, secureByName: string) => {
       resultObject[secureByName] = [];
+      return resultObject;
     }, {});
   }
 

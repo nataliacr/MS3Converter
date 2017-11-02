@@ -5,6 +5,7 @@ import { originalResourcesWithRequestBody, resultResourcesWithRequestBody } from
 import { originalNestedResources, resultNestedResources } from './files/MS3-resources-to-OAS';
 import { originalResourceWithRequestBody, resultResourceWithRequestBody } from './files/MS3-resources-to-OAS';
 import { originalResourceWithResponses, resultResourceWithResponses } from './files/MS3-resources-to-OAS';
+import { originalResourceWithSecuredBy, resultResourceWithSecuredBy } from './files/MS3-resources-to-OAS';
 
 test('One MS3 resource with headers and query parameters should be converted to OAS successfully', async () => {
   await expect(MS3toOAS.create(originalResourcesWithRequestBody).convert()).resolves.toEqual(resultResourcesWithRequestBody);
@@ -20,4 +21,8 @@ test('MS3 resources with bodies should be converted to OAS successfully', async 
 
 test('MS3 resources with responses should be converted to OAS successfully', async () => {
   await expect(MS3toOAS.create(originalResourceWithResponses).convert()).resolves.toEqual(resultResourceWithResponses);
+});
+
+test('MS3 resources with responses should be converted to OAS successfully', async () => {
+  await expect(MS3toOAS.create(originalResourceWithSecuredBy).convert()).resolves.toEqual(resultResourceWithSecuredBy);
 });
