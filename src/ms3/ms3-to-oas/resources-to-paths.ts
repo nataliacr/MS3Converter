@@ -1,9 +1,13 @@
 import * as OAS from './../../oas/oas-20-api-interface';
 import * as MS3 from './../ms3-v1-api-interface';
-import { filter, find } from 'lodash';
+import { filter, find, cloneDeep } from 'lodash';
 
 class ConvertResourcesToPaths {
   constructor(private API: MS3.API) {}
+
+  getParentResourcePath(id: string): string {
+    return find(this.API.resources, ['__id', id]).path;
+  }
 
   getDataTypeName(id: string): string {
     return find(this.API.dataTypes, ['__id', id]).name;
@@ -42,6 +46,21 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
+  getResponseHeaders(headers: MS3.Parameter[]): OAS.Headers {
+    return headers.reduce( (resultObject: any, header: MS3.Parameter) => {
+      resultObject[header.displayName] = {
+        required: header.required || true
+      };
+
+      if (header.description) resultObject[header.displayName].description = header.description;
+      resultObject[header.displayName].schema = header.repeat ? this.getArrayTypeSchema(header) : this.getPrimitiveTypeSchema(header);
+      resultObject[header.displayName].schema.name;
+      resultObject[header.displayName].schema.in;
+
+      return resultObject;
+    }, {});
+  }
+
   getResponses(responses: MS3.Response[]): OAS.ResponsesObject {
     return responses.reduce((resultObject: any, response: MS3.Response) => {
       resultObject[response.code] = {
@@ -49,9 +68,35 @@ class ConvertResourcesToPaths {
       };
 
       if (response.body) resultObject[response.code].content = this.getRequestBody(response.body);
+      if (response.headers) resultObject[response.code].headers = this.getResponseHeaders(response.headers);
 
       return resultObject;
     }, {});
+  }
+
+  cloneParameterObject(parameter: MS3.Parameter) {
+    const clonedParameter: any = cloneDeep(parameter);
+    delete clonedParameter.displayName;
+    delete clonedParameter.description;
+    delete clonedParameter.repeat;
+    delete clonedParameter.required;
+    delete clonedParameter.example;
+    if (clonedParameter.type == 'number') clonedParameter.type = 'long';
+    return clonedParameter;
+  }
+
+  getArrayTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
+    const convertedItems: any = this.cloneParameterObject(parameter);
+    const convertedParameter: OAS.SchemaObject = {
+      type: 'array',
+      items: convertedItems
+    };
+
+    return convertedParameter;
+  }
+
+  getPrimitiveTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
+    return this.cloneParameterObject(parameter);
   }
 
   getParametersByType(parameters: MS3.Parameter[], type: string): OAS.ParameterObject[] {
@@ -63,18 +108,26 @@ class ConvertResourcesToPaths {
       };
 
       if (parameter.description) convertedParameter.description = parameter.description;
+      convertedParameter.schema = parameter.repeat ? this.getArrayTypeSchema(parameter) : this.getPrimitiveTypeSchema(parameter);
 
       return convertedParameter;
     });
   }
 
-  getParameters(method: MS3.Method): OAS.ParameterObject[] {
-    let convertedParameters: object[] = [];
+  getParameters(method: any): OAS.ParameterObject[] {
+    let convertedParameters: OAS.ParameterObject[] = [];
 
     if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));
     if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'path'));
 
-    return <OAS.ParameterObject[]> convertedParameters;
+    return convertedParameters;
+  }
+
+  getSecurityRequirement(securedBy: string[]): OAS.SecurityRequirement {
+    return securedBy.reduce( (resultObject: any, secureByName: string) => {
+      resultObject[secureByName] = [];
+      return resultObject;
+    }, {});
   }
 
   getMethodObject(method: MS3.Method, methodType: string, pathName: string): OAS.Operation {
@@ -87,17 +140,19 @@ class ConvertResourcesToPaths {
     if (method.body) resultObject.requestBody = { content: this.getRequestBody(method.body) };
     if (method.responses) resultObject.responses = this.getResponses(method.responses);
     if (method.headers || method.queryParameters) resultObject.parameters = this.getParameters(method);
+    if (method.securedBy) resultObject.security = this.getSecurityRequirement(method.securedBy);
 
     return resultObject;
   }
 
   convert(): OAS.Paths {
     return this.API.resources.reduce( (resultObject: any, resource: MS3.Resource) => {
-      resultObject[resource.path] = {};
+      const path = resource.parentId ? (this.getParentResourcePath(resource.parentId) + resource.path) : resource.path;
+      resultObject[path] = {};
 
       const activeMethods = filter(resource.methods, ['active', true]);
 
-      resultObject[resource.path] = activeMethods.reduce( (result: any, activeMethod: MS3.Method) => {
+      resultObject[path] = activeMethods.reduce( (result: any, activeMethod: MS3.Method) => {
         const methodType = activeMethod.name.toLowerCase();
         result[methodType] = this.getMethodObject(activeMethod, methodType, resource.name);
         return result;
