@@ -16,8 +16,8 @@ class ConvertDataTypesToSchemas {
   }
 
   convertType(dataType: DataType | DataTypeObject | DataTypePrimitive | DataTypeArray ) {
+    if (dataType.type == 'nil') return null;
     const convertedType = <any> cloneDeep(dataType);
-    if (convertedType.type == 'nil') return null;
     delete convertedType.fileTypes;
 
     switch (convertedType.type) {
