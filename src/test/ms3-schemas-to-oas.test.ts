@@ -63,6 +63,11 @@ const project: ApiInterfaces.API = {
           'name': 'default-3',
           'mode': 'include',
           'includes': 'c6710947-1eed-472d-a4f3-c4807c24fe6b'
+        },
+        {
+          'name': 'def-4',
+          'mode': 'include',
+          'includes': '1'
         }
       ],
       '__id': 'b204580e-7b57-44b4-85fd-075fca5d68c8'
@@ -78,7 +83,15 @@ const project: ApiInterfaces.API = {
       'items': {
         'type': 'nil'
       },
-      '__id': '1'
+      '__id': '2'
+    },
+    {
+      'name': 'arrayRefNil',
+      'type': 'array',
+      'items': {
+        'includes': '1'
+      },
+      '__id': '3'
     },
     {
       'name': 'ArraySchema',
@@ -125,6 +138,10 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
           'items': {
             '$ref': '#/components/schemas/ArraySchema'
           },
+        },
+        'arrayRefNil': {
+          'title': 'arrayRefNil',
+          'type': 'array',
         },
         'ArraySchema': {
           'title': 'ArraySchema',

@@ -54,7 +54,9 @@ class ConvertDataTypesToSchemas {
 
   convertArrayItems(data: DataTypeArray) {
     if (data.includes) {
-      return {'$ref': `#/components/schemas/${this.getSchemaName(data.includes)}` };
+      const name = this.getSchemaName(data.includes);
+      if (!name) { return null; }
+      return {'$ref': `#/components/schemas/${name}` };
     }
     return this.convertType(data);
   }
@@ -63,6 +65,10 @@ class ConvertDataTypesToSchemas {
     return props.reduce( (resultObject: any, prop: (DataTypeObject | DataTypePrimitive | DataTypeArray)) => {
       if (prop.includes) {
         const dataTypeName = this.getSchemaName(prop.includes);
+        if (!dataTypeName) {
+          delete prop.includes;
+          return resultObject;
+        }
         resultObject[dataTypeName] = {
           '$ref': `#/components/schemas/${dataTypeName}`
         };
@@ -81,8 +87,9 @@ class ConvertDataTypesToSchemas {
     }, {});
   }
 
-  getSchemaName(id: string): string {
-    return find(this.API.dataTypes, ['__id', id]).name;
+  getSchemaName(id: string): string | null {
+    const schema = find(this.API.dataTypes, ['__id', id]);
+    return schema.type == 'nil' ? null : schema.name;
   }
 
   static create(api: MS3.API) {
