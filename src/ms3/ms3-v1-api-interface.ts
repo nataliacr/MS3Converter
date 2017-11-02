@@ -33,8 +33,8 @@ export interface Parameter {
   enum?: string[] | number[];
 }
 
-interface DataTypePrimitive {
-  type: datatypeType;
+export interface DataTypePrimitive {
+  type?: datatypeType;
   name?: string;
   description?: string;
   default?: string | number | boolean;
@@ -53,15 +53,17 @@ interface DataTypePrimitive {
   uniqueItems?: boolean;
   maxItems?: number;
   minItems?: number;
+  includes?: string;
 }
 
-interface DataTypeObject extends DataTypePrimitive {
+export interface DataTypeObject extends DataTypePrimitive {
   required?: boolean;
   properties?: (DataTypeObject | DataTypePrimitive | DataTypeArray)[];
 }
 
-interface DataTypeArray extends DataTypePrimitive {
-  includes?: boolean | string;
+export interface DataTypeArray extends DataTypePrimitive {
+  includes?: string;
+  mode?: string; // TODO: Remove this field after front end refactor;
   items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }
 

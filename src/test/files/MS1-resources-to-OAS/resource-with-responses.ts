@@ -156,10 +156,13 @@ export const resultResourceWithResponses: OAS = {
       }
     }
   },
-  components: { // TODO: Change this to actual converted schemas
+  components: {
     schemas: {
-      name: {
-        title: 'hello',
+      'schema': {
+        'default': 'default',
+        'description': 'desc',
+        'title': 'schema',
+        'type': 'string',
       }
     }
   }
