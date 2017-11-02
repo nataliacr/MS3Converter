@@ -1,59 +1,75 @@
 import * as MS3 from './../ms3-v1-api-interface';
 import { Schema, SchemaObject } from './../../oas/oas-20-api-interface';
 import { DataType, DataTypeObject, DataTypeArray, DataTypePrimitive } from './../ms3-v1-api-interface';
-import { find } from 'lodash';
+import { find, cloneDeep } from 'lodash';
 
 class ConvertDataTypesToSchemas {
   constructor(private API: MS3.API) {}
 
   convert(): Schema {
-    const result = this.API.dataTypes.reduce((value: any, item: any) => {
+    return this.API.dataTypes.reduce((result: any, item: DataType) => {
       const convertedSchema = this.convertSchema(item);
-      value[convertedSchema.title] = convertedSchema;
-      return value;
+      result[convertedSchema.title] = convertedSchema;
+      return result;
     }, {});
-    return result;
+  }
+
+  convertType(dataType: DataType | DataTypeObject | DataTypePrimitive | DataTypeArray ) {
+    const convertedType = <any>cloneDeep(dataType);
+    delete convertedType.fileTypes;
+
+    switch (convertedType.type) {
+      case 'number':
+        convertedType.type = 'long';
+        break;
+      case 'datetime':
+        convertedType.type = 'dateTime';
+        break;
+      case 'date-only':
+        convertedType.type = 'date';
+        break;
+    }
+
+    return convertedType;
   }
 
   convertSchema(schema: DataType): SchemaObject {
-    const convertedSchema = <any>schema;
-    delete convertedSchema.__id;
+    const convertedSchema = <any> cloneDeep(this.convertType(schema)); // TODO: Refactor this temporary hack to satisfy typescript
     convertedSchema.title = convertedSchema.name;
     delete convertedSchema.name;
+    delete convertedSchema.__id;
     if (convertedSchema.properties && schema.properties.length) {
       convertedSchema.properties = this.convertProperties(convertedSchema.properties);
     }
     if (convertedSchema.items) {
-      convertedSchema.items = this.convertArray(convertedSchema.items);
+      convertedSchema.items = this.convertArrayItems(convertedSchema.items);
     }
     return convertedSchema;
   }
 
-  convertArray(data: DataTypeArray) {
+  convertArrayItems(data: DataTypeArray) {
     if (data.includes) {
       return {'$ref': `#/components/schemas/${this.getSchemaName(data.includes)}` };
-    } else {
-      return data;
     }
+    return this.convertType(data);
   }
 
   convertProperties(props: Array<object>): Schema {
-    const convertedProperties: any = {};
-    props.forEach((prop: (DataTypeObject | DataTypePrimitive | DataTypeArray)) => {
+    return props.reduce( (resultObject: any, prop: (DataTypeObject | DataTypePrimitive | DataTypeArray)) => {
       if (prop.includes) {
         const dataTypeName = this.getSchemaName(prop.includes);
-        convertedProperties[dataTypeName] = {
+        resultObject[dataTypeName] = {
           '$ref': `#/components/schemas/${dataTypeName}`
         };
       } else {
-        convertedProperties[prop.name] = prop;
-        delete convertedProperties[prop.name].name;
-        if (convertedProperties.properties && convertedProperties.properties.length) {
-          convertedProperties.properties = this.convertProperties(convertedProperties.properties);
+        resultObject[prop.name] = cloneDeep(this.convertType(prop));
+        delete resultObject[prop.name].name;
+        if (resultObject.properties && resultObject.properties.length) {
+          resultObject.properties = this.convertProperties(resultObject.properties);
         }
       }
-    });
-    return convertedProperties;
+      return resultObject;
+    }, {});
   }
 
   getSchemaName(id: string): string {

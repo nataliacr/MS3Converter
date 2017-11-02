@@ -48,6 +48,18 @@ const project: ApiInterfaces.API = {
           'required': true
         },
         {
+          'name': 'isNumber',
+          'type': 'number'
+        },
+        {
+          'name': 'isDateOnly',
+          'type': 'date-only'
+        },
+        // {
+        //   'name': 'nil',
+        //   'type': 'nil'
+        // },
+        {
           'name': 'default-3',
           'mode': 'include',
           'includes': 'c6710947-1eed-472d-a4f3-c4807c24fe6b'
@@ -143,6 +155,12 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
               'example': false,
               'default': true,
               'required': true
+            },
+            'isNumber': {
+              'type': 'long'
+            },
+            'isDateOnly': {
+              'type': 'date'
             },
             'ArraySchema': {
               '$ref': '#/components/schemas/ArraySchema'
