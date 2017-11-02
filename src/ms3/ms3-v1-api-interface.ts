@@ -6,7 +6,7 @@ import * as Library from './ms3-v1-library-interface';
 
 type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type protocol = 'HTTP' | 'HTTPS';
-type parameterType = 'string' | 'integer' | 'number' | 'boolean' | 'date';
+export type parameterType = 'string' | 'integer' | 'number' | 'boolean' | 'date';
 type datatypeType = 'object' | 'string' | 'integer' | 'number' | 'boolean' | 'array' | 'date-only' | 'time-only' | 'datetime' | 'datetime-only' | 'file' | 'nil';
 type numberFormat = 'int64' | 'int32' | 'int16' | 'int8' | 'double' | 'float';
 type dateFormat = 'rfc3339' | 'rfc2616';
@@ -106,7 +106,7 @@ export interface Trait extends BasicTrait {
 
 export interface Method extends BasicTrait {
   active: boolean;
-  securedBy?: string;
+  securedBy?: string[];
 }
 
 export interface ResourcesType {
@@ -123,11 +123,12 @@ export interface ResourcesType {
 export interface NestedResource {
   id: string;
   path: string;
+  parentId?: string;
 }
 
 export interface Resource extends ResourcesType {
   path: string;
-  securedBy?: string;
+  securedBy?: string[];
   selectedTraits?: string;
   type?: string;
   resources?: NestedResource[];
