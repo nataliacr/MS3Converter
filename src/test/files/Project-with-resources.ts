@@ -1,6 +1,6 @@
 import * as ApiInterfaces from './../../ms3/ms3-v1-api-interface';
 
-const originalProject: object = {
+const originalProject: any = {
   'settings': {
     'title': 'params',
     'baseUri': 'http://params'
