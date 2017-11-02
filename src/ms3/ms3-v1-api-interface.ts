@@ -121,6 +121,7 @@ export interface ResourcesType {
 export interface NestedResource {
   id: string;
   path: string;
+  parentId?: string;
 }
 
 export interface Resource extends ResourcesType {

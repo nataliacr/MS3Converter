@@ -6,6 +6,10 @@ import { filter, find, cloneDeep } from 'lodash';
 class ConvertResourcesToPaths {
   constructor(private API: MS3.API) {}
 
+  getParentResourcePath(id: string): string {
+    return find(this.API.resources, ['__id', id]).path;
+  }
+
   getDataTypeName(id: string): string {
     return find(this.API.dataTypes, ['__id', id]).name;
   }
@@ -136,11 +140,12 @@ class ConvertResourcesToPaths {
 
   convert(): OAS.Paths {
     return this.API.resources.reduce( (resultObject: any, resource: MS3.Resource) => {
-      resultObject[resource.path] = {};
+      const path = resource.parentId ? (this.getParentResourcePath(resource.parentId) + resource.path) : resource.path;
+      resultObject[path] = {};
 
       const activeMethods = filter(resource.methods, ['active', true]);
 
-      resultObject[resource.path] = activeMethods.reduce( (result: any, activeMethod: MS3.Method) => {
+      resultObject[path] = activeMethods.reduce( (result: any, activeMethod: MS3.Method) => {
         const methodType = activeMethod.name.toLowerCase();
         result[methodType] = this.getMethodObject(activeMethod, methodType, resource.name);
         return result;

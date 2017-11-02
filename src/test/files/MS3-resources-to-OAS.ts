@@ -237,13 +237,14 @@ export const originalNestedResources: MS3 = {
     {
       'path': '/nested',
       'name': 'nested',
+      'parentId': 'f068746b-acd9-40c8-af83-83a89095b0a0',
       'methods': [
         {
           'active': true,
           'name': 'GET',
         }
       ],
-      '__id': 'f068746b-acd9-40c8-af83-83a89095b0a0'
+      '__id': '880ddafe-81a1-4ff3-841e-5bb80c146997'
     }
   ]
 };
@@ -266,7 +267,7 @@ export const resultNestedResources: OAS = {
         responses: {},
       }
     },
-    '/nested': {
+    '/res/nested': {
       get: {
         operationId: 'NESTED_GET',
         responses: {},
