@@ -9,7 +9,7 @@ class ConvertDataTypesToSchemas {
   convert(): Schema {
     return this.API.dataTypes.reduce((result: any, item: DataType) => {
       const convertedSchema = this.convertSchema(item);
-      if (!convertedSchema) { return result; }
+      if (!convertedSchema) return result;
       result[convertedSchema.title] = convertedSchema;
       return result;
     }, {});
@@ -36,7 +36,7 @@ class ConvertDataTypesToSchemas {
 
   convertSchema(schema: DataType): SchemaObject {
     const convertedSchema = <any> cloneDeep(this.convertType(schema)); // TODO: Refactor this temporary hack to satisfy typescript
-    if (!convertedSchema) { return convertedSchema; }
+    if (!convertedSchema) return convertedSchema;
     convertedSchema.title = convertedSchema.name;
     delete convertedSchema.name;
     delete convertedSchema.__id;
@@ -55,7 +55,7 @@ class ConvertDataTypesToSchemas {
   convertArrayItems(data: DataTypeArray) {
     if (data.includes) {
       const name = this.getSchemaName(data.includes);
-      if (!name) { return null; }
+      if (!name) return null;
       return {'$ref': `#/components/schemas/${name}` };
     }
     return this.convertType(data);
