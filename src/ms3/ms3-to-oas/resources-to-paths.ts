@@ -74,7 +74,7 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  cloneParameterObject(parameter: MS3.Parameter) {
+  transformParameterObject(parameter: MS3.Parameter) {
     const clonedParameter: any = cloneDeep(parameter);
     delete clonedParameter.displayName;
     delete clonedParameter.description;
@@ -86,17 +86,15 @@ class ConvertResourcesToPaths {
   }
 
   getArrayTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
-    const convertedItems: any = this.cloneParameterObject(parameter);
-    const convertedParameter: OAS.SchemaObject = {
+    const convertedItems: any = this.transformParameterObject(parameter);
+    return {
       type: 'array',
       items: convertedItems
     };
-
-    return convertedParameter;
   }
 
   getPrimitiveTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
-    return this.cloneParameterObject(parameter);
+    return this.transformParameterObject(parameter);
   }
 
   getParametersByType(parameters: MS3.Parameter[], type: string): OAS.ParameterObject[] {
@@ -114,7 +112,7 @@ class ConvertResourcesToPaths {
     });
   }
 
-  getParameters(method: any): OAS.ParameterObject[] {
+  getParameters(method: MS3.Method): OAS.ParameterObject[] {
     let convertedParameters: OAS.ParameterObject[] = [];
 
     if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));

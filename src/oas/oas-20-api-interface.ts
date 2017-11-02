@@ -25,7 +25,7 @@ export interface SchemaObject {
   title?: string;
   type?: type;
   pattern?: string;
-  multipleOf?: string;
+  multipleOf?: string | number;
   maximum?: number;
   minimum?: number;
   exclusiveMaximum?: number;
@@ -48,7 +48,8 @@ export interface SchemaObject {
   anyOf?: object;
   not?: object;
   additionalProperties?: object;
-  default?: string | number | boolean;
+  default?: number | string | boolean;
+  example?: any;
 }
 
 export interface Schema {
