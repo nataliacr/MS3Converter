@@ -7,7 +7,7 @@ class ConvertDataTypesToSchemas {
   constructor(private API: MS3.API) {}
 
   convert(): Schema {
-    return this.API.dataTypes.reduce((result: any, item: DataType) => {
+    return this.API.dataTypes.reduce((result: Schema, item: DataType) => {
       const convertedSchema = this.convertSchema(item);
       if (!convertedSchema) return result;
       result[convertedSchema.title] = convertedSchema;
@@ -16,7 +16,8 @@ class ConvertDataTypesToSchemas {
   }
 
   convertType(dataType: DataType | DataTypeObject | DataTypePrimitive | DataTypeArray ) {
-    const convertedType = <any>cloneDeep(dataType);
+    const convertedType = <any> cloneDeep(dataType);
+    if (convertedType.type == 'nil') return null;
     delete convertedType.fileTypes;
 
     switch (convertedType.type) {
@@ -31,7 +32,7 @@ class ConvertDataTypesToSchemas {
         break;
     }
 
-    return convertedType.type == 'nil' ? null : convertedType;
+    return convertedType;
   }
 
   convertSchema(schema: DataType): SchemaObject {
