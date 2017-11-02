@@ -178,7 +178,7 @@ export interface ResponsesObject {
   [propName: string]: ResponseObject | ReferenceObject;
 }
 
-interface SecurityRequirement {
+export interface SecurityRequirement {
   [propName: string]: string[];
 }
 
@@ -191,7 +191,7 @@ export interface Operation {
   responses: ResponsesObject;
   tags?: string[];
   deprecated?: boolean;
-  security?: SecurityRequirement[];
+  security?: SecurityRequirement;
   servers?: Server[];
   callbacks?: object; // TODO: create Callback Object interface
   externalDocs?: object; // TODO: create External Documentation Object interface
@@ -251,7 +251,7 @@ export interface API {
   paths: Paths;
   servers?: Server[];
   components?: Components;
-  security?: SecurityRequirement[];
+  security?: SecurityRequirement;
   tags?: Tag[];
   externalDocs?: ExternalDocs;
 }

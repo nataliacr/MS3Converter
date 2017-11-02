@@ -1,4 +1,3 @@
-import { parameterType } from '../ms3-v1-api-interface';
 import * as OAS from './../../oas/oas-20-api-interface';
 import * as MS3 from './../ms3-v1-api-interface';
 import { filter, find, cloneDeep } from 'lodash';
@@ -124,6 +123,12 @@ class ConvertResourcesToPaths {
     return convertedParameters;
   }
 
+  getSecurityRequirement(securedBy: string[]): OAS.SecurityRequirement {
+    return securedBy.reduce( (resultObject: any, secureByName: string) => {
+      resultObject[secureByName] = [];
+    }, {});
+  }
+
   getMethodObject(method: MS3.Method, methodType: string, pathName: string): OAS.Operation {
     const resultObject: OAS.Operation = {
       operationId: `${pathName}_${methodType}`.toUpperCase(),
@@ -134,6 +139,7 @@ class ConvertResourcesToPaths {
     if (method.body) resultObject.requestBody = { content: this.getRequestBody(method.body) };
     if (method.responses) resultObject.responses = this.getResponses(method.responses);
     if (method.headers || method.queryParameters) resultObject.parameters = this.getParameters(method);
+    if (method.securedBy) resultObject.security = this.getSecurityRequirement(method.securedBy);
 
     return resultObject;
   }

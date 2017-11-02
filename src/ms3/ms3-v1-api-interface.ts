@@ -104,7 +104,7 @@ export interface Trait extends BasicTrait {
 
 export interface Method extends BasicTrait {
   active: boolean;
-  securedBy?: string;
+  securedBy?: string[];
 }
 
 export interface ResourcesType {
@@ -126,7 +126,7 @@ export interface NestedResource {
 
 export interface Resource extends ResourcesType {
   path: string;
-  securedBy?: string;
+  securedBy?: string[];
   selectedTraits?: string;
   type?: string;
   resources?: NestedResource[];
