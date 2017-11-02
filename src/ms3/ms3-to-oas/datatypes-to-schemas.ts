@@ -9,6 +9,7 @@ class ConvertDataTypesToSchemas {
   convert(): Schema {
     return this.API.dataTypes.reduce((result: any, item: DataType) => {
       const convertedSchema = this.convertSchema(item);
+      if (!convertedSchema) { return result; }
       result[convertedSchema.title] = convertedSchema;
       return result;
     }, {});
@@ -30,11 +31,12 @@ class ConvertDataTypesToSchemas {
         break;
     }
 
-    return convertedType;
+    return convertedType.type == 'nil' ? null : convertedType;
   }
 
   convertSchema(schema: DataType): SchemaObject {
     const convertedSchema = <any> cloneDeep(this.convertType(schema)); // TODO: Refactor this temporary hack to satisfy typescript
+    if (!convertedSchema) { return convertedSchema; }
     convertedSchema.title = convertedSchema.name;
     delete convertedSchema.name;
     delete convertedSchema.__id;
@@ -43,6 +45,9 @@ class ConvertDataTypesToSchemas {
     }
     if (convertedSchema.items) {
       convertedSchema.items = this.convertArrayItems(convertedSchema.items);
+      if (!convertedSchema.items) {
+        delete convertedSchema.items;
+      }
     }
     return convertedSchema;
   }
@@ -63,6 +68,10 @@ class ConvertDataTypesToSchemas {
         };
       } else {
         resultObject[prop.name] = cloneDeep(this.convertType(prop));
+        if (!resultObject[prop.name]) {
+          delete resultObject[prop.name];
+          return resultObject;
+        }
         delete resultObject[prop.name].name;
         if (resultObject.properties && resultObject.properties.length) {
           resultObject.properties = this.convertProperties(resultObject.properties);

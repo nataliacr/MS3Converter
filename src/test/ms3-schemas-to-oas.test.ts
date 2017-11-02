@@ -55,10 +55,10 @@ const project: ApiInterfaces.API = {
           'name': 'isDateOnly',
           'type': 'date-only'
         },
-        // {
-        //   'name': 'nil',
-        //   'type': 'nil'
-        // },
+        {
+          'name': 'nil',
+          'type': 'nil'
+        },
         {
           'name': 'default-3',
           'mode': 'include',
@@ -66,6 +66,19 @@ const project: ApiInterfaces.API = {
         }
       ],
       '__id': 'b204580e-7b57-44b4-85fd-075fca5d68c8'
+    },
+    {
+      'name': 'nilTop',
+      'type': 'nil',
+      '__id': '1'
+    },
+    {
+      'name': 'arrayOfNil',
+      'type': 'array',
+      'items': {
+        'type': 'nil'
+      },
+      '__id': '1'
     },
     {
       'name': 'ArraySchema',
@@ -166,6 +179,10 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
               '$ref': '#/components/schemas/ArraySchema'
             }
           }
+        },
+        'arrayOfNil': {
+          'title': 'arrayOfNil',
+          'type': 'array'
         }
       },
     }
