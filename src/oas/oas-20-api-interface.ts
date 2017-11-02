@@ -2,7 +2,7 @@
  * all structure of oas should be described in this interface
  */
 
-type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
+export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
 type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
 
@@ -24,6 +24,7 @@ export interface ReferenceObject {
 export interface SchemaObject {
   title?: string;
   type?: type;
+  pattern?: string;
   multipleOf?: string;
   maximum?: number;
   minimum?: number;
@@ -38,7 +39,7 @@ export interface SchemaObject {
   minProperties?: number;
   required?: boolean;
   enum?: string[];
-  items?: Schema | ReferenceObject;
+  items?: SchemaObject | ReferenceObject;
   properties?: Schema | ReferenceObject;
   description?: string;
   format?: format;
@@ -47,7 +48,7 @@ export interface SchemaObject {
   anyOf?: object;
   not?: object;
   additionalProperties?: object;
-  default?: SchemaObject;
+  default?: string | number | boolean;
 }
 
 export interface Schema {

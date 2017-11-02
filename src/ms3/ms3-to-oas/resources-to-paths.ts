@@ -1,6 +1,7 @@
+import { parameterType } from '../ms3-v1-api-interface';
 import * as OAS from './../../oas/oas-20-api-interface';
 import * as MS3 from './../ms3-v1-api-interface';
-import { filter, find } from 'lodash';
+import { filter, find, cloneDeep } from 'lodash';
 
 class ConvertResourcesToPaths {
   constructor(private API: MS3.API) {}
@@ -67,6 +68,31 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
+  cloneParameterObject(parameter: MS3.Parameter) {
+    const clonedParameter: any = cloneDeep(parameter);
+    delete clonedParameter.displayName;
+    delete clonedParameter.description;
+    delete clonedParameter.repeat;
+    delete clonedParameter.required;
+    delete clonedParameter.example;
+    if (clonedParameter.type == 'number') clonedParameter.type = 'long';
+    return clonedParameter;
+  }
+
+  getArrayTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
+    const convertedItems: any = this.cloneParameterObject(parameter);
+    const convertedParameter: OAS.SchemaObject = {
+      type: 'array',
+      items: convertedItems
+    };
+
+    return convertedParameter;
+  }
+
+  getPrimitiveTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
+    return this.cloneParameterObject(parameter);
+  }
+
   getParametersByType(parameters: MS3.Parameter[], type: string): OAS.ParameterObject[] {
     return parameters.map( (parameter: MS3.Parameter) => {
       const convertedParameter: any = {
@@ -76,7 +102,8 @@ class ConvertResourcesToPaths {
       };
 
       if (parameter.description) convertedParameter.description = parameter.description;
-      // add schema to object
+      convertedParameter.schema = parameter.repeat ? this.getArrayTypeSchema(parameter) : this.getPrimitiveTypeSchema(parameter);
+
       return convertedParameter;
     });
   }
