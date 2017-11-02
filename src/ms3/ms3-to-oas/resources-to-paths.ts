@@ -50,7 +50,10 @@ class ConvertResourcesToPaths {
       };
 
       if (header.description) resultObject[header.displayName].description = header.description;
-      // add schema to object
+      resultObject[header.displayName].schema = header.repeat ? this.getArrayTypeSchema(header) : this.getPrimitiveTypeSchema(header);
+      resultObject[header.displayName].schema.name;
+      resultObject[header.displayName].schema.in;
+
       return resultObject;
     }, {});
   }
