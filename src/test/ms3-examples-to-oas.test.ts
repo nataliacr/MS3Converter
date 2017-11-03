@@ -1,6 +1,5 @@
 import MS3toOAS from './../ms3/ms3-to-oas/index';
-import { originalExamples, resultExamples } from './files/Project-with-examples';
-import { originalExamplesWithReferences, resultExamplesWithReferences } from './files/Project-with-examples';
+import { originalExamples, resultExamples, resultExamplesWithReferences } from './files/Project-with-examples';
 import ConvertorOptions from './../common/convertor-options-interface';
 
 test('One MS3 resource with headers and query parameters should be converted to OAS successfully', async () => {
@@ -13,5 +12,5 @@ test('One MS3 resource with headers and query parameters should be converted to 
     asSingleFile: false,
     destinationPath: './'
   };
-  await expect(MS3toOAS.create(originalExamplesWithReferences, config).convert()).resolves.toEqual(resultExamplesWithReferences);
+  await expect(MS3toOAS.create(originalExamples, config).convert()).resolves.toEqual(resultExamplesWithReferences);
 });
