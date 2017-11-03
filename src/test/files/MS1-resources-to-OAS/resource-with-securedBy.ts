@@ -21,6 +21,12 @@ export const originalResourceWithSecuredBy: MS3 = {
         'accessTokenUri': 'http://hey.there',
         'scopes': []
       }
+    },
+    {
+      'name': 'Digest Auth',
+      'type': 'Digest Authentication',
+      'describedBy': {},
+      '__id': 'a3c8a352-2b7f-4955-839d-d980da30ae4f'
     }
   ],
   'resources': [
@@ -31,7 +37,7 @@ export const originalResourceWithSecuredBy: MS3 = {
         {
           'active': true,
           'name': 'GET',
-          'securedBy': ['auth20']
+          'securedBy': ['auth20', 'Digest Auth']
         }
       ],
       '__id': 'f068746b-acd9-40c8-af83-83a89095b0a0'
