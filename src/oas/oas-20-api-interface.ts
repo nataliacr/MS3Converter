@@ -4,7 +4,7 @@
 
 export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+export type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
 
 interface Contact {
   name?: string;
@@ -146,7 +146,7 @@ interface OAuthFlows {
   authorizationCode?: OAuthFlow;
 }
 
-interface SecuritySchemeObject {
+export interface SecuritySchemeObject {
   type?: securitySchemeType;
   description?: string;
   name?: string;
