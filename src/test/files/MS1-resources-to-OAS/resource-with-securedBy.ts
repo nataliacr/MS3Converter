@@ -12,7 +12,15 @@ export const originalResourceWithSecuredBy: MS3 = {
     {
       'name': 'auth20',
       'type': 'OAuth 2.0',
-      '__id': 'f068746b-acd9-40c8-af83-83a89095b0a1'
+      '__id': 'f068746b-acd9-40c8-af83-83a89095b0a1',
+      'settings': {
+        'authorizationGrants': [
+          'client_credentials',
+          'implicit'
+        ],
+        'accessTokenUri': 'http://hey.there',
+        'scopes': []
+      }
     }
   ],
   'resources': [
@@ -49,5 +57,20 @@ export const resultResourceWithSecuredBy: OAS = {
       }
     }
   },
-  components: {}
+  components: {
+    securitySchemes: {
+      'auth20': {
+        flows: {
+          clientCredentials: {
+            scopes: [],
+            tokenUrl: 'http://hey.there'
+          },
+          implicit: {
+            scopes: [],
+            authorizationUrl: 'https://auth.url'
+          },
+        }
+      }
+    }
+  }
 };

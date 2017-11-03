@@ -132,8 +132,8 @@ export interface Headers {
   [propName: string]: HeaderObject | ReferenceObject;
 }
 
-interface OAuthFlow {
-  authorizationUrl: string;
+export interface OAuthFlow {
+  authorizationUrl?: string;
   tokenUrl?: string;
   refreshUrl?: string;
   scopes: object;
@@ -157,7 +157,7 @@ export interface SecuritySchemeObject {
   openIdConnectUrl?: string;
 }
 
-interface SecurityScheme {
+export interface SecurityScheme {
   [propName: string]: SecuritySchemeObject | ReferenceObject;
 }
 
@@ -252,7 +252,7 @@ export interface API {
   paths: Paths;
   servers?: Server[];
   components?: Components;
-  security?: SecurityRequirement;
+  security?: SecurityRequirement[];
   tags?: Tag[];
   externalDocs?: ExternalDocs;
 }
