@@ -8,6 +8,8 @@ class ConvertSecuritySchemes {
   convert(): OAS.SecurityRequirement {
     return this.API.securitySchemes.reduce( (resultObject: any, securityScheme: MS3.SecurityScheme) => {
 
+      // basic to http
+      // pass through to apiKey ???
       return resultObject;
     }, {});
   }
