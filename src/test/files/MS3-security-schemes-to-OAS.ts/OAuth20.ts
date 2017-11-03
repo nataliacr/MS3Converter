@@ -1,7 +1,7 @@
 import { API as MS3 } from './../../../ms3/ms3-v1-api-interface';
 import { API as OAS } from './../../../oas/oas-20-api-interface';
 
-export const originalOAuth10: MS3 = {
+export const originalOAuth20: MS3 = {
   'settings': {
     'title': 'params',
     'baseUri': 'http://params'
@@ -10,14 +10,17 @@ export const originalOAuth10: MS3 = {
   'entityTypeName': 'api',
   'securitySchemes': [
     {
-      'name': 'Auth 1.0',
-      'type': 'OAuth 1.0',
+      'name': 'Auth 2.0',
+      'type': 'OAuth 2.0',
       'description': 'description',
       'settings': {
-        'requestTokenUri': 'http://uri.uri',
+        'accessTokenUri': 'http://uri.uri',
+        'authorizationGrants': [
+          'client_credentials',
+          'implicit'
+        ],
         'authorizationUri': 'http://uri.uri',
-        'tokenCredentialsUri': 'http://uri.uri',
-        'signatures': [
+        'scopes': [
           'HMAC-SHA1',
           'RSA-SHA1'
         ]
@@ -59,7 +62,7 @@ export const originalOAuth10: MS3 = {
   ]
 };
 
-export const resultOAuth10: OAS = {
+export const resultOAuth20: OAS = {
   openapi: '2.0',
   info: {
     title: 'params',
@@ -68,6 +71,27 @@ export const resultOAuth10: OAS = {
   },
   paths: {},
   components: {
-    securitySchemes: {}
+    securitySchemes: {
+      'Auth 2.0': {
+        description: 'description',
+        type: 'oauth2',
+        flows: {
+          'clientCredentials': {
+            scopes: [
+              'HMAC-SHA1',
+              'RSA-SHA1'
+            ],
+            tokenUrl: 'http://uri.uri'
+          },
+          'implicit': {
+            authorizationUrl: 'http://uri.uri',
+            scopes: [
+              'HMAC-SHA1',
+              'RSA-SHA1'
+            ]
+          }
+        }
+      }
+    }
   }
 };

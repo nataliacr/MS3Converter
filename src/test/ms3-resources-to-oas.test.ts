@@ -1,6 +1,4 @@
 import MS3toOAS from './../ms3/ms3-to-oas/index';
-import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
-import * as OASInterfaces from './../oas/oas-20-api-interface';
 import { originalResourceWithParameters, resultResourceWithParameters } from './files/MS1-resources-to-OAS/resource-with-parameters';
 import { originalNestedResources, resultNestedResources } from './files/MS1-resources-to-OAS/nested-resources';
 import { originalResourceWithRequestBody, resultResourceWithRequestBody } from './files/MS1-resources-to-OAS/resource-with-request-body';

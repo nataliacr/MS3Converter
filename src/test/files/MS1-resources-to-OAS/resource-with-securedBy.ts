@@ -60,6 +60,7 @@ export const resultResourceWithSecuredBy: OAS = {
   components: {
     securitySchemes: {
       'auth20': {
+        type: 'oauth2',
         flows: {
           clientCredentials: {
             scopes: [],

@@ -35,13 +35,13 @@ class ConvertSecuritySchemes {
     return resultObject;
   }
 
-  getHttpScheme(securityScheme: MS3.SecurityScheme) {}
-
   getSecurityScheme(securityScheme: MS3.SecurityScheme, type: OAS.securitySchemeType): OAS.SecuritySchemeObject {
-    const convertedSecurityScheme: any = {};
+    const convertedSecurityScheme: any = {
+      type: type
+    };
 
     if (type == 'oauth2' && this.getOAuthFlows(securityScheme)) convertedSecurityScheme.flows = this.getOAuthFlows(securityScheme);
-    if (type == 'http') convertedSecurityScheme.scheme = this.getHttpScheme(securityScheme);
+    if (type == 'http') convertedSecurityScheme.scheme = 'basic';
     if (securityScheme.description) convertedSecurityScheme.description = securityScheme.description;
 
     return convertedSecurityScheme;

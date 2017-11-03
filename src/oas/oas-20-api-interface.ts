@@ -147,7 +147,7 @@ interface OAuthFlows {
 }
 
 export interface SecuritySchemeObject {
-  type?: securitySchemeType;
+  type: securitySchemeType;
   description?: string;
   name?: string;
   in?: 'query' | 'header' | 'cookie';
