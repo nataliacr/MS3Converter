@@ -1,3 +1,4 @@
+import { securitySchemeType } from '../../oas/oas-20-api-interface';
 import * as OAS from './../../oas/oas-20-api-interface';
 import * as MS3 from './../ms3-v1-api-interface';
 import { filter, find, cloneDeep } from 'lodash';
@@ -5,12 +6,18 @@ import { filter, find, cloneDeep } from 'lodash';
 class ConvertResourcesToPaths {
   constructor(private API: MS3.API) {}
 
+  getSecuritySchemaByName(securitySchemeName: string): MS3.SecurityScheme {
+    return find(this.API.securitySchemes, ['name', securitySchemeName]);
+  }
+
   getParentResourcePath(id: string): string {
     return find(this.API.resources, ['__id', id]).path;
   }
 
   getDataTypeName(id: string): string {
-    return find(this.API.dataTypes, ['__id', id]).name;
+    return find(this.API.dataTypes, (dataType: MS3.DataType) => {
+      return (dataType.__id == id) && (dataType.type != 'nil');
+    }).name;
   }
 
   getExampleName(id: string): string {
@@ -54,8 +61,8 @@ class ConvertResourcesToPaths {
 
       if (header.description) resultObject[header.displayName].description = header.description;
       resultObject[header.displayName].schema = header.repeat ? this.getArrayTypeSchema(header) : this.getPrimitiveTypeSchema(header);
-      resultObject[header.displayName].schema.name;
-      resultObject[header.displayName].schema.in;
+      delete resultObject[header.displayName].schema.name;
+      delete resultObject[header.displayName].schema.in;
 
       return resultObject;
     }, {});
@@ -123,6 +130,9 @@ class ConvertResourcesToPaths {
 
   getSecurityRequirement(securedBy: string[]): OAS.SecurityRequirement {
     return securedBy.reduce( (resultObject: any, secureByName: string) => {
+      const securitySchema: MS3.SecurityScheme = this.getSecuritySchemaByName(secureByName);
+      if (securitySchema.type != 'OAuth 2.0' && securitySchema.type != 'Basic Authentication') return resultObject;
+
       resultObject[secureByName] = [];
       return resultObject;
     }, {});

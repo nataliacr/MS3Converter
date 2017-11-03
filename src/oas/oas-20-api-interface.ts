@@ -4,7 +4,7 @@
 
 export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+export type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
 
 interface Contact {
   name?: string;
@@ -132,8 +132,8 @@ export interface Headers {
   [propName: string]: HeaderObject | ReferenceObject;
 }
 
-interface OAuthFlow {
-  authorizationUrl: string;
+export interface OAuthFlow {
+  authorizationUrl?: string;
   tokenUrl?: string;
   refreshUrl?: string;
   scopes: object;
@@ -146,8 +146,8 @@ interface OAuthFlows {
   authorizationCode?: OAuthFlow;
 }
 
-interface SecuritySchemeObject {
-  type?: securitySchemeType;
+export interface SecuritySchemeObject {
+  type: securitySchemeType;
   description?: string;
   name?: string;
   in?: 'query' | 'header' | 'cookie';
@@ -157,7 +157,7 @@ interface SecuritySchemeObject {
   openIdConnectUrl?: string;
 }
 
-interface SecurityScheme {
+export interface SecurityScheme {
   [propName: string]: SecuritySchemeObject | ReferenceObject;
 }
 
@@ -252,7 +252,7 @@ export interface API {
   paths: Paths;
   servers?: Server[];
   components?: Components;
-  security?: SecurityRequirement;
+  security?: SecurityRequirement[];
   tags?: Tag[];
   externalDocs?: ExternalDocs;
 }
