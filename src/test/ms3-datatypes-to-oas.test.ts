@@ -1,6 +1,13 @@
 import MS3toOAS from './../ms3/ms3-to-oas/index';
 import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
 import * as OASInterfaces from './../oas/oas-20-api-interface';
+import ConvertorOptions from './../common/convertor-options-interface';
+import { exists } from 'fs';
+import { promisify } from 'util';
+import * as rmdir from 'rmdir';
+
+const fileExistsPromise = promisify(exists);
+const rmdirPromise = promisify(rmdir);
 
 const project: ApiInterfaces.API = {
   settings: {
@@ -205,4 +212,51 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
     }
   };
   await expect(MS3toOAS.create(project).convert()).resolves.toEqual(expectedResult);
+});
+
+test('MS3 schema references should be converted to OAS successfully', async() => {
+  const expectedResult: OASInterfaces.API = {
+    openapi: '2.0',
+    info: {
+      title: 'params',
+      description: 'API description',
+      version: '2.0'
+    },
+    paths: {},
+    components: {
+      schemas: {
+        'ArrayInclude': {
+          '$ref': './schemas/ArrayInclude.json#ArrayInclude'
+        },
+        'arrayRefNil': {
+          '$ref': './schemas/arrayRefNil.json#arrayRefNil'
+        },
+        'ArraySchema': {
+          '$ref': './schemas/ArraySchema.json#ArraySchema'
+        },
+        'ObjectSchema' : {
+          '$ref': './schemas/ObjectSchema.json#ObjectSchema'
+        },
+        'arrayOfNil': {
+          '$ref': './schemas/arrayOfNil.json#arrayOfNil'
+        }
+      },
+    }
+  };
+
+  const config: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: false,
+    destinationPath: './'
+  };
+
+  await expect(MS3toOAS.create(project, config).convert()).resolves.toEqual(expectedResult);
+
+  // const mainFileExist = await fileExistsPromise(`./api.json`);
+  // const schemasFolderExist = await fileExistsPromise(`./schemas/ArrayInclude.json`);
+  // // await rmdirPromise('./api.json');
+  // // await rmdirPromise('./schemas');
+
+  // expect(mainFileExist).toEqual(true);
+  // expect(schemasFolderExist).toEqual(true);
 });

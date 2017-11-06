@@ -9,7 +9,7 @@ export function convertInlineExamples(examples: MS3.Example[]): OAS.Example {
   }, {});
 }
 
-export function convertExternalExampleReferences(examples: MS3.Example[], destinationPath: string): OAS.Example {
+export function convertExternalExampleReferences(examples: MS3.Example[]): OAS.Example {
   return examples.reduce( (resultObject: any, example: MS3.Example) => {
     resultObject[example.title] = { externalValue: `./examples/${example.title}.${example.format}#${example.title}` };
     return resultObject;
@@ -24,7 +24,7 @@ export function convertExternalExamples(examples: MS3.Example[], destinationPath
           value: example.content
         }
       },
-      path: `${destinationPath}examples/${example.title}.${example.format}#${example.title}`
+      path: `${destinationPath}examples/${example.title}.${example.format}`
     };
   });
 }
