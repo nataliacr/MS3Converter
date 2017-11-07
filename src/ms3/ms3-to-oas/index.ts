@@ -92,12 +92,12 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       await this.writeApiToDisc(result);
 
       if (this.externalFiles.examples.length) {
-        await MkdirpPromise(this.options.destinationPath + '/examples/');
+        await MkdirpPromise(this.options.destinationPath + 'examples/');
         await this.writeExamplesToDisk();
       }
 
       if (this.externalFiles.dataTypes.length) {
-        await MkdirpPromise(this.options.destinationPath + '/schemas/');
+        await MkdirpPromise(this.options.destinationPath + 'schemas/');
         await this.writeDataTypesToDisk();
       }
     }

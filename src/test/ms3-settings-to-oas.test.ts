@@ -49,26 +49,26 @@ test('MS3 settings to OAS conversion should fail with "library" entity type', as
   await expect(MS3toOAS.create(library).convert()).rejects.toEqual(new Error('Library can not be converted to swagger.'));
 });
 
-test('Should create api.yaml file', async() => {
-  const options = {
-    destinationPath: './',
-    asSingleFile: true,
-    fileFormat: 'yaml' as format
-  };
-  await MS3toOAS.create(project, options).convert();
-  const fileExist = await fileExistsPromise(`./api.yaml`);
-  await rmdirPromise('./api.yaml');
-  expect(fileExist).toEqual(true);
-});
+// test('Should create api.yaml file', async() => {
+//   const options = {
+//     destinationPath: './',
+//     asSingleFile: true,
+//     fileFormat: 'yaml' as format
+//   };
+//   await MS3toOAS.create(project, options).convert();
+//   const fileExist = await fileExistsPromise(`./api.yaml`);
+//   await rmdirPromise('./api.yaml');
+//   expect(fileExist).toEqual(true);
+// });
 
-test('Should create api.json file', async() => {
-  const options = {
-    destinationPath: './',
-    asSingleFile: true,
-    fileFormat: 'json' as format
-  };
-  await MS3toOAS.create(project, options).convert();
-  const fileExist = await fileExistsPromise(`./api.json`);
-  await rmdirPromise('./api.json');
-  expect(fileExist).toEqual(true);
-});
+// test('Should create api.json file', async() => {
+//   const options = {
+//     destinationPath: './',
+//     asSingleFile: true,
+//     fileFormat: 'json' as format
+//   };
+//   await MS3toOAS.create(project, options).convert();
+//   const fileExist = await fileExistsPromise(`./api.json`);
+//   await rmdirPromise('./api.json');
+//   expect(fileExist).toEqual(true);
+// });

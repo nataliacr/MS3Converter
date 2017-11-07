@@ -252,11 +252,11 @@ test('MS3 schema references should be converted to OAS successfully', async() =>
 
   await expect(MS3toOAS.create(project, config).convert()).resolves.toEqual(expectedResult);
 
-  // const mainFileExist = await fileExistsPromise(`./api.json`);
-  // const schemasFolderExist = await fileExistsPromise(`./schemas/ArrayInclude.json`);
-  // // await rmdirPromise('./api.json');
-  // // await rmdirPromise('./schemas');
+  const mainFileExist = await fileExistsPromise(`./api.json`);
+  const schemasFolderExist = await fileExistsPromise(`./schemas/ArrayInclude.json`);
+  await rmdirPromise('./api.json');
+  // await rmdirPromise('./schemas');
 
-  // expect(mainFileExist).toEqual(true);
-  // expect(schemasFolderExist).toEqual(true);
+  expect(mainFileExist).toEqual(true);
+  expect(schemasFolderExist).toEqual(true);
 });
