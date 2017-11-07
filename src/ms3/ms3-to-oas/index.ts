@@ -1,8 +1,9 @@
 import ConvertorInterface from '../../common/convertor-interface';
-import { API as MS3, DataType } from '../ms3-v1-api-interface';
+import { API as MS3, DataType, Resource } from '../ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../../common/convertor-options-interface';
 import { API as OAS, Info } from './../../oas/oas-20-api-interface';
 import { convertDataTypesToSchemas, convertExternalDataTypes, convertExternalDataTypesReferences } from './datatypes-to-schemas';
+import mergeTypesAndTraits from './merge-resource-types-and-traits';
 import convertResourcesToPaths from './resources-to-paths';
 import convertSecuritySchemes from './security-schemes-to-oas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from './examples-to-oas';
@@ -11,6 +12,7 @@ import { writeFile } from 'fs';
 import { promisify } from 'util';
 import { promise as MkdirpPromise } from 'mkdirp2';
 import * as YAML from 'yamljs';
+import { cloneDeep } from 'lodash';
 
 const writeFilePromise = promisify(writeFile);
 
@@ -40,6 +42,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       paths: {},
       components: {}
     };
+
     if (this.ms3API.dataTypes) {
       if (this.options.destinationPath) {
         this.externalFiles.dataTypes = this.externalFiles.dataTypes.concat(convertExternalDataTypes(this.ms3API, this.options.destinationPath));
@@ -47,6 +50,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       }
       else this.oasAPI.components.schemas = convertDataTypesToSchemas(this.ms3API);
     }
+
     if (this.ms3API.examples) {
       if (this.options.destinationPath) {
         this.externalFiles.examples = this.externalFiles.examples.concat(convertExternalExamples(this.ms3API.examples, this.options.destinationPath));
@@ -54,8 +58,14 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       }
       else this.oasAPI.components.examples = convertInlineExamples(this.ms3API.examples);
     }
+
     if (this.ms3API.securitySchemes) this.oasAPI.components.securitySchemes = convertSecuritySchemes(this.ms3API);
-    if (this.ms3API.resources) this.oasAPI.paths = convertResourcesToPaths(this.ms3API);
+    if (this.ms3API.resources && (this.ms3API.resourcesTypes || this.ms3API.traits)) mergeTypesAndTraits(this.ms3API);
+    if (this.ms3API.resources) {
+      let mergedApi: MS3 = cloneDeep(this.ms3API);
+      if (this.ms3API.resourcesTypes || this.ms3API.traits) mergedApi = mergeTypesAndTraits(this.ms3API);
+      this.oasAPI.paths = convertResourcesToPaths(mergedApi);
+    }
 
     return this.oasAPI;
   }
