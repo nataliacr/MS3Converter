@@ -60,10 +60,11 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     }
 
     if (this.ms3API.securitySchemes) this.oasAPI.components.securitySchemes = convertSecuritySchemes(this.ms3API);
-    if (this.ms3API.resources && (this.ms3API.resourcesTypes || this.ms3API.traits)) mergeTypesAndTraits(this.ms3API);
     if (this.ms3API.resources) {
       let mergedApi: MS3 = cloneDeep(this.ms3API);
-      if (this.ms3API.resourcesTypes || this.ms3API.traits) mergedApi = mergeTypesAndTraits(this.ms3API);
+      if (this.ms3API.resourcesTypes || this.ms3API.traits) {
+        mergedApi = mergeTypesAndTraits(this.ms3API);
+      }
       this.oasAPI.paths = convertResourcesToPaths(mergedApi);
     }
 
