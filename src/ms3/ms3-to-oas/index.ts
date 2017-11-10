@@ -2,7 +2,7 @@ import ConvertorInterface from '../../common/convertor-interface';
 import { API as MS3, DataType, Resource } from '../ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../../common/convertor-options-interface';
 import { API as OAS, Info } from './../../oas/oas-20-api-interface';
-import { convertDataTypesToSchemas, convertExternalDataTypes, convertExternalDataTypesReferences } from './datatypes-to-schemas';
+import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from './datatypes-to-schemas';
 import mergeTypesAndTraits from './merge-resource-types-and-traits';
 import convertResourcesToPaths from './resources-to-paths';
 import convertSecuritySchemes from './security-schemes-to-oas';
@@ -30,7 +30,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
   oasAPI: OAS;
   externalFiles: any = {
     examples: [],
-    dataTypes: []
+    schemas: []
   };
 
   constructor(private ms3API: MS3, private options: ConvertorOptions) {}
@@ -45,8 +45,8 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
 
     if (this.ms3API.dataTypes) {
       if (this.options.destinationPath) {
-        this.externalFiles.dataTypes = this.externalFiles.dataTypes.concat(convertExternalDataTypes(this.ms3API, this.options.destinationPath));
-        this.oasAPI.components.schemas = convertExternalDataTypesReferences(this.ms3API);
+        this.externalFiles.schemas = this.externalFiles.schemas.concat(convertExternalSchemas(this.ms3API, this.options.destinationPath));
+        this.oasAPI.components.schemas = convertExternalSchemasReferences(this.ms3API);
       }
       else this.oasAPI.components.schemas = convertDataTypesToSchemas(this.ms3API);
     }
@@ -107,9 +107,9 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
         await this.writeExamplesToDisk();
       }
 
-      if (this.externalFiles.dataTypes.length) {
+      if (this.externalFiles.schemas.length) {
         await MkdirpPromise(this.options.destinationPath + 'schemas/');
-        await this.writeDataTypesToDisk();
+        await this.writeSchemasToDisk();
       }
     }
 
@@ -152,8 +152,8 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return Promise.all(promisesArray);
   }
 
-  private writeDataTypesToDisk() {
-    const promisesArray: any = this.externalFiles.dataTypes.map((file: any) => writeFilePromise(file.path, JSON.stringify(file.content, undefined, 2)));
+  private writeSchemasToDisk() {
+    const promisesArray: any = this.externalFiles.schemas.map((file: any) => writeFilePromise(file.path, JSON.stringify(file.content, undefined, 2)));
     return Promise.all(promisesArray);
   }
 

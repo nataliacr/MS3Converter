@@ -132,10 +132,10 @@ export function convertDataTypesToSchemas(API: MS3.API): Schema {
   return ConvertDataTypesToSchemas.create(API).convert();
 }
 
-export function convertExternalDataTypes(API: MS3.API, path: string): object[] {
+export function convertExternalSchemas(API: MS3.API, path: string): object[] {
   return ConvertDataTypesToSchemas.create(API).convertExternal(path);
 }
 
-export function convertExternalDataTypesReferences(API: MS3.API): Schema {
+export function convertExternalSchemasReferences(API: MS3.API): Schema {
   return ConvertDataTypesToSchemas.create(API).convertWithReferences();
 }

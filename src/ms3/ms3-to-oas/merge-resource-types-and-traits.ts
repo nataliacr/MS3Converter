@@ -1,5 +1,4 @@
 import Ms3Loader from '../loader';
-import { METHODS } from 'http';
 import * as MS3 from '../ms3-v1-api-interface';
 import { cloneDeep, find, filter, difference } from 'lodash';
 import { Method } from '../ms3-v1-api-interface';
