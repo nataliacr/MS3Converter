@@ -51,6 +51,7 @@
     "@types/yamljs": "^0.2.30",
     "fs": "0.0.1-security",
     "lodash": "^4.17.4",
+    "mkdirp2": "^1.0.3",
     "path": "^0.12.7",
     "rmdir": "^1.2.0",
     "yamljs": "^0.3.0"
