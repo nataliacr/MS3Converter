@@ -64,7 +64,7 @@ class MergeTypesAndTraits {
     const resourceType = this.getResourceType(resource.type);
 
     if (resourceType.description && !resource.description) mergedResource.description = resourceType.description;
-    if (resourceType.methods) mergedResource.methods = this.mergeMethods(resourceType, resource.methods);
+    if (resourceType.methods) mergedResource.methods = this.mergeMethods(resource.methods, resourceType.methods);
 
     return mergedResource;
   }
@@ -93,9 +93,9 @@ class MergeTypesAndTraits {
     return mergedMethod;
   }
 
-  mergeMethods(resourceType: MS3.ResourcesType, methods: MS3.Method[]): MS3.Method[] {
-    return resourceType.methods.reduce( (resultArray: MS3.Method[], resourceTypeMethod: MS3.Method) => {
-      const originalMethod = find(methods, ['name', resourceTypeMethod.name]);
+  mergeMethods(resourceMethods: MS3.Method[], resourceTypeMethods: MS3.Method[]): MS3.Method[] {
+    return resourceTypeMethods.reduce( (resultArray: MS3.Method[], resourceTypeMethod: MS3.Method) => {
+      const originalMethod = find(resourceMethods, ['name', resourceTypeMethod.name]);
 
       if (originalMethod) resultArray.push(this.mergeTwoMethods(originalMethod, resourceTypeMethod));
       else resultArray.push(resourceTypeMethod);
