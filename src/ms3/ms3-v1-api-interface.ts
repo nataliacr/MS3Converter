@@ -129,7 +129,7 @@ export interface NestedResource {
 export interface Resource extends ResourcesType {
   path: string;
   securedBy?: string[];
-  selectedTraits?: string;
+  selectedTraits?: string[];
   type?: string;
   resources?: NestedResource[];
   parentId?: string;

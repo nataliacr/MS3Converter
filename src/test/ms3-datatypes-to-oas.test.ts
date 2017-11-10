@@ -257,6 +257,5 @@ test('MS3 schemas should be converted to OAS with references && external files s
   await rmdirPromise('./api.json');
   await rmdirPromise('./schemas');
 
-  expect(mainFileExist).toEqual(true);
-  expect(schemasFolderExist).toEqual(true);
+  expect(mainFileExist && schemasFolderExist).toEqual(true);
 });

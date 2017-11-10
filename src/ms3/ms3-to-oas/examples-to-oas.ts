@@ -1,6 +1,5 @@
 import * as OAS from './../../oas/oas-20-api-interface';
 import * as MS3 from './../ms3-v1-api-interface';
-import {  } from 'lodash';
 
 export function convertInlineExamples(examples: MS3.Example[]): OAS.Example {
   return examples.reduce( (resultObject: any, example: MS3.Example) => {

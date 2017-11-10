@@ -26,6 +26,5 @@ test('MS3 examples should be converted to OAS with references && external files 
   await rmdirPromise('./api.json');
   await rmdirPromise('./examples');
 
-  expect(mainFileExist).toEqual(true);
-  expect(examplesFolderExist).toEqual(true);
+  expect(mainFileExist && examplesFolderExist).toEqual(true);
 });
