@@ -14,8 +14,8 @@ type exampleFormat = 'json' | 'xml' | 'txt';
 type contentType = 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
 export type entityName = 'api' | 'library' | 'overlay' | 'extension';
-type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
-type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
+export type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
+export type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
 
 export interface Parameter {
   type: parameterType;
@@ -129,7 +129,7 @@ export interface NestedResource {
 export interface Resource extends ResourcesType {
   path: string;
   securedBy?: string[];
-  selectedTraits?: string;
+  selectedTraits?: string[];
   type?: string;
   resources?: NestedResource[];
   parentId?: string;

@@ -4,14 +4,14 @@ import { Library } from './../ms3-v1-library-interface';
 import { Trait } from './../ms3-v1-api-interface';
 
 class MergeLibraryToMs3 {
-  libraries: Library[];
+  private libraries: Library[];
   constructor(private API: MS3.API) {}
 
-  checkDuplicates(targetArr: any, item: any, counter: number = 1): any {
-    const prop = item.name ? 'name' : 'title';
-    const traitNames = map(targetArr, (trait: any) => trait[prop]);
-    if (traitNames.indexOf(item[prop]) != -1) {
-      item[prop] = `${item[prop]}-${counter}`;
+  checkDuplicates(targetArr: any [], item: any, counter: number = 1): any {
+    const propName = item.name ? 'name' : 'title';
+    const itemName = map(targetArr, (target: any) => target[propName]);
+    if (itemName.indexOf(item[propName]) != -1) {
+      item[propName] = `${item[propName]}-${counter}`;
       counter++;
       return this.checkDuplicates(targetArr, item, counter);
     }
@@ -30,7 +30,7 @@ class MergeLibraryToMs3 {
     }, project);
   }
 
-  convert(): MS3.API {
+  merge(): MS3.API {
     const project = cloneDeep(this.API);
     this.libraries = project.libraries.map((lib): Library => lib.library);
     delete project.libraries;
@@ -44,5 +44,5 @@ class MergeLibraryToMs3 {
 }
 
 export default function mergeLibraryToMs3(API: MS3.API): MS3.API {
-  return MergeLibraryToMs3.create(API).convert();
+  return MergeLibraryToMs3.create(API).merge();
 }

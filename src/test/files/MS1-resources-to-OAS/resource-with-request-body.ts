@@ -113,6 +113,14 @@ export const resultResourceWithRequestBody: OAS = {
         'title': 'schema',
         'type': 'string',
       }
+    },
+    examples: {
+      'ex': {
+        value: '{}'
+      },
+      'ex2': {
+        value: '<xml></xml>'
+      }
     }
   }
 };
