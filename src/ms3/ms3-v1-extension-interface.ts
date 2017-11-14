@@ -21,4 +21,4 @@ interface Extension {
   libraries?: apiInterfaces.IncludedLibrary[];
 }
 
-export { Extension };
+export default Extension;

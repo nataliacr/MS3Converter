@@ -76,10 +76,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return this.oasAPI;
   }
 
-  convertExtension(): OAS {
-    // check for extended project and merge extension
-    return this.oasAPI;
-  }
+  convertExtension(): void {}
 
   async convert(): Promise<OAS> {
     const result: DataToWrite = { path: '' };
@@ -91,9 +88,12 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       case 'overlay':
         result.content = this.convertOverlay();
         break;
-      case 'extension':
-        result.content = this.convertExtension();
+      case 'extension': {
+        // merge all includes into extension
+        this.convertExtension();
+        result.content = this.convertAPI();
         break;
+      }
       case 'library':
         throw new Error('Library can not be converted to swagger.');
     }
