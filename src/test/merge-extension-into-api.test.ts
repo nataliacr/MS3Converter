@@ -4,6 +4,7 @@ import { originalProjectWithExamples, resultProjectWithExamples } from './files/
 import { originalProjectWithDataTypes, resultProjectWithDataTypes } from './files/Merge-extension-with-api/merge-extension-with-api-datatypes';
 import { originalProjectWithTraits, resultProjectWithTraits } from './files/Merge-extension-with-api/merge-extension-with-api-traits';
 import { originalProjectWithResources, resultProjectWithResources } from './files/Merge-extension-with-api/merge-extension-with-api-resources';
+import { originalProjectWithSecuritySchemes, resultProjectWithSecuritySchemes } from './files/Merge-extension-with-api/merge-extension-with-api-securitySchemes';
 
 test('MS3 Extension and Api settings should be merged together successfully', async () => {
   expect(mergeExtensionWithApi(originalProjectWithSettings)).toEqual(resultProjectWithSettings);
@@ -23,4 +24,8 @@ test('MS3 Extension and Api traits should be merged together successfully', asyn
 
 test('MS3 Extension and Api resources should be merged together successfully', async () => {
   expect(mergeExtensionWithApi(originalProjectWithResources)).toEqual(resultProjectWithResources);
+});
+
+test('MS3 Extension and Api security schemes should be merged together successfully', async () => {
+  expect(mergeExtensionWithApi(originalProjectWithSecuritySchemes)).toEqual(resultProjectWithSecuritySchemes);
 });

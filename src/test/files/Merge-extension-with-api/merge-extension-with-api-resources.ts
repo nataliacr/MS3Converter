@@ -51,7 +51,21 @@ export const originalProjectWithResources: Extension = {
             },
             {
               'active': true,
-              'name': 'POST'
+              'name': 'POST',
+              'headers': [
+                {
+                  'displayName': 'resourcePOSTQueryP',
+                  'type': 'string',
+                  'repeat': false,
+                  'required': false
+                },
+                {
+                  'displayName': 'header2',
+                  'type': 'string',
+                  'repeat': false,
+                  'required': false
+                }
+              ],
             }
           ],
           '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
@@ -143,7 +157,15 @@ export const originalProjectWithResources: Extension = {
       'methods': [
         {
           'active': true,
-          'name': 'POST'
+          'name': 'POST',
+          'headers': [
+            {
+              'displayName': 'resourcePOSTQueryP',
+              'type': 'boolean',
+              'repeat': false,
+              'required': false
+            }
+          ],
         },
         {
           'active': true,
@@ -242,7 +264,21 @@ export const resultProjectWithResources: API = {
       'methods': [
         {
           'active': true,
-          'name': 'POST'
+          'name': 'POST',
+          'headers': [
+            {
+              'displayName': 'resourcePOSTQueryP',
+              'type': 'boolean',
+              'repeat': false,
+              'required': false
+            },
+            {
+              'displayName': 'header2',
+              'type': 'string',
+              'repeat': false,
+              'required': false
+            }
+          ],
         },
         {
           'active': true,

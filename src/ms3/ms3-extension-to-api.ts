@@ -58,6 +58,9 @@ class MS3ExtensionToApi {
     if (this.api.resourcesTypes && this.extension.resourcesTypes) mergedApi.resourcesTypes = this.mergeResources(this.extension.resourcesTypes, this.api.resourcesTypes);
     if (!this.api.resourcesTypes && this.extension.resourcesTypes) mergedApi.resourcesTypes = this.extension.resourcesTypes;
 
+    if (this.api.securitySchemes && this.extension.securitySchemes) mergedApi.securitySchemes = this.mergeSecuritySchemes(this.extension.securitySchemes, this.api.securitySchemes);
+    if (!this.api.securitySchemes && this.extension.securitySchemes) mergedApi.securitySchemes = this.extension.securitySchemes;
+
     return mergedApi;
   }
 
@@ -169,19 +172,62 @@ class MS3ExtensionToApi {
     return mergedMethod;
   }
 
-  mergeResponses(extensionResponses: MS3.Response[], apiResoponses: MS3.Response[]): MS3.Response[] {
-    return apiResoponses.reduce( (resultArray: MS3.Response[], apiResoponse: MS3.Response) => {
-      const duplicateInExtension = find(resultArray, ['code', apiResoponse.code]);
+  mergeTwoSecuritySchemes(extenstionSecurityScheme: MS3.SecurityScheme, apiSecurityScheme: MS3.SecurityScheme): MS3.SecurityScheme {
+    const mergedSecuritySchemes = cloneDeep(apiSecurityScheme);
+
+    if (extenstionSecurityScheme.description) mergedSecuritySchemes.description = extenstionSecurityScheme.description;
+    if (extenstionSecurityScheme.annotations) mergedSecuritySchemes.annotations = this.mergeArrayOfObjects(extenstionSecurityScheme.annotations, apiSecurityScheme.annotations, 'name');
+    if (extenstionSecurityScheme.describedBy.headers) {
+      if (!apiSecurityScheme.describedBy.headers) mergedSecuritySchemes.describedBy.headers = extenstionSecurityScheme.describedBy.headers;
+      else mergedSecuritySchemes.describedBy.headers = this.mergeArrayOfObjects(extenstionSecurityScheme.describedBy.headers, apiSecurityScheme.describedBy.headers, 'displayName');
+    }
+    if (extenstionSecurityScheme.describedBy.queryParameters) {
+      if (!apiSecurityScheme.describedBy.queryParameters) mergedSecuritySchemes.describedBy.queryParameters = extenstionSecurityScheme.describedBy.queryParameters;
+      else mergedSecuritySchemes.describedBy.queryParameters = this.mergeArrayOfObjects(extenstionSecurityScheme.describedBy.queryParameters, apiSecurityScheme.describedBy.queryParameters, 'displayName');
+    }
+    if (extenstionSecurityScheme.describedBy.responses) {
+      if (!apiSecurityScheme.describedBy.responses) mergedSecuritySchemes.describedBy.responses = extenstionSecurityScheme.describedBy.responses;
+      else mergedSecuritySchemes.describedBy.responses = this.mergeResponses(extenstionSecurityScheme.describedBy.responses, apiSecurityScheme.describedBy.responses);
+    }
+    if (extenstionSecurityScheme.settings.accessTokenUri) mergedSecuritySchemes.settings.accessTokenUri = extenstionSecurityScheme.settings.accessTokenUri;
+    if (extenstionSecurityScheme.settings.authorizationUri) mergedSecuritySchemes.settings.authorizationUri = extenstionSecurityScheme.settings.authorizationUri;
+    if (extenstionSecurityScheme.settings.requestTokenUri) mergedSecuritySchemes.settings.requestTokenUri = extenstionSecurityScheme.settings.requestTokenUri;
+    if (extenstionSecurityScheme.settings.tokenCredentialsUri) mergedSecuritySchemes.settings.tokenCredentialsUri = extenstionSecurityScheme.settings.tokenCredentialsUri;
+    if (extenstionSecurityScheme.settings.authorizationGrants) mergedSecuritySchemes.settings.authorizationGrants = union(extenstionSecurityScheme.settings.authorizationGrants, apiSecurityScheme.settings.authorizationGrants);
+    if (extenstionSecurityScheme.settings.scopes) mergedSecuritySchemes.settings.scopes = union(extenstionSecurityScheme.settings.scopes, apiSecurityScheme.settings.scopes);
+    if (extenstionSecurityScheme.settings.signatures) mergedSecuritySchemes.settings.signatures = union(extenstionSecurityScheme.settings.signatures, apiSecurityScheme.settings.signatures);
+
+    return mergedSecuritySchemes;
+  }
+
+  mergeResponses(extensionResponses: MS3.Response[], apiResponses: MS3.Response[]): MS3.Response[] {
+    return apiResponses.reduce( (resultArray: MS3.Response[], apiResponse: MS3.Response) => {
+      const duplicateInExtension = find(resultArray, ['code', apiResponse.code]);
 
       if (!duplicateInExtension) {
-        resultArray.push(apiResoponse);
+        resultArray.push(apiResponse);
       } else {
-        const index = findIndex(resultArray, ['code', apiResoponse.code]);
-        resultArray[index] = this.mergeTwoMethods(resultArray[index], apiResoponse);
+        const index = findIndex(resultArray, ['code', apiResponse.code]);
+        resultArray[index] = this.mergeTwoMethods(resultArray[index], apiResponse);
       }
 
       return resultArray;
     }, cloneDeep(extensionResponses));
+  }
+
+  mergeSecuritySchemes(extensionSecuritySchemes: MS3.SecurityScheme[], apiSecuritySchemes: MS3.SecurityScheme[]): MS3.SecurityScheme[] {
+    return apiSecuritySchemes.reduce( (resultArray: MS3.SecurityScheme[], apiSecurityScheme: MS3.SecurityScheme) => {
+      const duplicateInExtension = find(resultArray, ['name', apiSecurityScheme.name]);
+
+      if (!duplicateInExtension) {
+        resultArray.push(apiSecurityScheme);
+      } else {
+        const index = findIndex(resultArray, ['name', apiSecurityScheme.name]);
+        resultArray[index] = this.mergeTwoSecuritySchemes(resultArray[index], apiSecurityScheme);
+      }
+
+      return resultArray;
+    }, cloneDeep(extensionSecuritySchemes));
   }
 }
 
