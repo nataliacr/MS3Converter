@@ -161,7 +161,7 @@ export interface Documentation {
   __id: string;
   name: string;
   description?: string;
-  annotations: Annotation[];
+  annotations?: Annotation[];
 }
 
 interface BasicAnnotationType {

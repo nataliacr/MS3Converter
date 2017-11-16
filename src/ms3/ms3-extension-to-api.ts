@@ -1,9 +1,10 @@
-import { cloneDeep, union, find, findIndex } from 'lodash';
+import { cloneDeep, union, find, findIndex, intersection } from 'lodash';
 import MS3Extension from './ms3-v1-extension-interface';
 import * as MS3 from './ms3-v1-api-interface';
 
 class MS3ExtensionToApi {
   api: any = {};
+  IdsHash: any = {};
 
   constructor(private extension: MS3Extension) {
     this.api = extension.settings.extends;
@@ -85,6 +86,7 @@ class MS3ExtensionToApi {
   }
 
   mergeArrayOfObjects(extensionObjectsArray: any[], apiObjectsArray: any[], identifier: string): any[] {
+    if (!apiObjectsArray) return extensionObjectsArray;
     return apiObjectsArray.reduce( (resultArray: any[], apiObject: any) => {
       const duplicateInExtension = find(resultArray, [identifier, apiObject[identifier]]);
 
@@ -97,6 +99,22 @@ class MS3ExtensionToApi {
 
       return resultArray;
     }, cloneDeep(extensionObjectsArray));
+  }
+
+  mergeBodies(extensionBodies: MS3.Body[], apiBodies: MS3.Body[]): MS3.Body[] {
+    if (!apiBodies) return extensionBodies;
+    return apiBodies.reduce( (resultArray: MS3.Body[], apiBody: MS3.Body) => {
+      const duplicateInExtension = find(resultArray, ['contentType', apiBody.contentType]);
+
+      if (!duplicateInExtension) {
+        resultArray.push(apiBody);
+      } else if (duplicateInExtension.annotations) {
+        const index = findIndex(resultArray, ['contentType', apiBody.contentType]);
+        resultArray[index] = this.mergeTwoBodies(resultArray[index], apiBody);
+      }
+
+      return resultArray;
+    }, cloneDeep(extensionBodies));
   }
 
   mergeResources(extensionResources: any[], apiResources: any[]): any[] {
@@ -129,14 +147,28 @@ class MS3ExtensionToApi {
     }, cloneDeep(extensionMethods));
   }
 
+  mergeTwoBodies(extenstionBody: MS3.Body, apiBody: MS3.Body): MS3.Body {
+    const mergedBody = cloneDeep(apiBody);
+
+    if (extenstionBody.annotations) mergedBody.annotations = this.mergeArrayOfObjects(extenstionBody.annotations, apiBody.annotations, 'name');
+
+    if (extenstionBody.type && extenstionBody.type != apiBody.type) mergedBody.type = this.getSelectedId(extenstionBody.type, apiBody.type, 'dataTypes');
+    if (extenstionBody.selectedExamples) mergedBody.selectedExamples = this.getSelectedIds(extenstionBody.selectedExamples, apiBody.selectedExamples, 'examples');
+
+    return mergedBody;
+  }
+
   mergeTwoResources(extenstionResource: any, apiResource: any): any {
     const mergedResource = cloneDeep(apiResource);
 
     if (extenstionResource.description) mergedResource.description = extenstionResource.description;
+
     if (extenstionResource.annotations) mergedResource.annotations = this.mergeArrayOfObjects(extenstionResource.annotations, apiResource.annotations, 'name');
-    if (extenstionResource.selectedTraits) mergedResource.selectedTraits = union(extenstionResource.selectedTraits, apiResource.selectedTraits);
-    if (extenstionResource.securedBy) mergedResource.securedBy = union(extenstionResource.securedBy, apiResource.securedBy);
     if (extenstionResource.pathVariables) mergedResource.pathVariables = this.mergeArrayOfObjects(extenstionResource.pathVariables, apiResource.pathVariables, 'displayName');
+
+    if (extenstionResource.selectedTraits) mergedResource.selectedTraits = this.getSelectedIds(extenstionResource.selectedTraits, apiResource.selectedTraits, 'traits');
+    if (extenstionResource.securedBy) mergedResource.securedBy = this.getSelectedIds(extenstionResource.securedBy, apiResource.securedBy, 'securedBy');
+
     if (extenstionResource.methods) {
       if (!apiResource.methods) mergedResource.methods = extenstionResource.methods;
       else mergedResource.methods = this.mergeMethods(extenstionResource.methods, apiResource.methods);
@@ -145,13 +177,52 @@ class MS3ExtensionToApi {
     return mergedResource;
   }
 
+  // In case of conflicting properties in extension and api
+  // the id of component from api is the one to be in resulting ids array
+  // (id of component from extenstion is being removed)
+  getSelectedIds(extensionIds: string[], apiIds: string[], componentName: string): string[] {
+    const apiComponents = apiIds.map( (id: string) => {
+      const component: any = find(this.api[componentName], ['__id', id]);
+      return component;
+    }, this);
+
+    const extensionComponents = extensionIds.map( (id: string) => {
+      const component: any = find((<any>this.extension)[componentName], ['__id', id]);
+      return component;
+    }, this);
+
+    const resultIds = apiIds;
+
+    extensionComponents.forEach(extensionComponent => {
+      let sameComponent: any = null;
+      if (extensionComponent.name) sameComponent = find(apiComponents, ['name', extensionComponent.name]);
+      if (extensionComponent.title) sameComponent = find(apiComponents, ['title', extensionComponent.title]);
+      if (!sameComponent) resultIds.push(extensionComponent.__id);
+    });
+
+    return resultIds;
+  }
+
+  // In case of conflicting properties in extension and api
+  // the id of component from api is the resulting id
+  // otherwise extension component overwrites api component
+  getSelectedId(extensionId: string, apiId: string, componentName: string): string {
+    const apiComponent: any = find(this.api[componentName], ['__id', apiId]);
+    const extensionComponent: any = find((<any>this.extension)[componentName], ['__id', extensionId]);
+
+    if (apiComponent.name == extensionComponent.name) return apiId;
+    else return extensionId;
+  }
+
   mergeTwoMethods(extenstionMethod: any, apiMethod: any): any {
     const mergedMethod = cloneDeep(apiMethod);
 
     if (extenstionMethod.description) mergedMethod.description = extenstionMethod.description;
+
+    if (extenstionMethod.selectedTraits) mergedMethod.selectedTraits = this.getSelectedIds(extenstionMethod.selectedTraits, apiMethod.selectedTraits, 'traits');
+    if (extenstionMethod.securedBy) mergedMethod.securedBy = this.getSelectedIds(extenstionMethod.securedBy, apiMethod.securedBy, 'securedBy');
+
     if (extenstionMethod.annotations) mergedMethod.annotations = this.mergeArrayOfObjects(extenstionMethod.annotations, apiMethod.annotations, 'name');
-    if (extenstionMethod.selectedTraits) mergedMethod.selectedTraits = union(extenstionMethod.selectedTraits, apiMethod.selectedTraits);
-    if (extenstionMethod.securedBy) mergedMethod.securedBy = union(extenstionMethod.securedBy, apiMethod.securedBy);
     if (extenstionMethod.headers) {
       if (!apiMethod.headers) mergedMethod.headers = extenstionMethod.headers;
       else mergedMethod.headers = this.mergeArrayOfObjects(extenstionMethod.headers, apiMethod.headers, 'displayName');
@@ -160,10 +231,12 @@ class MS3ExtensionToApi {
       if (!apiMethod.queryParameters) mergedMethod.queryParameters = extenstionMethod.queryParameters;
       else mergedMethod.queryParameters = this.mergeArrayOfObjects(extenstionMethod.queryParameters, apiMethod.queryParameters, 'displayName');
     }
+
     if (extenstionMethod.body) {
       if (!apiMethod.body) mergedMethod.body = extenstionMethod.body;
-      else mergedMethod.body = this.mergeArrayOfObjects(extenstionMethod.body, apiMethod.body, 'contentType');
+      else mergedMethod.body = this.mergeBodies(extenstionMethod.body, apiMethod.body);
     }
+
     if (extenstionMethod.responses) {
       if (!apiMethod.responses) mergedMethod.responses = extenstionMethod.responses;
       else mergedMethod.responses = this.mergeResponses(extenstionMethod.responses, apiMethod.responses);
@@ -176,19 +249,21 @@ class MS3ExtensionToApi {
     const mergedSecuritySchemes = cloneDeep(apiSecurityScheme);
 
     if (extenstionSecurityScheme.description) mergedSecuritySchemes.description = extenstionSecurityScheme.description;
-    if (extenstionSecurityScheme.annotations) mergedSecuritySchemes.annotations = this.mergeArrayOfObjects(extenstionSecurityScheme.annotations, apiSecurityScheme.annotations, 'name');
     if (extenstionSecurityScheme.describedBy.headers) {
       if (!apiSecurityScheme.describedBy.headers) mergedSecuritySchemes.describedBy.headers = extenstionSecurityScheme.describedBy.headers;
       else mergedSecuritySchemes.describedBy.headers = this.mergeArrayOfObjects(extenstionSecurityScheme.describedBy.headers, apiSecurityScheme.describedBy.headers, 'displayName');
     }
+
     if (extenstionSecurityScheme.describedBy.queryParameters) {
       if (!apiSecurityScheme.describedBy.queryParameters) mergedSecuritySchemes.describedBy.queryParameters = extenstionSecurityScheme.describedBy.queryParameters;
       else mergedSecuritySchemes.describedBy.queryParameters = this.mergeArrayOfObjects(extenstionSecurityScheme.describedBy.queryParameters, apiSecurityScheme.describedBy.queryParameters, 'displayName');
     }
+
     if (extenstionSecurityScheme.describedBy.responses) {
       if (!apiSecurityScheme.describedBy.responses) mergedSecuritySchemes.describedBy.responses = extenstionSecurityScheme.describedBy.responses;
       else mergedSecuritySchemes.describedBy.responses = this.mergeResponses(extenstionSecurityScheme.describedBy.responses, apiSecurityScheme.describedBy.responses);
     }
+
     if (extenstionSecurityScheme.settings.accessTokenUri) mergedSecuritySchemes.settings.accessTokenUri = extenstionSecurityScheme.settings.accessTokenUri;
     if (extenstionSecurityScheme.settings.authorizationUri) mergedSecuritySchemes.settings.authorizationUri = extenstionSecurityScheme.settings.authorizationUri;
     if (extenstionSecurityScheme.settings.requestTokenUri) mergedSecuritySchemes.settings.requestTokenUri = extenstionSecurityScheme.settings.requestTokenUri;
