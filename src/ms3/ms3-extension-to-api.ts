@@ -2,13 +2,32 @@ import { cloneDeep, union, find, findIndex, intersection } from 'lodash';
 import MS3Extension from './ms3-v1-extension-interface';
 import * as MS3 from './ms3-v1-api-interface';
 
-class MS3ExtensionToApi {
+export class MS3ExtensionToApi {
   api: any = {};
-  IdsHash: any = {};
 
   constructor(private extension: MS3Extension) {
     this.api = extension.settings.extends;
   }
+
+  getExamples() { return this.extension.examples; }
+
+  getDataTypes() { return this.extension.dataTypes; }
+
+  getAnnotationTypes() { return this.extension.annotationTypes; }
+
+  getDocumentation() { return this.extension.documentation; }
+
+  getTraits() { return this.extension.traits; }
+
+  getResources() { return this.extension.resources; }
+
+  getResourcesTypes() { return this.extension.resourcesTypes; }
+
+  getSecuritySchemes() { return this.extension.securitySchemes; }
+
+  getSettings() { return this.extension.settings; }
+
+  getComponentByPropertyName(componentName: string) { return (<any>this.extension)[componentName]; }
 
   static create(extension: MS3Extension) {
     return new MS3ExtensionToApi(extension);
@@ -38,36 +57,36 @@ class MS3ExtensionToApi {
 
     mergedApi.settings = this.mergeSettings();
 
-    if (this.api.examples && this.extension.examples) mergedApi.examples = this.mergeArrayOfObjects(this.extension.examples, this.api.examples, 'title');
-    if (!this.api.examples && this.extension.examples) mergedApi.examples = this.extension.examples;
+    if (this.api.examples && this.getExamples()) mergedApi.examples = this.mergeArrayOfObjects(this.getExamples(), this.api.examples, 'title');
+    if (!this.api.examples && this.getExamples()) mergedApi.examples = this.getExamples();
 
-    if (this.api.dataTypes && this.extension.dataTypes) mergedApi.dataTypes = this.mergeArrayOfObjects(this.extension.dataTypes, this.api.dataTypes, 'name');
-    if (!this.api.dataTypes && this.extension.dataTypes) mergedApi.dataTypes = this.extension.dataTypes;
+    if (this.api.dataTypes && this.getDataTypes()) mergedApi.dataTypes = this.mergeArrayOfObjects(this.getDataTypes(), this.api.dataTypes, 'name');
+    if (!this.api.dataTypes && this.getDataTypes()) mergedApi.dataTypes = this.getDataTypes();
 
-    if (this.api.annotationTypes && this.extension.annotationTypes) mergedApi.annotationTypes = this.mergeArrayOfObjects(this.extension.annotationTypes, this.api.annotationTypes, 'name');
-    if (!this.api.annotationTypes && this.extension.annotationTypes) mergedApi.annotationTypes = this.extension.annotationTypes;
+    if (this.api.annotationTypes && this.getAnnotationTypes()) mergedApi.annotationTypes = this.mergeArrayOfObjects(this.getAnnotationTypes(), this.api.annotationTypes, 'name');
+    if (!this.api.annotationTypes && this.getAnnotationTypes()) mergedApi.annotationTypes = this.getAnnotationTypes();
 
-    if (this.api.documentation && this.extension.documentation) mergedApi.documentation = this.mergeArrayOfObjects(this.extension.documentation, this.api.documentation, 'name');
-    if (!this.api.documentation && this.extension.documentation) mergedApi.documentation = this.extension.documentation;
+    if (this.api.documentation && this.getDocumentation()) mergedApi.documentation = this.mergeArrayOfObjects(this.getDocumentation(), this.api.documentation, 'name');
+    if (!this.api.documentation && this.getDocumentation()) mergedApi.documentation = this.getDocumentation();
 
-    if (this.api.traits && this.extension.traits) mergedApi.traits = this.mergeMethods(this.extension.traits, this.api.traits);
-    if (!this.api.traits && this.extension.traits) mergedApi.traits = this.extension.traits;
+    if (this.api.traits && this.getTraits()) mergedApi.traits = this.mergeMethods(this.getTraits(), this.api.traits);
+    if (!this.api.traits && this.getTraits()) mergedApi.traits = this.getTraits();
 
-    if (this.api.resources && this.extension.resources) mergedApi.resources = this.mergeResources(this.extension.resources, this.api.resources);
-    if (!this.api.resources && this.extension.resources) mergedApi.resources = this.extension.resources;
+    if (this.api.resources && this.getResources()) mergedApi.resources = this.mergeResources(this.getResources(), this.api.resources);
+    if (!this.api.resources && this.getResources()) mergedApi.resources = this.getResources();
 
-    if (this.api.resourcesTypes && this.extension.resourcesTypes) mergedApi.resourcesTypes = this.mergeResources(this.extension.resourcesTypes, this.api.resourcesTypes);
-    if (!this.api.resourcesTypes && this.extension.resourcesTypes) mergedApi.resourcesTypes = this.extension.resourcesTypes;
+    if (this.api.resourcesTypes && this.getResourcesTypes()) mergedApi.resourcesTypes = this.mergeResources(this.getResourcesTypes(), this.api.resourcesTypes);
+    if (!this.api.resourcesTypes && this.getResourcesTypes()) mergedApi.resourcesTypes = this.getResourcesTypes();
 
-    if (this.api.securitySchemes && this.extension.securitySchemes) mergedApi.securitySchemes = this.mergeSecuritySchemes(this.extension.securitySchemes, this.api.securitySchemes);
-    if (!this.api.securitySchemes && this.extension.securitySchemes) mergedApi.securitySchemes = this.extension.securitySchemes;
+    if (this.api.securitySchemes && this.getSecuritySchemes()) mergedApi.securitySchemes = this.mergeSecuritySchemes(this.getSecuritySchemes(), this.api.securitySchemes);
+    if (!this.api.securitySchemes && this.getSecuritySchemes()) mergedApi.securitySchemes = this.getSecuritySchemes();
 
     return mergedApi;
   }
 
   mergeSettings(): MS3.Settings {
     const mergedSettings = cloneDeep(this.api.settings);
-    const extensionSettings = this.extension.settings;
+    const extensionSettings = this.getSettings();
     const apiSettings = this.api.settings;
 
     if (extensionSettings.baseUri) mergedSettings.baseUri = extensionSettings.baseUri;
@@ -187,16 +206,17 @@ class MS3ExtensionToApi {
     }, this);
 
     const extensionComponents = extensionIds.map( (id: string) => {
-      const component: any = find((<any>this.extension)[componentName], ['__id', id]);
+      const component: any = find(this.getComponentByPropertyName(componentName), ['__id', id]);
       return component;
     }, this);
 
     const resultIds = apiIds;
 
     extensionComponents.forEach(extensionComponent => {
+      if (!extensionComponent) return;
       let sameComponent: any = null;
-      if (extensionComponent.name) sameComponent = find(apiComponents, ['name', extensionComponent.name]);
-      if (extensionComponent.title) sameComponent = find(apiComponents, ['title', extensionComponent.title]);
+      if (extensionComponent.hasOwnProperty('name')) sameComponent = find(apiComponents, ['name', extensionComponent.name]);
+      if (extensionComponent.hasOwnProperty('title')) sameComponent = find(apiComponents, ['title', extensionComponent.title]);
       if (!sameComponent) resultIds.push(extensionComponent.__id);
     });
 
@@ -208,7 +228,7 @@ class MS3ExtensionToApi {
   // otherwise extension component overwrites api component
   getSelectedId(extensionId: string, apiId: string, componentName: string): string {
     const apiComponent: any = find(this.api[componentName], ['__id', apiId]);
-    const extensionComponent: any = find((<any>this.extension)[componentName], ['__id', extensionId]);
+    const extensionComponent: any = find(this.getComponentByPropertyName(componentName), ['__id', extensionId]);
 
     if (apiComponent.name == extensionComponent.name) return apiId;
     else return extensionId;
