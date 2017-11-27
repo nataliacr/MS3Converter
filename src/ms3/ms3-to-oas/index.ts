@@ -4,6 +4,7 @@ import ConvertorOptions, { format } from '../../common/convertor-options-interfa
 import { API as OAS, Info } from './../../oas/oas-20-api-interface';
 import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from './datatypes-to-schemas';
 import mergeTypesAndTraits from './merge-resource-types-and-traits';
+import mergeExtensionWithApi from './../ms3-extension-to-api';
 import convertResourcesToPaths from './resources-to-paths';
 import convertSecuritySchemes from './security-schemes-to-oas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from './examples-to-oas';
@@ -33,7 +34,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     schemas: []
   };
 
-  constructor(private ms3API: MS3, private options: ConvertorOptions) {}
+  constructor(private ms3API: any, private options: ConvertorOptions) {}
 
   convertAPI(): OAS {
     this.oasAPI = {
@@ -76,11 +77,6 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     return this.oasAPI;
   }
 
-  convertExtension(): OAS {
-    // check for extended project and merge extension
-    return this.oasAPI;
-  }
-
   async convert(): Promise<OAS> {
     const result: DataToWrite = { path: '' };
 
@@ -91,9 +87,11 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       case 'overlay':
         result.content = this.convertOverlay();
         break;
-      case 'extension':
-        result.content = this.convertExtension();
+      case 'extension': {
+        this.ms3API = mergeExtensionWithApi(this.ms3API);
+        result.content = this.convertAPI();
         break;
+      }
       case 'library':
         throw new Error('Library can not be converted to swagger.');
     }
