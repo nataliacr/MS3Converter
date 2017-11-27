@@ -53,6 +53,10 @@ export class MS3ExtensionToApi {
   }
 
   mergeExtensionIntoApi(): MS3.API {
+    // when we have two different resources (in api and in extension) in which bodies contain ids that lead to examples with the same names,
+    // the result examples array contain example with id from api, but those bodies still contain both ids from api and extension
+    // the fix: while merging examples, create a hash array containing name: id object with resulting id after merge,
+    // when getting to selectedExamples array, you should get the name of example by that id and get NEW id from the hash by name of example
     const mergedApi: MS3.API = cloneDeep(this.api);
 
     mergedApi.settings = this.mergeSettings();
@@ -127,7 +131,7 @@ export class MS3ExtensionToApi {
 
       if (!duplicateInExtension) {
         resultArray.push(apiBody);
-      } else if (duplicateInExtension.annotations) {
+      } else {
         const index = findIndex(resultArray, ['contentType', apiBody.contentType]);
         resultArray[index] = this.mergeTwoBodies(resultArray[index], apiBody);
       }
@@ -201,18 +205,16 @@ export class MS3ExtensionToApi {
   // (id of component from extenstion is being removed)
   getSelectedIds(extensionIds: string[], apiIds: string[], componentName: string): string[] {
     const apiComponents = apiIds.map( (id: string) => {
-      const component: any = find(this.api[componentName], ['__id', id]);
-      return component;
+      return find(this.api[componentName], ['__id', id]);
     }, this);
 
     const extensionComponents = extensionIds.map( (id: string) => {
-      const component: any = find(this.getComponentByPropertyName(componentName), ['__id', id]);
-      return component;
+      return find(this.getComponentByPropertyName(componentName), ['__id', id]);
     }, this);
 
     const resultIds = apiIds;
 
-    extensionComponents.forEach(extensionComponent => {
+    extensionComponents.forEach( (extensionComponent: any) => {
       if (!extensionComponent) return;
       let sameComponent: any = null;
       if (extensionComponent.hasOwnProperty('name')) sameComponent = find(apiComponents, ['name', extensionComponent.name]);
