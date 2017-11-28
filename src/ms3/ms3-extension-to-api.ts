@@ -1,6 +1,7 @@
 import { cloneDeep, union, find, findIndex, intersection } from 'lodash';
 import MS3Extension from './ms3-v1-extension-interface';
 import * as MS3 from './ms3-v1-api-interface';
+import mergeLibraryToMs3 from './merge-library-to-ms3';
 
 export class MS3ExtensionToApi {
   api: any = {};
@@ -44,17 +45,14 @@ export class MS3ExtensionToApi {
   merge(): MS3.API {
     let mergedApi: MS3.API = cloneDeep(this.api);
 
-    // merge internal extension includes
     if (this.extension.libraries) {
-      // merge library into extension
+      this.extension = <MS3Extension> mergeLibraryToMs3(this.extension);
     }
 
-    // merge internal api includes
     if (this.api.libraries) {
-      // merge library into api
+      this.api = mergeLibraryToMs3(this.api);
     }
 
-    // merge api and extension together
     mergedApi = this.mergeExtensionIntoApi();
 
     return mergedApi;

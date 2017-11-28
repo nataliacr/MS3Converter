@@ -6,7 +6,7 @@ import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchem
 import mergeTypesAndTraits from './merge-resource-types-and-traits';
 import mergeExtensionWithApi from './../ms3-extension-to-api';
 import convertResourcesToPaths from './resources-to-paths';
-import mergeLibraryToMs3 from './merge-library-to-ms3';
+import mergeLibraryToMs3 from '../merge-library-to-ms3';
 import convertSecuritySchemes from './security-schemes-to-oas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from './examples-to-oas';
 import * as path from 'path';
