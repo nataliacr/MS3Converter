@@ -28,7 +28,7 @@ export const originalProjectWithResources: Extension = {
               'name': 'GET'
             }
           ],
-          '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+          '__id': 'api-resource-id-1',
         },
         {
           'path': '\/res',
@@ -39,7 +39,7 @@ export const originalProjectWithResources: Extension = {
               'name': 'GET'
             }
           ],
-          '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+          '__id': 'api-resource-id-2',
         },
         {
           'path': '\/res',
@@ -68,7 +68,7 @@ export const originalProjectWithResources: Extension = {
               ],
             }
           ],
-          '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+          '__id': 'api-resource-id-3',
         }
       ]
     },
@@ -146,7 +146,7 @@ export const originalProjectWithResources: Extension = {
           ]
         }
       ],
-      '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+      '__id': 'ext-resource-id-1',
       'selectedTraits': [
         'trait1'
       ]
@@ -172,7 +172,7 @@ export const originalProjectWithResources: Extension = {
           'name': 'PUT'
         }
       ],
-      '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+      '__id': 'ext-resource-id-2',
     }
   ],
 };
@@ -253,7 +253,7 @@ export const resultProjectWithResources: API = {
           ]
         }
       ],
-      '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+      '__id': 'ext-resource-id-1',
       'selectedTraits': [
         'trait1'
       ]
@@ -289,7 +289,7 @@ export const resultProjectWithResources: API = {
           'name': 'GET'
         }
       ],
-      '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+      '__id': 'api-resource-id-3',
     },
     {
       'path': '\/res',
@@ -300,7 +300,7 @@ export const resultProjectWithResources: API = {
           'name': 'GET'
         }
       ],
-      '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+      '__id': 'api-resource-id-1',
     },
     {
       'path': '\/res',
@@ -311,7 +311,7 @@ export const resultProjectWithResources: API = {
           'name': 'GET'
         }
       ],
-      '__id': '541098a8-76d5-4947-81b7-b5b17e09dded',
+      '__id': 'api-resource-id-2',
     },
   ],
   'entityTypeName': 'api'

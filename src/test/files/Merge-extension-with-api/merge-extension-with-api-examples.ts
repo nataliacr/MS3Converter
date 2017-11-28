@@ -19,18 +19,32 @@ export const originalProjectWithExamples: Extension = {
           'type': 'string'
         }
       ],
+      'traits': [
+        {
+          'name': 'api trait',
+          '__id': 'api-trait-id-1',
+          'body': [
+            {
+              'contentType': 'application/json',
+              'selectedExamples': [
+                'api-example-id-2'
+              ]
+            }
+          ]
+        }
+      ],
       'examples': [
         {
           'title': 'example in API',
           'content': '{}',
           'format': 'json',
-          '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+          '__id': 'api-example-id-1'
         },
         {
           'title': 'example',
           'content': '<xml></xml>',
           'format': 'xml',
-          '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30db',
+          '__id': 'api-example-id-2',
           'annotations': [
             {
               'name': 'annotation',
@@ -45,19 +59,33 @@ export const originalProjectWithExamples: Extension = {
     'baseUri': 'http://mergeEXT',
     'title': 'Merge EXT',
   },
-  'entityTypeName': 'api',
+  'entityTypeName': 'extension',
+  'traits': [
+    {
+      'name': 'ext trait',
+      '__id': 'ext-trait-id-1',
+      'body': [
+        {
+          'contentType': 'application/json',
+          'selectedExamples': [
+            'ext-example-id-2'
+          ]
+        }
+      ]
+    }
+  ],
   'examples': [
     {
       'title': 'example in EXT',
       'content': '{}',
       'format': 'json',
-      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+      '__id': 'ext-example-id-1'
     },
     {
       'title': 'example',
       'content': '<xml></xml>',
       'format': 'xml',
-      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30db',
+      '__id': 'ext-example-id-2',
       'annotations': [
         {
           'name': 'annotation',
@@ -84,18 +112,44 @@ export const resultProjectWithExamples: API = {
     'title': 'Merge EXT',
     'description': 'description from API'
   },
+  'traits': [
+    {
+      'name': 'ext trait',
+      '__id': 'ext-trait-id-1',
+      'body': [
+        {
+          'contentType': 'application/json',
+          'selectedExamples': [
+            'ext-example-id-2'
+          ]
+        }
+      ]
+    },
+    {
+      'name': 'api trait',
+      '__id': 'api-trait-id-1',
+      'body': [
+        {
+          'contentType': 'application/json',
+          'selectedExamples': [
+            'ext-example-id-2'
+          ]
+        }
+      ]
+    }
+  ],
   'examples': [
     {
       'title': 'example in EXT',
       'content': '{}',
       'format': 'json',
-      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+      '__id': 'ext-example-id-1'
     },
     {
       'title': 'example',
       'content': '<xml></xml>',
       'format': 'xml',
-      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30db',
+      '__id': 'ext-example-id-2',
       'annotations': [
         {
           'name': 'annotation',
@@ -109,7 +163,7 @@ export const resultProjectWithExamples: API = {
       'title': 'example in API',
       'content': '{}',
       'format': 'json',
-      '__id': '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+      '__id': 'api-example-id-1'
     }
   ],
   'annotationTypes': [
