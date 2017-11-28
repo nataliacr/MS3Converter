@@ -6,6 +6,7 @@ import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchem
 import mergeTypesAndTraits from './merge-resource-types-and-traits';
 import mergeExtensionWithApi from './../ms3-extension-to-api';
 import convertResourcesToPaths from './resources-to-paths';
+import mergeLibraryToMs3 from './merge-library-to-ms3';
 import convertSecuritySchemes from './security-schemes-to-oas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from './examples-to-oas';
 import * as path from 'path';
@@ -43,7 +44,7 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
       paths: {},
       components: {}
     };
-
+    if (this.ms3API.libraries) this.ms3API = mergeLibraryToMs3(this.ms3API);
     if (this.ms3API.dataTypes) {
       if (this.options.destinationPath) {
         this.externalFiles.schemas = this.externalFiles.schemas.concat(convertExternalSchemas(this.ms3API, this.options.destinationPath));
