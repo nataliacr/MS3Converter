@@ -11,6 +11,15 @@ export const originalProjectWithResources: Extension = {
         'baseUri': 'http://mergeAPI',
         'title': 'Merge API',
       },
+      'dataTypes': [
+        {
+          'type': 'string',
+          'description': 'desc',
+          'name': 'schema in API',
+          'default': 'default',
+          '__id': 'api-dt-id-1'
+        }
+      ],
       'annotationTypes': [
         {
           'name': 'annotation',
@@ -20,7 +29,7 @@ export const originalProjectWithResources: Extension = {
       ],
       'resources': [
         {
-          'path': '\/res',
+          'path': '/res-api-1',
           'name': 'res2',
           'methods': [
             {
@@ -31,7 +40,7 @@ export const originalProjectWithResources: Extension = {
           '__id': 'api-resource-id-1',
         },
         {
-          'path': '\/res',
+          'path': '/res-api-2',
           'name': 'res3',
           'methods': [
             {
@@ -42,7 +51,7 @@ export const originalProjectWithResources: Extension = {
           '__id': 'api-resource-id-2',
         },
         {
-          'path': '\/res',
+          'path': '/res-ext-2',
           'name': 'common resource',
           'methods': [
             {
@@ -76,6 +85,15 @@ export const originalProjectWithResources: Extension = {
     'title': 'Merge EXT',
   },
   'entityTypeName': 'api',
+  'dataTypes': [
+    {
+      'type': 'integer',
+      'description': 'hey ho',
+      'name': 'schema in API',
+      'default': 'default',
+      '__id': 'ext-dt-id-1'
+    }
+  ],
   'annotationTypes': [
     {
       'name': 'annotation',
@@ -85,7 +103,7 @@ export const originalProjectWithResources: Extension = {
   ],
   'resources': [
     {
-      'path': '\/res',
+      'path': '/res-ext-1',
       'name': 'res',
       'type': 'resourceType1',
       'methods': [
@@ -152,7 +170,7 @@ export const originalProjectWithResources: Extension = {
       ]
     },
     {
-      'path': '\/res',
+      'path': '/res-ext-2',
       'name': 'common resource',
       'methods': [
         {
@@ -183,6 +201,15 @@ export const resultProjectWithResources: API = {
     'baseUri': 'http://mergeEXT',
     'title': 'Merge EXT',
   },
+  'dataTypes': [
+    {
+      'type': 'integer',
+      'description': 'hey ho',
+      'name': 'schema in API',
+      'default': 'default',
+      '__id': 'ext-dt-id-1'
+    }
+  ],
   'annotationTypes': [
     {
       'name': 'annotation',
@@ -192,7 +219,7 @@ export const resultProjectWithResources: API = {
   ],
   'resources': [
     {
-      'path': '\/res',
+      'path': '/res-ext-1',
       'name': 'res',
       'type': 'resourceType1',
       'methods': [
@@ -259,7 +286,7 @@ export const resultProjectWithResources: API = {
       ]
     },
     {
-      'path': '\/res',
+      'path': '/res-ext-2',
       'name': 'common resource',
       'methods': [
         {
@@ -289,10 +316,10 @@ export const resultProjectWithResources: API = {
           'name': 'GET'
         }
       ],
-      '__id': 'api-resource-id-3',
+      '__id': 'ext-resource-id-2',
     },
     {
-      'path': '\/res',
+      'path': '/res-api-1',
       'name': 'res2',
       'methods': [
         {
@@ -303,7 +330,7 @@ export const resultProjectWithResources: API = {
       '__id': 'api-resource-id-1',
     },
     {
-      'path': '\/res',
+      'path': '/res-api-2',
       'name': 'res3',
       'methods': [
         {

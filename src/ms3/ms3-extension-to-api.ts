@@ -111,21 +111,17 @@ export class MS3ExtensionToApi {
   }
 
   mergeExamples(extensionExamples: any[], apiExamples: any[]): any[] {
-    if (!apiExamples) return extensionExamples;
+    if (!apiExamples || !apiExamples.length) return extensionExamples;
 
     return apiExamples.reduce((resultExamples: any[], apiExample: any) => {
-      const conflictingExamples = find(resultExamples, ['title', apiExample.title]);
+      const conflictingExample = find(resultExamples, ['title', apiExample.title]);
 
-      if (!conflictingExamples) {
+      if (!conflictingExample) {
         resultExamples.push(apiExample);
       } else {
-        const index = findIndex(resultExamples, ['title', apiExample.title]);
-        this.IdsHash.examples = {
-          ...this.IdsHash.examples,
-          [apiExample.__id]: resultExamples[index].__id
-        };
-        if (conflictingExamples.annotations) {
-          resultExamples[index].annotations = this.mergeArrayOfObjects(resultExamples[index].annotations, apiExample.annotations, 'name');
+        this.IdsHash.examples[apiExample.__id] = conflictingExample.__id;
+        if (conflictingExample.annotations) {
+          conflictingExample.annotations = this.mergeArrayOfObjects(conflictingExample.annotations, apiExample.annotations, 'name');
         }
       }
 
@@ -134,47 +130,33 @@ export class MS3ExtensionToApi {
   }
 
   mergeDataTypes(extensionDataTypes: any[], apiDataTypes: any[]): any[] {
-    if (!apiDataTypes) return extensionDataTypes;
+    if (!apiDataTypes || !apiDataTypes.length) return extensionDataTypes;
 
     return apiDataTypes.reduce((resultDataTypes: any[], apiDataType: any) => {
       const conflictingDataType = find(resultDataTypes, ['name', apiDataType.name]);
 
-      if (!conflictingDataType) {
-        resultDataTypes.push(apiDataType);
-      } else {
-        const index = findIndex(resultDataTypes, ['name', apiDataType.name]);
-        this.IdsHash.examples = {
-          ...this.IdsHash.dataTypes,
-          [apiDataType.__id]: resultDataTypes[index].__id
-        };
-      }
+      if (!conflictingDataType) resultDataTypes.push(apiDataType);
+      else this.IdsHash.examples[apiDataType.__id] = conflictingDataType.__id;
 
       return resultDataTypes;
     }, cloneDeep(extensionDataTypes));
   }
 
   mergeAnnotationTypes(extensionAnnotationTypes: any[], apiAnnotationTypes: any[]): any[] {
-    if (!apiAnnotationTypes) return extensionAnnotationTypes;
+    if (!apiAnnotationTypes || !apiAnnotationTypes.length) return extensionAnnotationTypes;
 
     return apiAnnotationTypes.reduce((resultAnnotationTypes: any[], apiAnnotationType: any) => {
       const conflictingAnnotationType = find(resultAnnotationTypes, ['name', apiAnnotationType.name]);
 
-      if (!conflictingAnnotationType) {
-        resultAnnotationTypes.push(apiAnnotationType);
-      } else {
-        const index = findIndex(resultAnnotationTypes, ['name', apiAnnotationType.name]);
-        this.IdsHash.annotationTypes = {
-          ...this.IdsHash.annotationTypes,
-          [apiAnnotationType.__id]: resultAnnotationTypes[index].__id
-        };
-      }
+      if (!conflictingAnnotationType) resultAnnotationTypes.push(apiAnnotationType);
+      else this.IdsHash.annotationTypes[apiAnnotationType.__id] = conflictingAnnotationType.__id;
 
       return resultAnnotationTypes;
     }, cloneDeep(extensionAnnotationTypes));
   }
 
   mergeTraits(extensionTraits: any[], apiTraits: any[]): any[] {
-    if (!apiTraits) return extensionTraits;
+    if (!apiTraits || !apiTraits.length) return extensionTraits;
 
     return apiTraits.reduce((resultTraits: any[], apiTrait: any) => {
       const conflictingTrait = find(resultTraits, ['name', apiTrait.name]);
@@ -182,13 +164,9 @@ export class MS3ExtensionToApi {
       if (!conflictingTrait) {
         resultTraits.push(this.resolveMethodReferences(apiTrait));
       } else {
-        const index = findIndex(resultTraits, ['name', apiTrait.name]);
-        this.IdsHash.traits = {
-          ...this.IdsHash.traits,
-          [apiTrait.__id]: resultTraits[index].__id
-        };
+        this.IdsHash.traits[apiTrait.__id] = conflictingTrait.__id;
         if (conflictingTrait.annotations) {
-          resultTraits[index].annotations = this.mergeArrayOfObjects(resultTraits[index].annotations, apiTrait.annotations, 'name');
+          conflictingTrait.annotations = this.mergeArrayOfObjects(conflictingTrait.annotations, apiTrait.annotations, 'name');
         }
       }
 
@@ -197,7 +175,7 @@ export class MS3ExtensionToApi {
   }
 
   mergeResourcesTypes(extensionResourcesTypes: any[], apiResourcesTypes: any[]): any[] {
-    if (!apiResourcesTypes) return extensionResourcesTypes;
+    if (!apiResourcesTypes || !apiResourcesTypes.length) return extensionResourcesTypes;
 
     return apiResourcesTypes.reduce((resultResourcesTypes: any[], apiResourcesType: any) => {
       const conflictingResourcesType = find(resultResourcesTypes, ['name', apiResourcesType.title]);
@@ -205,13 +183,9 @@ export class MS3ExtensionToApi {
       if (!conflictingResourcesType) {
         resultResourcesTypes.push(this.resolveResourcesTypeReferences(apiResourcesType));
       } else {
-        const index = findIndex(resultResourcesTypes, ['name', apiResourcesType.name]);
-        this.IdsHash.resourcesTypes = {
-          ...this.IdsHash.resourcesTypes,
-          [apiResourcesType.__id]: resultResourcesTypes[index].__id
-        };
+        this.IdsHash.resourcesTypes[apiResourcesType.__id] = conflictingResourcesType.__id;
         if (conflictingResourcesType.annotations) {
-          resultResourcesTypes[index].annotations = this.mergeArrayOfObjects(resultResourcesTypes[index].annotations, apiResourcesType.annotations, 'name');
+          conflictingResourcesType.annotations = this.mergeArrayOfObjects(conflictingResourcesType.annotations, apiResourcesType.annotations, 'name');
         }
       }
 
@@ -220,17 +194,15 @@ export class MS3ExtensionToApi {
   }
 
   mergeArrayOfObjects(extensionObjectsArray: any[], apiObjectsArray: any[], identifier: string): any[] {
-    if (!apiObjectsArray) return extensionObjectsArray;
-    return apiObjectsArray.reduce((resultArray: any[], apiObject: any) => {
-      const duplicateInExtension = find(resultArray, [identifier, apiObject[identifier]]);
+    if (!apiObjectsArray || !apiObjectsArray.length) return extensionObjectsArray;
 
-      if (!duplicateInExtension) {
+    return apiObjectsArray.reduce((resultArray: any[], apiObject: any) => {
+      const conflictingComponent = find(resultArray, [identifier, apiObject[identifier]]);
+
+      if (!conflictingComponent) {
         resultArray.push(apiObject);
-      } else {
-        const index = findIndex(resultArray, [identifier, apiObject[identifier]]);
-        if (duplicateInExtension.annotations) {
-          resultArray[index].annotations = this.mergeArrayOfObjects(resultArray[index].annotations, apiObject.annotations, 'name');
-        }
+      } else if (conflictingComponent.annotations) {
+        conflictingComponent.annotations = this.mergeArrayOfObjects(conflictingComponent.annotations, apiObject.annotations, 'name');
       }
 
       return resultArray;
@@ -238,11 +210,12 @@ export class MS3ExtensionToApi {
   }
 
   mergeBodies(extensionBodies: MS3.Body[], apiBodies: MS3.Body[]): MS3.Body[] {
-    if (!apiBodies) return extensionBodies;
-    return apiBodies.reduce((resultArray: MS3.Body[], apiBody: MS3.Body) => {
-      const duplicateInExtension = find(resultArray, ['contentType', apiBody.contentType]);
+    if (!apiBodies || !apiBodies.length) return extensionBodies;
 
-      if (!duplicateInExtension) {
+    return apiBodies.reduce((resultArray: MS3.Body[], apiBody: MS3.Body) => {
+      const conflictingBody = find(resultArray, ['contentType', apiBody.contentType]);
+
+      if (!conflictingBody) {
         resultArray.push(apiBody);
       } else {
         const index = findIndex(resultArray, ['contentType', apiBody.contentType]);
@@ -254,10 +227,12 @@ export class MS3ExtensionToApi {
   }
 
   mergeResources(extensionResources: any[], apiResources: any[]): any[] {
-    return apiResources.reduce((resultArray: any[], apiResource: any) => {
-      const duplicateInExtension = find(resultArray, ['name', apiResource.name]);
+    if (!apiResources || !apiResources.length) return extensionResources;
 
-      if (!duplicateInExtension) {
+    return apiResources.reduce((resultArray: any[], apiResource: any) => {
+      const conflictingResource = find(resultArray, ['name', apiResource.name]);
+
+      if (!conflictingResource) {
         resultArray.push(apiResource);
       } else {
         const index = findIndex(resultArray, ['name', apiResource.name]);
@@ -274,9 +249,7 @@ export class MS3ExtensionToApi {
     if (resourcesType.annotations) newResourcesType.annotations = this.resolveSelectedIds(resourcesType.annotations, 'annotationTypes');
     if (resourcesType.selectedTraits) newResourcesType.selectedTraits = this.resolveSelectedIds(resourcesType.selectedTraits, 'traits');
     if (resourcesType.securedBy) newResourcesType.securedBy = this.resolveSelectedIds(resourcesType.securedBy, 'securitySchemes');
-    if (resourcesType.methods) newResourcesType.methods = resourcesType.methods.map( (method: any) => {
-      return this.resolveMethodReferences(method);
-    }, this);
+    if (resourcesType.methods) newResourcesType.methods = resourcesType.methods.map( (method: any) => this.resolveMethodReferences(method), this);
 
     return newResourcesType;
   }
@@ -316,9 +289,9 @@ export class MS3ExtensionToApi {
 
   mergeMethods(extensionMethods: any[], apiMethods: any[]): any[] {
     return apiMethods.reduce((resultArray: any[], apiMethod: any) => {
-      const duplicateInExtension = find(resultArray, ['name', apiMethod.name]);
+      const conflictingMethod = find(resultArray, ['name', apiMethod.name]);
 
-      if (!duplicateInExtension) {
+      if (!conflictingMethod) {
         resultArray.push(this.resolveMethodReferences(apiMethod));
       } else {
         const index = findIndex(resultArray, ['name', apiMethod.name]);
@@ -355,6 +328,7 @@ export class MS3ExtensionToApi {
       if (!apiResource.methods) mergedResource.methods = extenstionResource.methods;
       else mergedResource.methods = this.mergeMethods(extenstionResource.methods, apiResource.methods);
     }
+    mergedResource.__id = extenstionResource.__id;
 
     return mergedResource;
   }
@@ -446,15 +420,16 @@ export class MS3ExtensionToApi {
     if (extenstionSecurityScheme.settings.authorizationGrants) mergedSecuritySchemes.settings.authorizationGrants = union(extenstionSecurityScheme.settings.authorizationGrants, apiSecurityScheme.settings.authorizationGrants);
     if (extenstionSecurityScheme.settings.scopes) mergedSecuritySchemes.settings.scopes = union(extenstionSecurityScheme.settings.scopes, apiSecurityScheme.settings.scopes);
     if (extenstionSecurityScheme.settings.signatures) mergedSecuritySchemes.settings.signatures = union(extenstionSecurityScheme.settings.signatures, apiSecurityScheme.settings.signatures);
+    mergedSecuritySchemes.__id = extenstionSecurityScheme.__id;
 
     return mergedSecuritySchemes;
   }
 
   mergeResponses(extensionResponses: MS3.Response[], apiResponses: MS3.Response[]): MS3.Response[] {
     return apiResponses.reduce((resultArray: MS3.Response[], apiResponse: MS3.Response) => {
-      const duplicateInExtension = find(resultArray, ['code', apiResponse.code]);
+      const conflictingResponse = find(resultArray, ['code', apiResponse.code]);
 
-      if (!duplicateInExtension) {
+      if (!conflictingResponse) {
         resultArray.push(apiResponse);
       } else {
         const index = findIndex(resultArray, ['code', apiResponse.code]);
@@ -467,9 +442,9 @@ export class MS3ExtensionToApi {
 
   mergeSecuritySchemes(extensionSecuritySchemes: MS3.SecurityScheme[], apiSecuritySchemes: MS3.SecurityScheme[]): MS3.SecurityScheme[] {
     return apiSecuritySchemes.reduce((resultArray: MS3.SecurityScheme[], apiSecurityScheme: MS3.SecurityScheme) => {
-      const duplicateInExtension = find(resultArray, ['name', apiSecurityScheme.name]);
+      const conflictingSecurityScheme = find(resultArray, ['name', apiSecurityScheme.name]);
 
-      if (!duplicateInExtension) {
+      if (!conflictingSecurityScheme) {
         resultArray.push(apiSecurityScheme);
       } else {
         const index = findIndex(resultArray, ['name', apiSecurityScheme.name]);
