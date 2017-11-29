@@ -42,7 +42,7 @@ export const originalProjectWithTraits: Extension = {
               'description': 'should be overwritten'
             }
           ],
-          '__id': 'd4cb39e9-1ec1-4390-95d9-1335eff85f8a',
+          '__id': 'api-trait-id',
         }
       ]
     },
@@ -91,7 +91,7 @@ export const originalProjectWithTraits: Extension = {
           'description': 'should overwrite'
         }
       ],
-      '__id': 'd4cb39e9-1ec1-4390-95d9-1335eff85f8a',
+      '__id': 'ext-trait-id',
     }
   ]
 };
@@ -143,7 +143,7 @@ export const resultProjectWithTraits: API = {
           'description': 'should overwrite'
         }
       ],
-      '__id': 'd4cb39e9-1ec1-4390-95d9-1335eff85f8a',
+      '__id': 'ext-trait-id',
     }
   ],
   'entityTypeName': 'api'

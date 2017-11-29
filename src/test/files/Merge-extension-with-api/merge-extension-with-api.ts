@@ -44,7 +44,7 @@ export const originalProject: Extension = {
           'description': 'obj desc'
         }
       ],
-      '__id': '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3',
+      '__id': 'ext-trait-id-1',
       'body': [
         {
           'annotations': [
@@ -61,10 +61,10 @@ export const originalProject: Extension = {
           ],
           'contentType': 'application\/pdf',
           'selectedExamples': [
-            '25395750-2c11-4dd0-8d43-6bfa81dd8f53',
-            '25395750-2c11-4dd0-8d43-6bfa81dd8f54'
+            'ext-example-id-2',
+            'ext-example-id-1'
           ],
-          'type': '5211869b-b6a6-4e23-b79d-96104f6a14da'
+          'type': 'api-dt-id-2'
         }
       ]
     }
@@ -105,7 +105,7 @@ export const originalProject: Extension = {
           'value': 'val'
         }
       ],
-      '__id': '25395750-2c11-4dd0-8d43-6bfa81dd8f54'
+      '__id': 'ext-example-id-1'
     },
     {
       'title': 'exampleJSON',
@@ -119,7 +119,7 @@ export const originalProject: Extension = {
           'value': 'value'
         }
       ],
-      '__id': '25395750-2c11-4dd0-8d43-6bfa81dd8f53'
+      '__id': 'ext-example-id-2'
     }
   ],
   'settings': {
@@ -162,7 +162,7 @@ export const originalProject: Extension = {
               'value': 'val'
             }
           ],
-          '__id': '25395750-2c11-4dd0-8d43-6bfa81dd8f53'
+          '__id': 'api-example-id-1'
         }
       ],
       'annotationTypes': [
@@ -253,7 +253,7 @@ export const originalProject: Extension = {
               'description': 'obj desc'
             }
           ],
-          '__id': '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3',
+          '__id': 'api-trait-id-1',
           'body': [
             {
               'annotations': [
@@ -270,9 +270,9 @@ export const originalProject: Extension = {
               ],
               'contentType': 'application\/pdf',
               'selectedExamples': [
-                '25395750-2c11-4dd0-8d43-6bfa81dd8f53'
+                'api-example-id-1'
               ],
-              'type': '5211869b-b6a6-4e23-b79d-96104f6a14da'
+              'type': 'api-dt-id-2'
             }
           ]
         }
@@ -336,7 +336,7 @@ export const originalProject: Extension = {
               }
             ]
           },
-          '__id': '85f71e15-1d96-483d-82f9-4df61391f94c'
+          '__id': 'api-security-id-1'
         }
       ],
       'resources': [
@@ -382,16 +382,16 @@ export const originalProject: Extension = {
               'active': true,
               'name': 'GET',
               'selectedTraits': [
-                '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3'
+                'ext-trait-id-1'
               ],
               'securedBy': [
                 'oauth 1.0'
               ]
             }
           ],
-          '__id': 'c77bc6cb-840d-4b04-97a2-498787aca334',
+          '__id': 'api-resource-id-1',
           'selectedTraits': [
-            '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3'
+            'ext-trait-id-1'
           ]
         }
       ],
@@ -399,12 +399,12 @@ export const originalProject: Extension = {
         {
           'type': 'string',
           'name': 'datatype string',
-          '__id': 'c80ad73a-80d4-4cef-b512-9fb7c8aaf849'
+          '__id': 'api-dt-id-1'
         },
         {
           'type': 'number',
           'name': 'datatype number',
-          '__id': '5211869b-b6a6-4e23-b79d-96104f6a14da'
+          '__id': 'api-dt-id-2'
         }
       ],
       'settings': {
@@ -488,7 +488,7 @@ export const resultProject: API = {
           'value': 'val'
         }
       ],
-      '__id': '25395750-2c11-4dd0-8d43-6bfa81dd8f54'
+      '__id': 'ext-example-id-1'
     },
     {
       'title': 'exampleJSON',
@@ -520,7 +520,7 @@ export const resultProject: API = {
           'type': 'object'
         }
       ],
-      '__id': '25395750-2c11-4dd0-8d43-6bfa81dd8f53'
+      '__id': 'ext-example-id-2'
     }
   ],
   'annotationTypes': [
@@ -611,7 +611,7 @@ export const resultProject: API = {
           'description': 'obj desc'
         }
       ],
-      '__id': '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3',
+      '__id': 'ext-trait-id-1',
       'body': [
         {
           'annotations': [
@@ -628,10 +628,10 @@ export const resultProject: API = {
           ],
           'contentType': 'application\/pdf',
           'selectedExamples': [
-            '25395750-2c11-4dd0-8d43-6bfa81dd8f53',
-            '25395750-2c11-4dd0-8d43-6bfa81dd8f54'
+            'ext-example-id-2',
+            'ext-example-id-1'
           ],
-          'type': '5211869b-b6a6-4e23-b79d-96104f6a14da'
+          'type': 'api-dt-id-2'
         }
       ]
     }
@@ -695,7 +695,7 @@ export const resultProject: API = {
           }
         ]
       },
-      '__id': '85f71e15-1d96-483d-82f9-4df61391f94c'
+      '__id': 'api-security-id-1'
     }
   ],
   'resources': [
@@ -741,16 +741,16 @@ export const resultProject: API = {
           'active': true,
           'name': 'GET',
           'selectedTraits': [
-            '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3'
+            'ext-trait-id-1'
           ],
           'securedBy': [
             'oauth 1.0'
           ]
         }
       ],
-      '__id': 'c77bc6cb-840d-4b04-97a2-498787aca334',
+      '__id': 'api-resource-id-1',
       'selectedTraits': [
-        '23c3cd0c-cc04-4950-ae8e-11a9dc6bd1b3'
+        'ext-trait-id-1'
       ]
     }
   ],
@@ -758,12 +758,12 @@ export const resultProject: API = {
     {
       'type': 'string',
       'name': 'datatype string',
-      '__id': 'c80ad73a-80d4-4cef-b512-9fb7c8aaf849'
+      '__id': 'api-dt-id-1'
     },
     {
       'type': 'number',
       'name': 'datatype number',
-      '__id': '5211869b-b6a6-4e23-b79d-96104f6a14da'
+      '__id': 'api-dt-id-2'
     }
   ],
   'settings': {

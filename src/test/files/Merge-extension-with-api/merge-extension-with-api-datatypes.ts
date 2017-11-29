@@ -18,21 +18,21 @@ export const originalProjectWithDataTypes: Extension = {
           'description': 'desc',
           'name': 'schema in API',
           'default': 'default',
-          '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+          '__id': 'api-dt-id-1'
         },
         {
           'type': 'string',
           'description': 'desc',
           'name': 'schema',
           'default': 'should be overwriten',
-          '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+          '__id': 'api-dt-id-2'
         },
         {
           'type': 'string',
           'description': 'desc',
           'name': 'schema2',
           'default': 'should be overwriten',
-          '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+          '__id': 'api-dt-id-3'
         }
       ],
     },
@@ -45,21 +45,21 @@ export const originalProjectWithDataTypes: Extension = {
       'description': 'desc',
       'name': 'schema in EXT',
       'default': 'default',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'ext-dt-id-1'
     },
     {
       'type': 'string',
       'description': 'desc',
       'name': 'schema',
       'default': 'should overwrite',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'ext-dt-id-2'
     },
     {
       'type': 'string',
       'description': 'desc',
       'name': 'schema2',
       'default': 'should overwrite',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'ext-dt-id-3'
     }
   ],
   'entityTypeName': 'api',
@@ -78,28 +78,28 @@ export const resultProjectWithDataTypes: API = {
       'description': 'desc',
       'name': 'schema in EXT',
       'default': 'default',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'ext-dt-id-1'
     },
     {
       'type': 'string',
       'description': 'desc',
       'name': 'schema',
       'default': 'should overwrite',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'ext-dt-id-2'
     },
     {
       'type': 'string',
       'description': 'desc',
       'name': 'schema2',
       'default': 'should overwrite',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'ext-dt-id-3'
     },
     {
       'type': 'string',
       'description': 'desc',
       'name': 'schema in API',
       'default': 'default',
-      '__id': 'd0c35029-b545-4ce5-ba73-52b03910a382'
+      '__id': 'api-dt-id-1'
     }
   ],
   'entityTypeName': 'api'

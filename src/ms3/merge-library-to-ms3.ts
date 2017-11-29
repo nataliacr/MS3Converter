@@ -1,7 +1,9 @@
-import * as MS3 from './../ms3-v1-api-interface';
+import * as MS3 from '../ms3/ms3-v1-api-interface';
+import Extension from '../ms3/ms3-v1-extension-interface';
+import Overlay from '../ms3/ms3-v1-overlay-interface';
 import { cloneDeep, forEach, map } from 'lodash';
-import { Library } from './../ms3-v1-library-interface';
-import { Trait } from './../ms3-v1-api-interface';
+import { Library } from '../ms3/ms3-v1-library-interface';
+import { Trait } from '../ms3/ms3-v1-api-interface';
 
 class MergeLibraryToMs3 {
   private libraries: Library[];
@@ -43,6 +45,6 @@ class MergeLibraryToMs3 {
   }
 }
 
-export default function mergeLibraryToMs3(API: MS3.API): MS3.API {
+export default function mergeLibraryToMs3(API: MS3.API | Extension | Overlay): MS3.API | Extension | Overlay {
   return MergeLibraryToMs3.create(API).merge();
 }

@@ -2,6 +2,7 @@ import { cloneDeep, union, find, findIndex, intersection } from 'lodash';
 import MS3Overlay from './ms3-v1-overlay-interface';
 import * as MS3 from './ms3-v1-api-interface';
 import { MS3ExtensionToApi } from './ms3-extension-to-api';
+import mergeLibraryToMs3 from './merge-library-to-ms3';
 
 class MS3OverlayToApi extends MS3ExtensionToApi {
   api: any = {};
@@ -33,17 +34,14 @@ class MS3OverlayToApi extends MS3ExtensionToApi {
   merge(): MS3.API {
     let mergedApi: MS3.API = cloneDeep(this.api);
 
-    // merge internal extension includes
-    if (this.overlay.libraries) {
-      // merge library into extension
-    }
-
-    // merge internal api includes
     if (this.api.libraries) {
-      // merge library into api
+      this.api = mergeLibraryToMs3(this.api);
     }
 
-    // merge api and extension together
+    if (this.overlay.libraries) {
+      this.overlay = <MS3Overlay> mergeLibraryToMs3(this.overlay);
+    }
+
     mergedApi = this.mergeExtensionIntoApi();
 
     return mergedApi;
