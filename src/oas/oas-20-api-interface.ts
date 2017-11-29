@@ -255,4 +255,6 @@ export interface API {
   security?: SecurityRequirement[];
   tags?: Tag[];
   externalDocs?: ExternalDocs;
+  host?: string;
+  basePath?: string;
 }
