@@ -93,11 +93,11 @@ export const originalResourceWithResponses: MS3 = {
 };
 
 export const resultResourceWithResponses: OAS = {
-  openapi: '2.0',
+  openapi: '3.0',
   info: {
     title: 'params',
     description: 'API description',
-    version: '2.0'
+    version: '3.0'
   },
   paths: {
     '/res': {

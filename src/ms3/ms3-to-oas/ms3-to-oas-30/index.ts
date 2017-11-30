@@ -27,7 +27,7 @@ class MS3toOAS30 {
 
   convert() {
     this.oasAPI = {
-      openapi: '2.0',
+      openapi: '3.0',
       info: this.convertSettings(),
       paths: {},
       components: {}
@@ -73,7 +73,7 @@ class MS3toOAS30 {
     const settings: OAS30Interface.Info = {
       title: this.ms3API.settings.title,
       description: this.ms3API.settings.description || 'API description',
-      version: this.ms3API.settings.version || '2.0'
+      version: this.ms3API.settings.version || '3.0'
     };
 
     return settings;
