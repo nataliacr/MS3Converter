@@ -1,7 +1,7 @@
 import ConvertorInterface from '../../common/convertor-interface';
 import { API as MS3, DataType, Resource } from '../ms3-v1-api-interface';
 import ConvertorOptions, { format } from '../../common/convertor-options-interface';
-import { API as OAS, Info } from './../../oas/oas-20-api-interface';
+import { API as OAS, Info } from './../../oas/oas-30-api-interface';
 import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from './datatypes-to-schemas';
 import mergeTypesAndTraits from './merge-resource-types-and-traits';
 import mergeExtensionWithApi from './../ms3-extension-to-api';

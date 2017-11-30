@@ -1,5 +1,5 @@
 import { API as MS3 } from './../../ms3/ms3-v1-api-interface';
-import { API as OAS } from './../../oas/oas-20-api-interface';
+import { API as OAS } from './../../oas/oas-30-api-interface';
 
 export const originalExamples: MS3 = {
   'settings': {
