@@ -1,3 +1,3 @@
-import * as apiInterfaces from './oas-20-api-interface';
+import * as apiInterfaces from './oas-30-api-interface';
 
 export { apiInterfaces };

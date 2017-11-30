@@ -1,6 +1,6 @@
 import MS3toOAS from './../ms3/ms3-to-oas/index';
 import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
-import * as OASInterfaces from './../oas/oas-20-api-interface';
+import * as OASInterfaces from './../oas/oas-30-api-interface';
 import ConvertorOptions from './../common/convertor-options-interface';
 import { exists } from 'fs';
 import { promisify } from 'util';

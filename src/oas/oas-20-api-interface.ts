@@ -4,7 +4,10 @@
 
 export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-export type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+export type securitySchemeType = 'apiKey' | 'basic' | 'oauth2';
+type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
+type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
+type flow = 'implicit' | 'password' | 'application' | 'accessCode';
 
 interface Contact {
   name?: string;
@@ -21,7 +24,24 @@ export interface ReferenceObject {
   '$ref': string;
 }
 
-export interface SchemaObject {
+export interface SecuritySchemeObject {
+  type: securitySchemeType;
+  description?: string;
+  name?: string;
+  in?: 'query' | 'header';
+  flow?: flow;
+  authorizationUrl?: string;
+  tokenUrl?: string;
+  scopes?: {
+    [propName: string]: string;
+  };
+}
+
+export interface SecurityDefinitionsObject {
+  [propName: string]: SecuritySchemeObject | ReferenceObject;
+}
+
+interface SchemaObject {
   title?: string;
   type?: type;
   pattern?: string;
@@ -40,7 +60,7 @@ export interface SchemaObject {
   required?: boolean;
   enum?: string[];
   items?: SchemaObject | ReferenceObject;
-  properties?: Schema | ReferenceObject;
+  properties?: DefinitionsObject | ReferenceObject;
   description?: string;
   format?: format;
   allOf?: object;
@@ -52,184 +72,106 @@ export interface SchemaObject {
   example?: any;
 }
 
-export interface Schema {
+export interface DefinitionsObject {
   [propName: string]: SchemaObject | ReferenceObject;
 }
 
-interface EncodingObject {
-  contentType?: string;
-  headers?: Headers;
-  style?: string;
-  explode?: boolean;
-  allowReserved?: boolean;
+interface BasicParameterFields {
+  default?: number | string | boolean;
+  maximum?: number;
+  minimum?: number;
+  exclusiveMaximum?: number;
+  exclusiveMinimum?: number;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: boolean;
+  enum?: (number | string | boolean)[];
+  multipleOf?: number;
 }
 
-interface Encoding {
-  [propName: string]: EncodingObject;
+interface SecurityRequirementObject {
+  [propName: string]: string[];
 }
 
-interface MediaTypeObject {
-  schema?: SchemaObject | ReferenceObject;
-  example?: any;
-  examples?: Example;
-  encoding?: Encoding[];
+interface ItemsObject extends BasicParameterFields {
+  type?: string;
+  format?: string;
+  items?: ItemsObject;
+  collectionFormat?: string;
 }
 
-export interface MediaType {
-  [propName: string]: MediaTypeObject | ReferenceObject;
+interface ParameterObject extends BasicParameterFields {
+  name: string;
+  in: string;
+  description?: string;
+  required?: boolean;
+  schema?: SchemaObject;
+  type?: string;
+  format?: string;
+  allowEmptyValue?: boolean;
+  items?: ItemsObject;
+  collectionFormat?: string;
+}
+
+interface ParametersDefinitionsObject {
+  [propName: string]: ParameterObject;
+}
+
+interface HeaderObject extends ItemsObject {
+  description?: string;
+  type: string;
+}
+
+interface HeadersObject {
+  [propName: string]: HeaderObject;
+}
+
+interface ExampleObject {
+  [propName: string]: any;
 }
 
 interface ResponseObject {
   description: string;
-  headers?: Headers;
-  content?: MediaType;
-  links?: Link[];
-}
-
-interface Response {
-  [propName: string]: ResponseObject | ReferenceObject;
-}
-
-export interface ParameterObject extends HeaderObject {
-  name: string;
-  in: string;
-}
-
-export interface ExampleObject {
-  summary?: string;
-  description?: string;
-  value?: any;
-  externalValue?: string;
-}
-
-export interface Example {
-  [propName: string]: ExampleObject | ReferenceObject;
-}
-
-interface RequestBodyObject {
-  description?: string;
-  content: MediaType;
-  required?: boolean;
-}
-
-export interface RequestBody {
-  [propName: string]: RequestBodyObject | ReferenceObject;
-}
-
-export interface HeaderObject {
-  description?: string;
-  required: boolean;
-  deprecated?: boolean;
-  allowEmptyValue?: boolean;
-  schema?: SchemaObject;
-  style?: string;
-  example?: any;
-  examples?: Example;
-  explode?: boolean;
-}
-
-export interface Headers {
-  [propName: string]: HeaderObject | ReferenceObject;
-}
-
-export interface OAuthFlow {
-  authorizationUrl?: string;
-  tokenUrl?: string;
-  refreshUrl?: string;
-  scopes: object;
-}
-
-interface OAuthFlows {
-  implicit?: OAuthFlow;
-  password?: OAuthFlow;
-  clientCredentials?: OAuthFlow;
-  authorizationCode?: OAuthFlow;
-}
-
-export interface SecuritySchemeObject {
-  type: securitySchemeType;
-  description?: string;
-  name?: string;
-  in?: 'query' | 'header' | 'cookie';
-  scheme?: string;
-  bearerFormat?: string;
-  flows?: OAuthFlows;
-  openIdConnectUrl?: string;
-}
-
-export interface SecurityScheme {
-  [propName: string]: SecuritySchemeObject | ReferenceObject;
-}
-
-interface LinkObject {
-  operationRef?: string;
-  operationId?: string;
-  parameters?: any;
-  requestBody?: any;
-  description?: string;
-  server?: Server;
-}
-
-interface Link {
-  [propName: string]: LinkObject | ReferenceObject;
+  schema: SchemaObject | ReferenceObject;
+  headers?: HeadersObject;
+  examples?: ExampleObject;
 }
 
 export interface ResponsesObject {
-  default?: ResponseObject | ReferenceObject;
   [propName: string]: ResponseObject | ReferenceObject;
 }
 
-export interface SecurityRequirement {
-  [propName: string]: string[];
+export interface OperationObject {
+  tags?: string[];
+  summary?: string;
+  description?: string;
+  externalDocs?: object; // TODO: create External Documentation Object interface
+  operationId?: string;
+  consumes: mediaType[];
+  produces: mediaType[];
+  parameters?: (ParameterObject | ReferenceObject)[];
+  responses: ResponsesObject;
+  schemes?: ('http' | 'https')[];
+  deprecated?: boolean;
+  security?: SecurityRequirementObject[];
 }
 
 export interface Operation {
-  operationId?: string;
-  summary?: string;
-  description?: string;
-  parameters?: ParameterObject[];
-  requestBody?: RequestBodyObject | ReferenceObject;
-  responses: ResponsesObject;
-  tags?: string[];
-  deprecated?: boolean;
-  security?: SecurityRequirement;
-  servers?: Server[];
-  callbacks?: object; // TODO: create Callback Object interface
-  externalDocs?: object; // TODO: create External Documentation Object interface
+  get?: OperationObject;
+  put?: OperationObject;
+  post?: OperationObject;
+  delete?: OperationObject;
+  options?: OperationObject;
+  head?: OperationObject;
+  patch?: OperationObject;
+  parameters?: (ParameterObject | ReferenceObject)[];
 }
 
-interface Server {}
-
-interface Tag {}
-
-interface ExternalDocs {}
-
-interface PathItemObject {
-  '$ref'?: string;
-  summary?: string;
-  description?: string;
-  get?: Operation;
-  put?: Operation;
-  post?: Operation;
-  delete?: Operation;
-  options?: Operation;
-  head?: Operation;
-  patch?: Operation;
-  trace?: Operation;
-  servers?: Server[];
-  parameters?: [ ParameterObject | ReferenceObject ];
-}
-
-export interface Components {
-  schemas?: Schema;
-  responses?: Response;
-  parameters?: ParameterObject[];
-  examples?: Example;
-  requestBodies?: RequestBody[];
-  headers?: Headers;
-  securitySchemes?: SecurityScheme;
-  links?: Link[];
-  callbacks?: object; // TODO: create Callback Object interface
+export interface PathItemObject {
+  [propName: string]: Operation;
 }
 
 export interface Info {
@@ -239,20 +181,26 @@ export interface Info {
   contact?: Contact;
   license?: License;
   version: string;
-  server?: Server;
 }
 
 export interface Paths {
-  [propName: string]: PathItemObject;
+  [propName: string]: OperationObject | ReferenceObject;
 }
 
 export interface API {
-  openapi: string;
+  swagger: '2.0';
   info: Info;
+  host?: string;
+  basePath?: string;
+  schemes?: ('http' | 'https')[];
+  consumes?: mediaType[];
+  produces?: mediaType[];
   paths: Paths;
-  servers?: Server[];
-  components?: Components;
-  security?: SecurityRequirement[];
-  tags?: Tag[];
-  externalDocs?: ExternalDocs;
+  definitions?: DefinitionsObject;
+  parameters?: ParametersDefinitionsObject;
+  responses?: ResponsesObject;
+  securityDefinitions?: SecurityDefinitionsObject;
+  security?: SecurityRequirementObject[];
+  tags?: any;
+  externalDocs?: any;
 }

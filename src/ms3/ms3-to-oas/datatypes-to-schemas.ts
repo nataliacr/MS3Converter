@@ -1,5 +1,5 @@
 import * as MS3 from './../ms3-v1-api-interface';
-import { Schema, SchemaObject } from './../../oas/oas-20-api-interface';
+import { Schema, SchemaObject } from './../../oas/oas-30-api-interface';
 import { DataType, DataTypeObject, DataTypeArray, DataTypePrimitive } from './../ms3-v1-api-interface';
 import { find, cloneDeep } from 'lodash';
 
