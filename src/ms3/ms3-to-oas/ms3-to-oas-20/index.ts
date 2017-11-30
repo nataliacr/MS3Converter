@@ -36,6 +36,14 @@ class MS3toOAS20 {
 
     if (this.ms3API.libraries) this.ms3API = mergeLibraryToMs3(this.ms3API);
 
+    if (this.ms3API.dataTypes) {
+      if (this.options.destinationPath) {
+        this.externalFiles.schemas = this.externalFiles.schemas.concat(convertExternalSchemas(this.ms3API, this.options.destinationPath));
+        this.oasAPI.definitions = convertExternalSchemasReferences(this.ms3API);
+      }
+      else this.oasAPI.definitions = convertDataTypesToSchemas(this.ms3API);
+    }
+
     return {
       API: this.oasAPI,
       externalFiles: this.externalFiles
@@ -43,7 +51,7 @@ class MS3toOAS20 {
   }
 
   private getPath(baseUri: string): string {
-    return baseUri.split('//')[1];
+    return baseUri.split('://')[1];
   }
 
   private convertSettings(): OAS20Interface.Info {
