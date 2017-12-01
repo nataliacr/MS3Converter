@@ -10,7 +10,7 @@ import convertResourcesToPaths from '../resources-to-paths';
 import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from '../datatypes-to-schemas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from '../examples-to-oas';
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep, map } from 'lodash';
 
 class MS3toOAS20 {
   oasAPI: OAS20Interface.API;
@@ -35,6 +35,13 @@ class MS3toOAS20 {
     };
 
     if (this.ms3API.libraries) this.ms3API = mergeLibraryToMs3(this.ms3API);
+
+    if (this.ms3API.settings.protocols) {
+      const schemes = map(this.ms3API.settings.protocols, (protocol: string) => {
+        return protocol.toLowerCase();
+      });
+      // this.oasAPI.schemes = schemes;
+    }
 
     if (this.ms3API.dataTypes) {
       if (this.options.destinationPath) {
