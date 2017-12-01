@@ -7,7 +7,7 @@ type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date
 export type securitySchemeType = 'apiKey' | 'basic' | 'oauth2';
 type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
-type flow = 'implicit' | 'password' | 'application' | 'accessCode';
+export type flow = 'implicit' | 'password' | 'application' | 'accessCode';
 
 interface Contact {
   name?: string;

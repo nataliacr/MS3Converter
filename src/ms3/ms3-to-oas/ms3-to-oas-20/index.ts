@@ -4,7 +4,7 @@ import * as OAS20Interface from '../../../oas/oas-20-api-interface';
 import mergeLibraryToMs3 from '../../merge-library-to-ms3';
 import mergeTypesAndTraits from '../merge-resource-types-and-traits';
 
-import convertSecuritySchemes from '../security-schemes-to-oas';
+import convertSecuritySchemes from './security-schemes-to-oas';
 import convertResourcesToPaths from '../resources-to-paths';
 
 import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from '../datatypes-to-schemas';
@@ -55,6 +55,8 @@ class MS3toOAS20 {
         this.externalFiles.examples = this.externalFiles.examples.concat(convertExternalExamples(this.ms3API.examples, this.options.destinationPath));
       }
     }
+
+    if (this.ms3API.securitySchemes) this.oasAPI.securityDefinitions = convertSecuritySchemes(this.ms3API);
 
     return {
       API: this.oasAPI,
