@@ -2,6 +2,7 @@ import MS3toOAS from './../ms3/ms3-to-oas/index';
 import ConvertorOptions from '../common/convertor-options-interface';
 import { ms3Settings, oasSettings } from './files/MS3-to-OAS-20/ms3-settings-to-oas';
 import { ms3DataTypes, oasDataTypes, oasDataTypesExternal } from './files/MS3-to-OAS-20/ms3-datatypes-to-oas';
+import { ms3Examples, oasExamples } from './files/MS3-to-OAS-20/ms3-examples-to-oas';
 
 import { exists } from 'fs';
 import { promisify } from 'util';
@@ -46,4 +47,22 @@ test('MS3 datatypes should be converted to OAS 2.0 definitions with references &
   await rmdirPromise('./schemas');
 
   expect(mainFileExist && schemasFolderExist).toEqual(true);
+});
+
+test('MS3 examples should be converted to OAS with references && external files should be created in "/examples" folder', async () => {
+  const config: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: false,
+    destinationPath: './',
+    oasVersion: '2.0'
+  };
+
+  await expect(MS3toOAS.create(ms3Examples, config).convert()).resolves.toEqual(oasExamples);
+
+  const mainFileExist = await fileExistsPromise('./api.json');
+  const examplesFolderExist = await fileExistsPromise('./examples/exampleJSON.json');
+  await rmdirPromise('./api.json');
+  await rmdirPromise('./examples');
+
+  expect(mainFileExist && examplesFolderExist).toEqual(true);
 });

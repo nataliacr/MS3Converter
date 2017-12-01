@@ -50,6 +50,12 @@ class MS3toOAS20 {
       else this.oasAPI.definitions = convertDataTypesToSchemas(this.ms3API);
     }
 
+    if (this.ms3API.examples) {
+      if (this.options.destinationPath) {
+        this.externalFiles.examples = this.externalFiles.examples.concat(convertExternalExamples(this.ms3API.examples, this.options.destinationPath));
+      }
+    }
+
     return {
       API: this.oasAPI,
       externalFiles: this.externalFiles
