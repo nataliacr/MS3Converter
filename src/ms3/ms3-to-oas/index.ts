@@ -1,105 +1,73 @@
-import ConvertorInterface from '../../common/convertor-interface';
-import { API as MS3, DataType, Resource } from '../ms3-v1-api-interface';
-import ConvertorOptions, { format } from '../../common/convertor-options-interface';
-import { API as OAS, Info } from './../../oas/oas-30-api-interface';
-import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from './datatypes-to-schemas';
-import mergeTypesAndTraits from './merge-resource-types-and-traits';
-import mergeExtensionWithApi from './../ms3-extension-to-api';
-import convertResourcesToPaths from './resources-to-paths';
-import mergeLibraryToMs3 from '../merge-library-to-ms3';
-import convertSecuritySchemes from './security-schemes-to-oas';
-import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from './examples-to-oas';
 import * as path from 'path';
+import * as YAML from 'yamljs';
 import { writeFile } from 'fs';
 import { promisify } from 'util';
 import { promise as MkdirpPromise } from 'mkdirp2';
-import * as YAML from 'yamljs';
 import { cloneDeep } from 'lodash';
+
+import { API as MS3Interface } from '../../ms3/ms3-v1-api-interface';
+import { API as OAS20Interface } from '../../oas/oas-20-api-interface';
+import { API as OAS30Interface } from '../../oas/oas-30-api-interface';
+import ConvertorOptions, { format } from '../../common/convertor-options-interface';
+import mergeOverlayWithApi from '../ms3-overlay-to-api';
+import mergeExtensionWithApi from '../ms3-extension-to-api';
+import convertOAS20 from './ms3-to-oas-20';
+import convertOAS30 from './ms3-to-oas-30';
 
 const writeFilePromise = promisify(writeFile);
 
-interface MS3toOASInterface {
-  oasAPI: OAS;
-  convert(): Promise<OAS>;
-}
-
 interface DataToWrite {
   path: string;
-  content?: OAS;
+  content?: OAS20Interface | OAS30Interface;
 }
 
-export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
-  oasAPI: OAS;
+export default class MS3toOAS {
   externalFiles: any = {
     examples: [],
     schemas: []
   };
+  result: DataToWrite = {
+    path: ''
+  };
 
-  constructor(private ms3API: any, private options: ConvertorOptions) {}
+  constructor(protected ms3API: any, protected options: ConvertorOptions) {}
 
-  convertAPI(): OAS {
-    this.oasAPI = {
-      openapi: '2.0',
-      info: this.convertSettings(),
-      paths: {},
-      components: {}
+  static getDefaultConfig(): ConvertorOptions {
+    return {
+      fileFormat: 'json',
+      asSingleFile: true,
+      oasVersion: '3.0'
     };
-    if (this.ms3API.libraries) this.ms3API = mergeLibraryToMs3(this.ms3API);
-    if (this.ms3API.dataTypes) {
-      if (this.options.destinationPath) {
-        this.externalFiles.schemas = this.externalFiles.schemas.concat(convertExternalSchemas(this.ms3API, this.options.destinationPath));
-        this.oasAPI.components.schemas = convertExternalSchemasReferences(this.ms3API);
-      }
-      else this.oasAPI.components.schemas = convertDataTypesToSchemas(this.ms3API);
-    }
-
-    if (this.ms3API.examples) {
-      if (this.options.destinationPath) {
-        this.externalFiles.examples = this.externalFiles.examples.concat(convertExternalExamples(this.ms3API.examples, this.options.destinationPath));
-        this.oasAPI.components.examples = convertExternalExampleReferences(this.ms3API.examples);
-      }
-      else this.oasAPI.components.examples = convertInlineExamples(this.ms3API.examples);
-    }
-
-    if (this.ms3API.securitySchemes) this.oasAPI.components.securitySchemes = convertSecuritySchemes(this.ms3API);
-    if (this.ms3API.resources) {
-      let mergedApi: MS3 = cloneDeep(this.ms3API);
-      if (this.ms3API.resourcesTypes || this.ms3API.traits) {
-        mergedApi = mergeTypesAndTraits(this.ms3API);
-      }
-      this.oasAPI.paths = convertResourcesToPaths(mergedApi);
-    }
-
-    return this.oasAPI;
   }
 
-  convertOverlay(): OAS {
-    // check for extended project and merge overlay
-    return this.oasAPI;
-  }
-
-  async convert(): Promise<OAS> {
-    const result: DataToWrite = { path: '' };
+  async convert() {
+    const version = this.options.oasVersion || '3.0';
 
     switch (this.ms3API.entityTypeName) {
-      case 'api':
-        result.content = this.convertAPI();
-        break;
       case 'overlay':
-        result.content = this.convertOverlay();
-        break;
+        this.ms3API = mergeOverlayWithApi(this.ms3API);
       case 'extension': {
         this.ms3API = mergeExtensionWithApi(this.ms3API);
-        result.content = this.convertAPI();
-        break;
       }
       case 'library':
         throw new Error('Library can not be converted to swagger.');
     }
 
+    let result = null;
+    if (version == '2.0') result = convertOAS20(this.ms3API, this.options);
+    if (version == '3.0') result = convertOAS30(this.ms3API, this.options);
+    this.result.content = result.API;
+    this.externalFiles = result.externalFiles;
+
+    await this.write();
+
+    return this.result.content;
+  }
+
+  protected async write() {
     if (this.options.destinationPath) {
-      result.path = `${this.options.destinationPath}api.${this.options.fileFormat == 'json' ? 'json' : 'yaml'}`;
-      await this.writeApiToDisc(result);
+      this.result.path = `${this.options.destinationPath}api.${this.options.fileFormat == 'json' ? 'json' : 'yaml'}`;
+      await this.writeApiToDisc(this.result);
 
       if (this.externalFiles.examples.length) {
         await MkdirpPromise(this.options.destinationPath + 'examples/');
@@ -111,32 +79,9 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
         await this.writeSchemasToDisk();
       }
     }
-
-    return result.content;
   }
 
-  private convertSettings(): Info {
-    if (!this.ms3API.settings.title) {
-      throw new Error('MS3 API settings must contain title property.');
-    }
-
-    const settings: Info = {
-      title: this.ms3API.settings.title,
-      description: this.ms3API.settings.description || 'API description',
-      version: this.ms3API.settings.version || '2.0'
-    };
-
-    return settings;
-  }
-
-  static getDefaultConfig(): ConvertorOptions {
-    return {
-      fileFormat: 'json',
-      asSingleFile: true
-    };
-  }
-
-  private async writeApiToDisc(data: DataToWrite) {
+  protected async writeApiToDisc(data: any) {
     let resultContent;
     if (this.options.fileFormat == 'yaml') {
       resultContent = YAML.stringify(data.content, 2);
@@ -146,17 +91,17 @@ export default class MS3toOAS implements MS3toOASInterface, ConvertorInterface {
     await writeFilePromise(data.path, resultContent);
   }
 
-  private writeExamplesToDisk() {
+  protected writeExamplesToDisk() {
     const promisesArray: any = this.externalFiles.examples.map((file: any) => writeFilePromise(file.path, JSON.stringify(file.content, undefined, 2)));
     return Promise.all(promisesArray);
   }
 
-  private writeSchemasToDisk() {
+  protected writeSchemasToDisk() {
     const promisesArray: any = this.externalFiles.schemas.map((file: any) => writeFilePromise(file.path, JSON.stringify(file.content, undefined, 2)));
     return Promise.all(promisesArray);
   }
 
-  static create(api: MS3, options: ConvertorOptions = this.getDefaultConfig() ) {
+  static create(api: MS3Interface, options: ConvertorOptions = this.getDefaultConfig() ) {
     return new MS3toOAS(api, options);
   }
 }

@@ -126,11 +126,11 @@ const project: ApiInterfaces.API = {
 
 test('MS3 schemas should be converted to OAS successfully', async() => {
   const expectedResult: OASInterfaces.API = {
-    openapi: '2.0',
+    openapi: '3.0',
     info: {
       title: 'params',
       description: 'API description',
-      version: '2.0'
+      version: '3.0'
     },
     paths: {},
     components: {
@@ -216,11 +216,11 @@ test('MS3 schemas should be converted to OAS successfully', async() => {
 
 test('MS3 schemas should be converted to OAS with references && external files should be created in "/schemas" folder', async() => {
   const expectedResult: OASInterfaces.API = {
-    openapi: '2.0',
+    openapi: '3.0',
     info: {
       title: 'params',
       description: 'API description',
-      version: '2.0'
+      version: '3.0'
     },
     paths: {},
     components: {
