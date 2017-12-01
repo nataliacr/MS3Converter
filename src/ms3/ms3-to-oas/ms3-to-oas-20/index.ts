@@ -37,10 +37,9 @@ class MS3toOAS20 {
     if (this.ms3API.libraries) this.ms3API = mergeLibraryToMs3(this.ms3API);
 
     if (this.ms3API.settings.protocols) {
-      const schemes = map(this.ms3API.settings.protocols, (protocol: string) => {
-        return protocol.toLowerCase();
+      this.oasAPI.schemes = map(this.ms3API.settings.protocols, (protocol: string) => {
+        return <'http' | 'https'> protocol.toLowerCase();
       });
-      // this.oasAPI.schemes = schemes;
     }
 
     if (this.ms3API.dataTypes) {

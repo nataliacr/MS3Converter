@@ -53,16 +53,11 @@ export default class MS3toOAS {
         throw new Error('Library can not be converted to swagger.');
     }
 
-    if (version == '2.0') {
-      const result = convertOAS20(this.ms3API, this.options);
-      this.result.content = result.API;
-      this.externalFiles = result.externalFiles;
-    }
-    if (version == '3.0') {
-      const result = convertOAS30(this.ms3API, this.options);
-      this.result.content = result.API;
-      this.externalFiles = result.externalFiles;
-    }
+    let result = null;
+    if (version == '2.0') result = convertOAS20(this.ms3API, this.options);
+    if (version == '3.0') result = convertOAS30(this.ms3API, this.options);
+    this.result.content = result.API;
+    this.externalFiles = result.externalFiles;
 
     await this.write();
 
