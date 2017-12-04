@@ -196,7 +196,6 @@ class ConvertResourcesToPaths {
     return this.API.resources.reduce( (resultObject: any, resource: MS3.Resource) => {
       const path = resource.parentId ? (this.getParentResourcePath(resource.parentId) + resource.path) : resource.path;
       resultObject[path] = {};
-      // base uri params and resource path params
       const activeMethods = filter(resource.methods, ['active', true]);
 
       resultObject[path] = activeMethods.reduce( (result: any, activeMethod: MS3.Method) => {
@@ -204,6 +203,10 @@ class ConvertResourcesToPaths {
         result[methodType] = this.getMethodObject(activeMethod, methodType, resource.name);
         return result;
       }, {});
+
+      if (resource.pathVariables && resource.pathVariables.length) {
+        resultObject[path].parameters = this.getParametersByType(resource.pathVariables, 'path');
+      }
 
       return resultObject;
     }, {});
