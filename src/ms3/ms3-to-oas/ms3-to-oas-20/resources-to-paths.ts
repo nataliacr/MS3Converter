@@ -27,43 +27,35 @@ class ConvertResourcesToPaths {
   getBodySchema(dataTypeID: string): OAS.ReferenceObject {
     const dataTypeName: string = this.getDataTypeName(dataTypeID);
     return {
-      '$ref': `#/components/schemas/${dataTypeName}`
+      '$ref': `#/definitions/${dataTypeName}`
     };
   }
 
-  getBodyExamples(examples: string[]): OAS.ExampleObject {
-    return examples.reduce( (resultObject: OAS.ExampleObject, exampleID: string) => {
-      const exampleName: string = this.getExampleName(exampleID);
-      resultObject[exampleName] = {
-        '$ref': `#/components/examples/${exampleName}`
-      };
+  // getBodyExamples(examples: string[]): OAS.ExampleObject {
+  //   return examples.reduce( (resultObject: OAS.ExampleObject, exampleID: string) => {
+  //     const exampleName: string = this.getExampleName(exampleID);
+  //     resultObject[exampleName] = {
+  //       '$ref': `./examples/${exampleName}.json#${exampleName}`
+  //     };
 
-      return resultObject;
-    }, {});
-  }
+  //     return resultObject;
+  //   }, {});
+  // }
 
-  getRequestBody(body: MS3.Body[]): OAS.SchemaObject {
-    return body.reduce( (resultObject: any, body: MS3.Body) => {
-      resultObject[body.contentType] = {};
+  // getRequestBody(body: MS3.Body[]): OAS.SchemaObject {
+  //   return body.reduce( (resultObject: any, body: MS3.Body) => {
+  //     resultObject[body.contentType] = {};
 
-      if (body.type) resultObject[body.contentType].schema = this.getBodySchema(body.type);
-      if (body.selectedExamples) resultObject[body.contentType].examples = this.getBodyExamples(body.selectedExamples);
+  //     if (body.type) resultObject[body.contentType].schema = this.getBodySchema(body.type);
+  //     if (body.selectedExamples) resultObject[body.contentType].examples = this.getBodyExamples(body.selectedExamples);
 
-      return resultObject;
-    }, {});
-  }
+  //     return resultObject;
+  //   }, {});
+  // }
 
   getResponseHeaders(headers: MS3.Parameter[]): OAS.HeadersObject {
     return headers.reduce( (resultObject: any, header: MS3.Parameter) => {
-      resultObject[header.displayName] = {
-        required: header.required || true
-      };
-
-      if (header.description) resultObject[header.displayName].description = header.description;
-      resultObject[header.displayName].schema = header.repeat ? this.getArrayTypeSchema(header) : this.getPrimitiveTypeSchema(header);
-      delete resultObject[header.displayName].schema.name;
-      delete resultObject[header.displayName].schema.in;
-
+      resultObject[header.displayName] = this.transformParameterObject(header);
       return resultObject;
     }, {});
   }
@@ -76,7 +68,7 @@ class ConvertResourcesToPaths {
       return selectedExamples.reduce((resultExamples: any, selectedExample: string) => {
         const exampleName = this.getExampleName(selectedExample);
         resultExamples[exampleName] = {
-          '$ref': `#/examples/${exampleName}`
+          '$ref': `./examples/${exampleName}.json#${exampleName}`
         };
         return resultExamples;
       }, {});
@@ -89,8 +81,10 @@ class ConvertResourcesToPaths {
         description: response.description || 'description' // required field
       };
 
-      if (response.body && response.body.length) {
-        resultObject[response.code].schema = this.getBodyParameter(response.body[0]);
+      if (response.body && response.body.length && response.body[0].type) {
+        resultObject[response.code].schema = {
+          '$ref': `#/definitions/${this.getDataTypeName(response.body[0].type)}`
+        };
         const examples = response.body.forEach(body => {
           if (response.body[0].selectedExamples) {
             resultObject[response.code].examples = this.getResponseExamples(body.selectedExamples);
@@ -106,11 +100,10 @@ class ConvertResourcesToPaths {
   transformParameterObject(parameter: MS3.Parameter) {
     const clonedParameter: any = cloneDeep(parameter);
     delete clonedParameter.displayName;
-    delete clonedParameter.description;
     delete clonedParameter.repeat;
-    delete clonedParameter.required;
     delete clonedParameter.example;
-    if (clonedParameter.type == 'number') clonedParameter.type = 'long';
+    delete clonedParameter.required;
+
     return clonedParameter;
   }
 
@@ -128,38 +121,52 @@ class ConvertResourcesToPaths {
 
   getParametersByType(parameters: MS3.Parameter[], type: string): OAS.ParameterObject[] {
     return parameters.map( (parameter: MS3.Parameter) => {
-      const convertedParameter: any = {
+      let convertedParameter: any = {
         name: parameter.displayName,
-        in: type,
-        required: type == 'path' ? true : parameter.required || false
+        in: type
       };
 
-      if (parameter.description) convertedParameter.description = parameter.description;
-      convertedParameter.schema = parameter.repeat ? this.getArrayTypeSchema(parameter) : this.getPrimitiveTypeSchema(parameter);
+      const parameterProperties = this.transformParameterObject(parameter);
+
+      if (parameter.repeat) {
+        convertedParameter = {
+          ...convertedParameter,
+          type: 'array',
+          items: parameterProperties
+        };
+        if (parameterProperties.description) convertedParameter.description = parameterProperties.description;
+        delete convertedParameter.items.description;
+      }
+      else {
+        convertedParameter = {
+          ...convertedParameter,
+          ...parameterProperties
+        };
+      }
 
       return convertedParameter;
     });
   }
 
   getBodyParameter(body: MS3.Body): OAS.ParameterObject[] {
-      const convertedBody: any = {
-        name: body.contentType,
-        in: 'body'
-      };
+    const schemaName = this.getDataTypeName(body.type);
+    const convertedBody: any = {
+      name: schemaName,
+      in: 'body',
+      schema: {
+        '$ref': `#/definitions/${schemaName}`
+      }
+    };
 
-      if (body.type) convertedBody.schema = {
-        '$ref': `#/definitions/${body.type}`
-      };
-
-      return convertedBody;
+    return convertedBody;
   }
 
   getParameters(method: MS3.Method): OAS.ParameterObject[] {
     let convertedParameters: OAS.ParameterObject[] = [];
 
     if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));
-    if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'path'));
-    if (method.body && method.body.length) convertedParameters = convertedParameters.concat(this.getBodyParameter(method.body[0]));
+    if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'query'));
+    if (method.body && method.body.length && method.body[0].type) convertedParameters = convertedParameters.concat(this.getBodyParameter(method.body[0]));
 
     return convertedParameters;
   }
@@ -201,7 +208,7 @@ class ConvertResourcesToPaths {
     return this.API.resources.reduce( (resultObject: any, resource: MS3.Resource) => {
       const path = resource.parentId ? (this.getParentResourcePath(resource.parentId) + resource.path) : resource.path;
       resultObject[path] = {};
-
+      // base uri params and resource path params
       const activeMethods = filter(resource.methods, ['active', true]);
 
       resultObject[path] = activeMethods.reduce( (result: any, activeMethod: MS3.Method) => {

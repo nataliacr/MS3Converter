@@ -108,7 +108,7 @@ export interface ParameterObject extends BasicParameterFields {
   in: string;
   description?: string;
   required?: boolean;
-  schema?: SchemaObject;
+  schema?: SchemaObject | ReferenceObject;
   type?: string;
   format?: string;
   allowEmptyValue?: boolean;

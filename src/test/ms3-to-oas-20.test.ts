@@ -5,6 +5,9 @@ import { ms3DataTypes, oasDataTypes, oasDataTypesExternal } from './files/MS3-to
 import { ms3Examples, oasExamples } from './files/MS3-to-OAS-20/ms3-examples-to-oas';
 import { ms3SecuritySchemes, oasSecuritySchemes } from './files/MS3-to-OAS-20/ms3-securityschemes-to-oas';
 import { ms3NestedResources, oasNestedResources } from './files/MS3-to-OAS-20/ms3-nested-resources-to-oas';
+import { ms3ResourceWithParameters, oasResourceWithParameters } from './files/MS3-to-OAS-20/ms3-resource-with-parameters-to-oas';
+import { ms3ResourceWithRequestBody, oasResourceWithRequestBody } from './files/MS3-to-OAS-20/ms3-resource-with-request-body-to-oas';
+import { ms3ResourceWithResponses, oasResourceWithResponses } from './files/MS3-to-OAS-20/ms3-resource-with-responses-to-oas';
 
 import { exists } from 'fs';
 import { promisify } from 'util';
@@ -89,4 +92,37 @@ test('MS3 nested resources should be converted to OAS 2.0 successfully', async()
   };
 
   await expect(MS3toOAS.create(ms3NestedResources, options).convert()).resolves.toEqual(oasNestedResources);
+});
+
+test('MS3 resource with parameters should be converted to OAS 2.0 successfully', async() => {
+  const options: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: false,
+    destinationPath: './',
+    oasVersion: '2.0'
+  };
+
+  await expect(MS3toOAS.create(ms3ResourceWithParameters, options).convert()).resolves.toEqual(oasResourceWithParameters);
+});
+
+test('MS3 resource with request body should be converted to OAS 2.0 successfully', async() => {
+  const options: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: false,
+    destinationPath: './',
+    oasVersion: '2.0'
+  };
+
+  await expect(MS3toOAS.create(ms3ResourceWithRequestBody, options).convert()).resolves.toEqual(oasResourceWithRequestBody);
+});
+
+test('MS3 resource with responses should be converted to OAS 2.0 successfully', async() => {
+  const options: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: false,
+    destinationPath: './',
+    oasVersion: '2.0'
+  };
+
+  await expect(MS3toOAS.create(ms3ResourceWithResponses, options).convert()).resolves.toEqual(oasResourceWithResponses);
 });
