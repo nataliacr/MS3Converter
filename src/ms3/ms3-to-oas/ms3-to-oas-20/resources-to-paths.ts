@@ -20,6 +20,10 @@ class ConvertResourcesToPaths {
     }).name;
   }
 
+  getExample(id: string): any {
+    return find(this.API.examples, ['__id', id]);
+  }
+
   getExampleName(id: string): string {
     return find(this.API.examples, ['__id', id]).title;
   }
@@ -31,28 +35,6 @@ class ConvertResourcesToPaths {
     };
   }
 
-  // getBodyExamples(examples: string[]): OAS.ExampleObject {
-  //   return examples.reduce( (resultObject: OAS.ExampleObject, exampleID: string) => {
-  //     const exampleName: string = this.getExampleName(exampleID);
-  //     resultObject[exampleName] = {
-  //       '$ref': `./examples/${exampleName}.json#${exampleName}`
-  //     };
-
-  //     return resultObject;
-  //   }, {});
-  // }
-
-  // getRequestBody(body: MS3.Body[]): OAS.SchemaObject {
-  //   return body.reduce( (resultObject: any, body: MS3.Body) => {
-  //     resultObject[body.contentType] = {};
-
-  //     if (body.type) resultObject[body.contentType].schema = this.getBodySchema(body.type);
-  //     if (body.selectedExamples) resultObject[body.contentType].examples = this.getBodyExamples(body.selectedExamples);
-
-  //     return resultObject;
-  //   }, {});
-  // }
-
   getResponseHeaders(headers: MS3.Parameter[]): OAS.HeadersObject {
     return headers.reduce( (resultObject: any, header: MS3.Parameter) => {
       resultObject[header.displayName] = this.transformParameterObject(header);
@@ -60,9 +42,15 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  getResponseExamples(selectedExamples: string[]): any {
+  getResponseExamples(selectedExamples: string[], mediaType: string): any {
     if (this.asSingleFile) {
-      // inline
+      return selectedExamples.reduce((resultExamples: any, selectedExample: string) => {
+        const example = this.getExample(selectedExample);
+        resultExamples[mediaType] = {
+          content: example.content
+        };
+        return resultExamples;
+      }, {});
     }
     else {
       return selectedExamples.reduce((resultExamples: any, selectedExample: string) => {
@@ -87,7 +75,7 @@ class ConvertResourcesToPaths {
         };
         const examples = response.body.forEach(body => {
           if (response.body[0].selectedExamples) {
-            resultObject[response.code].examples = this.getResponseExamples(body.selectedExamples);
+            resultObject[response.code].examples = this.getResponseExamples(body.selectedExamples, response.body[0].contentType);
           }
         });
       }

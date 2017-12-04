@@ -7,7 +7,7 @@ import { ms3SecuritySchemes, oasSecuritySchemes } from './files/MS3-to-OAS-20/ms
 import { ms3NestedResources, oasNestedResources } from './files/MS3-to-OAS-20/ms3-nested-resources-to-oas';
 import { ms3ResourceWithParameters, oasResourceWithParameters } from './files/MS3-to-OAS-20/ms3-resource-with-parameters-to-oas';
 import { ms3ResourceWithRequestBody, oasResourceWithRequestBody } from './files/MS3-to-OAS-20/ms3-resource-with-request-body-to-oas';
-import { ms3ResourceWithResponses, oasResourceWithResponses } from './files/MS3-to-OAS-20/ms3-resource-with-responses-to-oas';
+import { ms3ResourceWithResponses, oasResourceWithResponses, oasResourceWithResponsesAndInlineExamples } from './files/MS3-to-OAS-20/ms3-resource-with-responses-to-oas';
 
 import { exists } from 'fs';
 import { promisify } from 'util';
@@ -125,4 +125,15 @@ test('MS3 resource with responses should be converted to OAS 2.0 successfully', 
   };
 
   await expect(MS3toOAS.create(ms3ResourceWithResponses, options).convert()).resolves.toEqual(oasResourceWithResponses);
+});
+
+test('MS3 resource with responses should be converted to OAS 2.0 with inline examples successfully', async() => {
+  const options: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: true,
+    destinationPath: './',
+    oasVersion: '2.0'
+  };
+
+  await expect(MS3toOAS.create(ms3ResourceWithResponses, options).convert()).resolves.toEqual(oasResourceWithResponsesAndInlineExamples);
 });

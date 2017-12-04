@@ -76,9 +76,9 @@ export const ms3ResourceWithResponses: MS3Interface.API = {
               'code': '201',
               'body': [
                 {
-                  'contentType': 'application/json',
+                  'contentType': 'application/xml',
                   'selectedExamples': [
-                    '9abcf4a4-98f1-47d9-adaf-b6934c2b30da'
+                    '9abcf4a4-98f1-47d9-adaf-b6934c2b30db'
                   ],
                   'type': 'd0c35029-b545-4ce5-ba73-52b03910a382'
                 }
@@ -90,6 +90,64 @@ export const ms3ResourceWithResponses: MS3Interface.API = {
       '__id': 'f068746b-acd9-40c8-af83-83a89095b0a0'
     }
   ]
+};
+
+export const oasResourceWithResponsesAndInlineExamples: OASInterface.API = {
+  swagger: '2.0',
+  info: {
+    title: 'params',
+    version: '2.0'
+  },
+  host: 'params',
+  basePath: '/',
+  paths: {
+    '/res': {
+      get: {
+        operationId: 'RES_GET',
+        responses: {
+          '200': {
+            description: 'description',
+            schema: {
+              '$ref': '#/definitions/schema'
+            },
+            examples: {
+              'application/json': {
+                'content': '{}'
+              }
+            },
+            headers: {
+              'header': {
+                description: 'description',
+                type: 'number',
+                default: 5,
+              },
+              'header2': {
+                description: 'description2',
+                type: 'number',
+                default: 5,
+              }
+            }
+          },
+          '201': {
+            description: 'description',
+            schema: {
+              '$ref': '#/definitions/schema'
+            },
+            examples: {
+              'application/xml': {
+                content: '<xml></xml>'
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  definitions: {
+    'schema': {
+      '$ref': './schemas/schema.json#schema'
+    }
+  }
 };
 
 export const oasResourceWithResponses: OASInterface.API = {
@@ -134,8 +192,8 @@ export const oasResourceWithResponses: OASInterface.API = {
               '$ref': '#/definitions/schema'
             },
             examples: {
-              'ex': {
-                '$ref': './examples/ex.json#ex'
+              'ex2': {
+                '$ref': './examples/ex2.json#ex2'
               }
             }
           }
