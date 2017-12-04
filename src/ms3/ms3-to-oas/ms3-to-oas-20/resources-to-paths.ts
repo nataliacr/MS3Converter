@@ -1,10 +1,10 @@
-import { securitySchemeType } from '../../oas/oas-30-api-interface';
-import * as OAS from './../../oas/oas-30-api-interface';
-import * as MS3 from './../ms3-v1-api-interface';
+import * as OAS from '../../../oas/oas-20-api-interface';
+import * as MS3 from '../../ms3-v1-api-interface';
+import { securitySchemeType } from '../../../oas/oas-30-api-interface';
 import { filter, find, cloneDeep } from 'lodash';
 
 class ConvertResourcesToPaths {
-  constructor(private API: MS3.API) {}
+  constructor(private API: MS3.API, private asSingleFile: boolean) {}
 
   getSecuritySchemaByName(securitySchemeName: string): MS3.SecurityScheme {
     return find(this.API.securitySchemes, ['name', securitySchemeName]);
@@ -31,8 +31,8 @@ class ConvertResourcesToPaths {
     };
   }
 
-  getBodyExamples(examples: string[]): OAS.Example {
-    return examples.reduce( (resultObject: OAS.Example, exampleID: string) => {
+  getBodyExamples(examples: string[]): OAS.ExampleObject {
+    return examples.reduce( (resultObject: OAS.ExampleObject, exampleID: string) => {
       const exampleName: string = this.getExampleName(exampleID);
       resultObject[exampleName] = {
         '$ref': `#/components/examples/${exampleName}`
@@ -42,7 +42,7 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  getRequestBody(body: MS3.Body[]): OAS.MediaType {
+  getRequestBody(body: MS3.Body[]): OAS.SchemaObject {
     return body.reduce( (resultObject: any, body: MS3.Body) => {
       resultObject[body.contentType] = {};
 
@@ -53,7 +53,7 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  getResponseHeaders(headers: MS3.Parameter[]): OAS.Headers {
+  getResponseHeaders(headers: MS3.Parameter[]): OAS.HeadersObject {
     return headers.reduce( (resultObject: any, header: MS3.Parameter) => {
       resultObject[header.displayName] = {
         required: header.required || true
@@ -68,13 +68,35 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
+  getResponseExamples(selectedExamples: string[]): any {
+    if (this.asSingleFile) {
+      // inline
+    }
+    else {
+      return selectedExamples.reduce((resultExamples: any, selectedExample: string) => {
+        const exampleName = this.getExampleName(selectedExample);
+        resultExamples[exampleName] = {
+          '$ref': `#/examples/${exampleName}`
+        };
+        return resultExamples;
+      }, {});
+    }
+  }
+
   getResponses(responses: MS3.Response[]): OAS.ResponsesObject {
     return responses.reduce((resultObject: any, response: MS3.Response) => {
       resultObject[response.code] = {
         description: response.description || 'description' // required field
       };
 
-      if (response.body) resultObject[response.code].content = this.getRequestBody(response.body);
+      if (response.body && response.body.length) {
+        resultObject[response.code].schema = this.getBodyParameter(response.body[0]);
+        const examples = response.body.forEach(body => {
+          if (response.body[0].selectedExamples) {
+            resultObject[response.code].examples = this.getResponseExamples(body.selectedExamples);
+          }
+        });
+      }
       if (response.headers) resultObject[response.code].headers = this.getResponseHeaders(response.headers);
 
       return resultObject;
@@ -119,35 +141,57 @@ class ConvertResourcesToPaths {
     });
   }
 
+  getBodyParameter(body: MS3.Body): OAS.ParameterObject[] {
+      const convertedBody: any = {
+        name: body.contentType,
+        in: 'body'
+      };
+
+      if (body.type) convertedBody.schema = {
+        '$ref': `#/definitions/${body.type}`
+      };
+
+      return convertedBody;
+  }
+
   getParameters(method: MS3.Method): OAS.ParameterObject[] {
     let convertedParameters: OAS.ParameterObject[] = [];
 
     if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));
     if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'path'));
+    if (method.body && method.body.length) convertedParameters = convertedParameters.concat(this.getBodyParameter(method.body[0]));
 
     return convertedParameters;
   }
 
-  getSecurityRequirement(securedBy: string[]): OAS.SecurityRequirement {
-    return securedBy.reduce( (resultObject: any, secureByName: string) => {
-      const securitySchema: MS3.SecurityScheme = this.getSecuritySchemaByName(secureByName);
-      if (securitySchema.type != 'OAuth 2.0' && securitySchema.type != 'Basic Authentication') return resultObject;
+  getSecurityRequirement(securedBy: string[]): OAS. SecurityRequirementObject[] {
+    return securedBy.reduce( (resultArray: any, securedByName: string) => {
+      const securitySchema: MS3.SecurityScheme = this.getSecuritySchemaByName(securedByName);
 
-      resultObject[secureByName] = [];
-      return resultObject;
-    }, {});
+      if (securitySchema.type == 'OAuth 2.0') {
+        resultArray.push({
+          [securedByName]: securitySchema.settings.scopes
+        });
+      }
+      if (securitySchema.type == 'Basic Authentication') {
+        resultArray.push({
+          [securedByName]: []
+        });
+      }
+
+      return resultArray;
+    }, []);
   }
 
-  getMethodObject(method: MS3.Method, methodType: string, pathName: string): OAS.Operation {
-    const resultObject: OAS.Operation = {
+  getMethodObject(method: MS3.Method, methodType: string, pathName: string): OAS.OperationObject {
+    const resultObject: OAS.OperationObject = {
       operationId: `${pathName}_${methodType}`.toUpperCase(),
       responses: {} // required property
     };
 
     if (method.description) resultObject.description = method.description;
-    if (method.body) resultObject.requestBody = { content: this.getRequestBody(method.body) };
     if (method.responses) resultObject.responses = this.getResponses(method.responses);
-    if (method.headers || method.queryParameters) resultObject.parameters = this.getParameters(method);
+    if (method.body || method.headers || method.queryParameters) resultObject.parameters = this.getParameters(method);
     if (method.securedBy) resultObject.security = this.getSecurityRequirement(method.securedBy);
 
     return resultObject;
@@ -170,11 +214,11 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  static create(api: MS3.API) {
-    return new ConvertResourcesToPaths(api);
+  static create(api: MS3.API, asSingleFile: boolean) {
+    return new ConvertResourcesToPaths(api, asSingleFile);
   }
 }
 
-export default function convertResourcesToPaths(API: MS3.API): OAS.Paths {
-  return ConvertResourcesToPaths.create(API).convert();
+export default function convertResourcesToPaths(API: MS3.API, asSingleFile: boolean = true): OAS.Paths {
+  return ConvertResourcesToPaths.create(API, asSingleFile).convert();
 }

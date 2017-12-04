@@ -5,7 +5,7 @@
 export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
 export type securitySchemeType = 'apiKey' | 'basic' | 'oauth2';
-type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
+export type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
 export type flow = 'implicit' | 'password' | 'application' | 'accessCode';
 
@@ -41,7 +41,7 @@ export interface SecurityDefinitionsObject {
   [propName: string]: SecuritySchemeObject | ReferenceObject;
 }
 
-interface SchemaObject {
+export interface SchemaObject {
   title?: string;
   type?: type;
   pattern?: string;
@@ -92,7 +92,7 @@ interface BasicParameterFields {
   multipleOf?: number;
 }
 
-interface SecurityRequirementObject {
+export interface SecurityRequirementObject {
   [propName: string]: string[];
 }
 
@@ -103,7 +103,7 @@ interface ItemsObject extends BasicParameterFields {
   collectionFormat?: string;
 }
 
-interface ParameterObject extends BasicParameterFields {
+export interface ParameterObject extends BasicParameterFields {
   name: string;
   in: string;
   description?: string;
@@ -116,7 +116,7 @@ interface ParameterObject extends BasicParameterFields {
   collectionFormat?: string;
 }
 
-interface ParametersDefinitionsObject {
+export interface ParametersDefinitionsObject {
   [propName: string]: ParameterObject;
 }
 
@@ -125,17 +125,17 @@ interface HeaderObject extends ItemsObject {
   type: string;
 }
 
-interface HeadersObject {
+export interface HeadersObject {
   [propName: string]: HeaderObject;
 }
 
-interface ExampleObject {
+export interface ExampleObject {
   [propName: string]: any;
 }
 
-interface ResponseObject {
+export interface ResponseObject {
   description: string;
-  schema: SchemaObject | ReferenceObject;
+  schema?: SchemaObject | ReferenceObject;
   headers?: HeadersObject;
   examples?: ExampleObject;
 }
@@ -150,8 +150,8 @@ export interface OperationObject {
   description?: string;
   externalDocs?: object; // TODO: create External Documentation Object interface
   operationId?: string;
-  consumes: mediaType[];
-  produces: mediaType[];
+  consumes?: mediaType[];
+  produces?: mediaType[];
   parameters?: (ParameterObject | ReferenceObject)[];
   responses: ResponsesObject;
   schemes?: ('http' | 'https')[];
@@ -184,7 +184,7 @@ export interface Info {
 }
 
 export interface Paths {
-  [propName: string]: OperationObject | ReferenceObject;
+  [propName: string]: Operation | ReferenceObject;
 }
 
 export interface API {

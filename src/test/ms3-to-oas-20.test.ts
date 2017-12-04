@@ -4,6 +4,7 @@ import { ms3Settings, oasSettings } from './files/MS3-to-OAS-20/ms3-settings-to-
 import { ms3DataTypes, oasDataTypes, oasDataTypesExternal } from './files/MS3-to-OAS-20/ms3-datatypes-to-oas';
 import { ms3Examples, oasExamples } from './files/MS3-to-OAS-20/ms3-examples-to-oas';
 import { ms3SecuritySchemes, oasSecuritySchemes } from './files/MS3-to-OAS-20/ms3-securityschemes-to-oas';
+import { ms3NestedResources, oasNestedResources } from './files/MS3-to-OAS-20/ms3-nested-resources-to-oas';
 
 import { exists } from 'fs';
 import { promisify } from 'util';
@@ -77,4 +78,15 @@ test('MS3 security schemes should be converted to OAS 2.0 successfully', async()
   };
 
   await expect(MS3toOAS.create(ms3DataTypes, options).convert()).resolves.toEqual(oasDataTypesExternal);
+});
+
+test('MS3 nested resources should be converted to OAS 2.0 successfully', async() => {
+  const options: ConvertorOptions = {
+    fileFormat: 'json',
+    asSingleFile: false,
+    destinationPath: './',
+    oasVersion: '2.0'
+  };
+
+  await expect(MS3toOAS.create(ms3NestedResources, options).convert()).resolves.toEqual(oasNestedResources);
 });
