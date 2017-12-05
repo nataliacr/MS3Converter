@@ -11,28 +11,29 @@ class ConvertResourcesToPaths {
   }
 
   getParentResourcePath(id: string): string {
-    return find(this.API.resources, ['__id', id]).path;
+    const path = find(this.API.resources, ['__id', id]).path;
+    if (!path) throw new Error(`Resource with id "${id}" does not exist.`);
+    return path;
   }
 
   getDataTypeName(id: string): string {
-    return find(this.API.dataTypes, (dataType: MS3.DataType) => {
+    const name = find(this.API.dataTypes, (dataType: MS3.DataType) => {
       return (dataType.__id == id) && (dataType.type != 'nil');
     }).name;
+    if (!name) throw new Error(`DataType with id "${id}" does not exist.`);
+    return name;
   }
 
   getExample(id: string): any {
-    return find(this.API.examples, ['__id', id]);
+    const example = find(this.API.examples, ['__id', id]);
+    if (!example) throw new Error(`Example with id "${id}" does not exist.`);
+    return example;
   }
 
   getExampleName(id: string): string {
-    return find(this.API.examples, ['__id', id]).title;
-  }
-
-  getBodySchema(dataTypeID: string): OAS.ReferenceObject {
-    const dataTypeName: string = this.getDataTypeName(dataTypeID);
-    return {
-      '$ref': `#/definitions/${dataTypeName}`
-    };
+    const title = find(this.API.examples, ['__id', id]).title;
+    if (!title) throw new Error(`Example with id "${id}" does not exist.`);
+    return title;
   }
 
   getResponseHeaders(headers: MS3.Parameter[]): OAS.HeadersObject {
@@ -42,7 +43,7 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  getResponseExamples(selectedExamples: string[], mediaType: string): any {
+  getResponseExamples(selectedExamples: string[], mediaType: string): OAS.ExampleObject {
     if (this.asSingleFile) {
       return selectedExamples.reduce((resultExamples: any, selectedExample: string) => {
         const example = this.getExample(selectedExample);
@@ -73,7 +74,7 @@ class ConvertResourcesToPaths {
         resultObject[response.code].schema = {
           '$ref': `#/definitions/${this.getDataTypeName(response.body[0].type)}`
         };
-        const examples = response.body.forEach(body => {
+        response.body.forEach(body => {
           if (response.body[0].selectedExamples) {
             resultObject[response.code].examples = this.getResponseExamples(body.selectedExamples, response.body[0].contentType);
           }
@@ -85,26 +86,14 @@ class ConvertResourcesToPaths {
     }, {});
   }
 
-  transformParameterObject(parameter: MS3.Parameter) {
-    const clonedParameter: any = cloneDeep(parameter);
+  transformParameterObject(parameter: MS3.Parameter): MS3.Parameter {
+    const clonedParameter: MS3.Parameter = cloneDeep(parameter);
     delete clonedParameter.displayName;
     delete clonedParameter.repeat;
     delete clonedParameter.example;
     delete clonedParameter.required;
 
     return clonedParameter;
-  }
-
-  getArrayTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
-    const convertedItems: any = this.transformParameterObject(parameter);
-    return {
-      type: 'array',
-      items: convertedItems
-    };
-  }
-
-  getPrimitiveTypeSchema(parameter: MS3.Parameter): OAS.SchemaObject {
-    return this.transformParameterObject(parameter);
   }
 
   getParametersByType(parameters: MS3.Parameter[], type: string): OAS.ParameterObject[] {
@@ -136,9 +125,9 @@ class ConvertResourcesToPaths {
     });
   }
 
-  getBodyParameter(body: MS3.Body): OAS.ParameterObject[] {
+  getBodyParameter(body: MS3.Body): OAS.ParameterObject {
     const schemaName = this.getDataTypeName(body.type);
-    const convertedBody: any = {
+    const convertedBody: OAS.ParameterObject = {
       name: schemaName,
       in: 'body',
       schema: {
@@ -154,7 +143,7 @@ class ConvertResourcesToPaths {
 
     if (method.headers) convertedParameters = convertedParameters.concat(this.getParametersByType(method.headers, 'header'));
     if (method.queryParameters) convertedParameters = convertedParameters.concat(this.getParametersByType(method.queryParameters, 'query'));
-    if (method.body && method.body.length && method.body[0].type) convertedParameters = convertedParameters.concat(this.getBodyParameter(method.body[0]));
+    if (method.body && method.body.length && method.body[0].type) convertedParameters.push(this.getBodyParameter(method.body[0]));
 
     return convertedParameters;
   }

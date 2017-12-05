@@ -14,7 +14,7 @@ class ConvertSecuritySchemes {
     return null;
   }
 
-  getScopesObject(scopes: string[]): any {
+  getScopesObject(scopes: string[]): string[] {
     return scopes.reduce((result: any, scope: string) => {
       result[scope] = '';
       return result;
@@ -22,9 +22,7 @@ class ConvertSecuritySchemes {
   }
 
   getSecurityScheme(securityScheme: MS3.SecurityScheme, type: OAS.securitySchemeType): OAS.SecuritySchemeObject {
-    const convertedSecurityScheme: any = {
-      type: type
-    };
+    const convertedSecurityScheme: any = { type };
 
     if (securityScheme.description) convertedSecurityScheme.description = securityScheme.description;
     if (type == oauth2) {
