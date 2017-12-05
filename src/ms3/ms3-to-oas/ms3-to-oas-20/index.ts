@@ -4,8 +4,8 @@ import * as OAS20Interface from '../../../oas/oas-20-api-interface';
 import mergeLibraryToMs3 from '../../merge-library-to-ms3';
 import mergeTypesAndTraits from '../merge-resource-types-and-traits';
 
-import convertSecuritySchemes from '../security-schemes-to-oas';
-import convertResourcesToPaths from '../resources-to-paths';
+import convertSecuritySchemes from './security-schemes-to-oas';
+import convertResourcesToPaths from './resources-to-paths';
 
 import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from '../datatypes-to-schemas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from '../examples-to-oas';
@@ -18,6 +18,7 @@ class MS3toOAS20 {
     examples: [],
     schemas: []
   };
+  mediaTypes: string[] = [];
 
   constructor(private ms3API: MS3Interface.API, private options: any) {}
 
@@ -48,6 +49,20 @@ class MS3toOAS20 {
         this.oasAPI.definitions = convertExternalSchemasReferences(this.ms3API);
       }
       else this.oasAPI.definitions = convertDataTypesToSchemas(this.ms3API);
+    }
+
+    if (this.ms3API.examples && this.options.destinationPath) {
+      this.externalFiles.examples = this.externalFiles.examples.concat(convertExternalExamples(this.ms3API.examples, this.options.destinationPath));
+    }
+
+    if (this.ms3API.securitySchemes) this.oasAPI.securityDefinitions = convertSecuritySchemes(this.ms3API);
+
+    if (this.ms3API.resources) {
+      let mergedApi: MS3Interface.API = cloneDeep(this.ms3API);
+      if (this.ms3API.resourcesTypes || this.ms3API.traits) {
+        mergedApi = mergeTypesAndTraits(this.ms3API);
+      }
+      this.oasAPI.paths = convertResourcesToPaths(mergedApi, this.options.asSingleFile);
     }
 
     return {

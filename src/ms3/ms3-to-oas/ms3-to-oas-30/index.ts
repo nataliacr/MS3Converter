@@ -4,8 +4,8 @@ import * as OAS30Interface from '../../../oas/oas-30-api-interface';
 import mergeLibraryToMs3 from '../../merge-library-to-ms3';
 import mergeTypesAndTraits from '../merge-resource-types-and-traits';
 
-import convertSecuritySchemes from '../security-schemes-to-oas';
-import convertResourcesToPaths from '../resources-to-paths';
+import convertSecuritySchemes from './security-schemes-to-oas';
+import convertResourcesToPaths from './resources-to-paths';
 
 import { convertDataTypesToSchemas, convertExternalSchemas, convertExternalSchemasReferences } from '../datatypes-to-schemas';
 import { convertInlineExamples, convertExternalExamples, convertExternalExampleReferences } from '../examples-to-oas';

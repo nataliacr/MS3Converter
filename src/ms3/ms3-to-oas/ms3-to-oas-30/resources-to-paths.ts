@@ -1,6 +1,6 @@
-import { securitySchemeType } from '../../oas/oas-30-api-interface';
-import * as OAS from './../../oas/oas-30-api-interface';
-import * as MS3 from './../ms3-v1-api-interface';
+import { securitySchemeType } from '../../../oas/oas-30-api-interface';
+import * as OAS from '../../../oas/oas-30-api-interface';
+import * as MS3 from '../../ms3-v1-api-interface';
 import { filter, find, cloneDeep } from 'lodash';
 
 class ConvertResourcesToPaths {
