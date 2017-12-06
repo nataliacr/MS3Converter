@@ -2,9 +2,12 @@
  * all structure of oas should be described in this interface
  */
 
-type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
+export type type = 'array' | 'object' | 'integer' | 'long' | 'float' | 'double' | 'string' | 'byte' | 'binary' | 'boolean' | 'date' | 'dateTime' | 'password';
 type format = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-type securitySchemeType = 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+export type securitySchemeType = 'apiKey' | 'basic' | 'oauth2';
+export type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
+type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
+export type flow = 'implicit' | 'password' | 'application' | 'accessCode';
 
 interface Contact {
   name?: string;
@@ -17,14 +20,32 @@ interface License {
   url?: string;
 }
 
-interface ReferenceObject {
+export interface ReferenceObject {
   '$ref': string;
 }
 
-interface SchemaObject {
+export interface SecuritySchemeObject {
+  type: securitySchemeType;
+  description?: string;
+  name?: string;
+  in?: 'query' | 'header';
+  flow?: flow;
+  authorizationUrl?: string;
+  tokenUrl?: string;
+  scopes?: {
+    [propName: string]: string;
+  };
+}
+
+export interface SecurityDefinitionsObject {
+  [propName: string]: SecuritySchemeObject | ReferenceObject;
+}
+
+export interface SchemaObject {
   title?: string;
   type?: type;
-  multipleOf?: string;
+  pattern?: string;
+  multipleOf?: string | number;
   maximum?: number;
   minimum?: number;
   exclusiveMaximum?: number;
@@ -33,13 +54,13 @@ interface SchemaObject {
   minLength?: number;
   maxItems?: number;
   minItems?: number;
-  uniqueItems?: string;
+  uniqueItems?: boolean;
   maxProperties?: number;
   minProperties?: number;
   required?: boolean;
   enum?: string[];
-  items?: Schema | ReferenceObject;
-  properties?: Schema | ReferenceObject;
+  items?: SchemaObject | ReferenceObject;
+  properties?: DefinitionsObject | ReferenceObject;
   description?: string;
   format?: format;
   allOf?: object;
@@ -47,191 +68,110 @@ interface SchemaObject {
   anyOf?: object;
   not?: object;
   additionalProperties?: object;
-  default?: SchemaObject;
+  default?: number | string | boolean;
+  example?: any;
 }
 
-interface Schema {
+export interface DefinitionsObject {
   [propName: string]: SchemaObject | ReferenceObject;
 }
 
-interface EncodingObject {
-  contentType?: string;
-  headers?: Header[];
-  style?: string;
-  explode?: boolean;
-  allowReserved?: boolean;
+interface BasicParameterFields {
+  default?: number | string | boolean;
+  maximum?: number;
+  minimum?: number;
+  exclusiveMaximum?: number;
+  exclusiveMinimum?: number;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: boolean;
+  enum?: (number | string | boolean)[];
+  multipleOf?: number;
 }
 
-interface Encoding {
-  [propName: string]: EncodingObject;
-}
-
-interface MediaTypeObject {
-  schema?: SchemaObject | ReferenceObject;
-  example?: any;
-  examples?: Example[];
-  encoding?: Encoding[];
-}
-
-interface MediaType {
-  [propName: string]: MediaTypeObject | ReferenceObject;
-}
-
-interface ResponseObject {
-  description: string;
-  headers?: Header[];
-  content?: MediaType;
-  links?: Link[];
-}
-
-interface Response {
-  [propName: string]: ResponseObject | ReferenceObject;
-}
-
-interface ParameterObject extends HeaderObject {
-  name: string;
-  in: string;
-}
-
-interface Parameter {
-  [propName: string]: ParameterObject | ReferenceObject;
-}
-
-interface ExampleObject {
-  summary?: string;
-  description?: string;
-  value?: any;
-  externalValue?: string;
-}
-
-interface Example {
-  [propName: string]: ExampleObject | ReferenceObject;
-}
-
-interface RequestBodyObject {
-  description?: string;
-  content: MediaType;
-  required: boolean;
-}
-
-interface RequestBody {
-  [propName: string]: RequestBodyObject | ReferenceObject;
-}
-
-interface HeaderObject {
-  description?: string;
-  required: boolean;
-  deprecated?: boolean;
-  allowEmptyValue?: boolean;
-  schema?: SchemaObject;
-  style?: string;
-  example?: any;
-  examples?: Example;
-  explode?: boolean;
-}
-
-interface Header {
-  [propName: string]: HeaderObject | ReferenceObject;
-}
-
-interface OAuthFlow {
-  authorizationUrl: string;
-  tokenUrl?: string;
-  refreshUrl?: string;
-  scopes: object;
-}
-
-interface OAuthFlows {
-  implicit?: OAuthFlow;
-  password?: OAuthFlow;
-  clientCredentials?: OAuthFlow;
-  authorizationCode?: OAuthFlow;
-}
-
-interface SecuritySchemeObject {
-  type?: securitySchemeType;
-  description?: string;
-  name?: string;
-  in?: 'query' | 'header' | 'cookie';
-  scheme?: string;
-  bearerFormat?: string;
-  flows?: OAuthFlows;
-  openIdConnectUrl?: string;
-}
-
-interface SecurityScheme {
-  [propName: string]: SecuritySchemeObject | ReferenceObject;
-}
-
-interface LinkObject {
-  operationRef?: string;
-  operationId?: string;
-  parameters?: any;
-  requestBody?: any;
-  description?: string;
-  server?: Server;
-}
-
-interface Link {
-  [propName: string]: LinkObject | ReferenceObject;
-}
-
-interface ResponsesObject {
-  default?: ResponseObject | ReferenceObject;
-  [propName: string]: ResponseObject | ReferenceObject;
-}
-
-interface SecurityRequirement {
+export interface SecurityRequirementObject {
   [propName: string]: string[];
 }
 
-interface Operation {
-  operationId?: string;
-  summary?: string;
+interface ItemsObject extends BasicParameterFields {
+  type?: string;
+  format?: string;
+  items?: ItemsObject;
+  collectionFormat?: string;
+}
+
+export interface ParameterObject extends BasicParameterFields {
+  name: string;
+  in: string;
   description?: string;
-  parameters?: ParameterObject[];
-  requestBody?: RequestBodyObject | ReferenceObject;
-  responses: ResponsesObject;
+  required?: boolean;
+  schema?: SchemaObject | ReferenceObject;
+  type?: string;
+  format?: string;
+  allowEmptyValue?: boolean;
+  items?: ItemsObject;
+  collectionFormat?: string;
+}
+
+export interface ParametersDefinitionsObject {
+  [propName: string]: ParameterObject;
+}
+
+interface HeaderObject extends ItemsObject {
+  description?: string;
+  type: string;
+}
+
+export interface HeadersObject {
+  [propName: string]: HeaderObject;
+}
+
+export interface ExampleObject {
+  [propName: string]: any;
+}
+
+export interface ResponseObject {
+  description: string;
+  schema?: SchemaObject | ReferenceObject;
+  headers?: HeadersObject;
+  examples?: ExampleObject;
+}
+
+export interface ResponsesObject {
+  [propName: string]: ResponseObject | ReferenceObject;
+}
+
+export interface OperationObject {
   tags?: string[];
-  deprecated?: boolean;
-  security?: SecurityRequirement[];
-  servers?: Server[];
-  callbacks?: object; // TODO: create Callback Object interface
-  externalDocs?: object; // TODO: create External Documentation Object interface
-}
-
-interface Server {}
-
-interface Tag {}
-
-interface ExternalDocs {}
-
-interface PathItemObject {
-  '$ref'?: string;
   summary?: string;
   description?: string;
-  get?: Operation;
-  put?: Operation;
-  post?: Operation;
-  delete?: Operation;
-  options?: Operation;
-  head?: Operation;
-  patch?: Operation;
-  trace?: Operation;
-  servers?: Server[];
-  parameters?: [ ParameterObject | ReferenceObject ];
+  externalDocs?: object; // TODO: create External Documentation Object interface
+  operationId?: string;
+  consumes?: mediaType[];
+  produces?: mediaType[];
+  parameters?: (ParameterObject | ReferenceObject)[];
+  responses: ResponsesObject;
+  schemes?: ('http' | 'https')[];
+  deprecated?: boolean;
+  security?: SecurityRequirementObject[];
 }
 
-export interface Components {
-  schemas?: Schema;
-  responses?: Response;
-  parameters?: Parameter;
-  examples?: Example[];
-  requestBodies?: RequestBody[];
-  headers?: Header[];
-  securitySchemes?: SecurityScheme;
-  links?: Link[];
-  callbacks?: object; // TODO: create Callback Object interface
+export interface Operation {
+  get?: OperationObject;
+  put?: OperationObject;
+  post?: OperationObject;
+  delete?: OperationObject;
+  options?: OperationObject;
+  head?: OperationObject;
+  patch?: OperationObject;
+  parameters?: (ParameterObject | ReferenceObject)[];
+}
+
+export interface PathItemObject {
+  [propName: string]: Operation;
 }
 
 export interface Info {
@@ -241,20 +181,26 @@ export interface Info {
   contact?: Contact;
   license?: License;
   version: string;
-  server?: Server;
 }
 
 export interface Paths {
-  [propName: string]: PathItemObject;
+  [propName: string]: Operation | ReferenceObject;
 }
 
 export interface API {
-  openapi: string;
+  swagger: '2.0';
   info: Info;
+  host?: string;
+  basePath?: string;
+  schemes?: ('http' | 'https')[];
+  consumes?: mediaType[];
+  produces?: mediaType[];
   paths: Paths;
-  servers?: Server[];
-  components?: Components;
-  security?: SecurityRequirement[];
-  tags?: Tag[];
-  externalDocs?: ExternalDocs;
+  definitions?: DefinitionsObject;
+  parameters?: ParametersDefinitionsObject;
+  responses?: ResponsesObject;
+  securityDefinitions?: SecurityDefinitionsObject;
+  security?: SecurityRequirementObject[];
+  tags?: any;
+  externalDocs?: any;
 }

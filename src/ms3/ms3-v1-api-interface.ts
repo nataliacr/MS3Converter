@@ -6,16 +6,16 @@ import * as Library from './ms3-v1-library-interface';
 
 type mediaType = 'any/*' | 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type protocol = 'HTTP' | 'HTTPS';
-type parameterType = 'string' | 'integer' | 'number' | 'boolean' | 'date';
+export type parameterType = 'string' | 'integer' | 'number' | 'boolean' | 'date';
 type datatypeType = 'object' | 'string' | 'integer' | 'number' | 'boolean' | 'array' | 'date-only' | 'time-only' | 'datetime' | 'datetime-only' | 'file' | 'nil';
-type numberFormat = 'Int64' | 'Int32' | 'Int16' | 'Int8' | 'Double' | 'Float';
+type numberFormat = 'int64' | 'int32' | 'int16' | 'int8' | 'double' | 'float';
 type dateFormat = 'rfc3339' | 'rfc2616';
 type exampleFormat = 'json' | 'xml' | 'txt';
 type contentType = 'application/json' | 'application/xml' | 'application/sql' | 'application/pdf' | 'text/plain' | 'text/html' | 'text/xml' | 'text/json' | 'application/octet-stream' | 'application/x-www-form-urlencoded';
 type methodType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'TRACE';
 export type entityName = 'api' | 'library' | 'overlay' | 'extension';
-type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
-type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
+export type securitySchemeType = 'OAuth 1.0' | 'OAuth 2.0' | 'Basic Authentication' | 'Digest Authentication' | 'Pass Through' | 'x-Other';
+export type signatures = 'HMAC-SHA1' | 'RSA-SHA1' | 'PLAINTEXT';
 
 export interface Parameter {
   type: parameterType;
@@ -33,8 +33,8 @@ export interface Parameter {
   enum?: string[] | number[];
 }
 
-interface DataTypePrimitive {
-  type: datatypeType;
+export interface DataTypePrimitive {
+  type?: datatypeType;
   name?: string;
   description?: string;
   default?: string | number | boolean;
@@ -53,15 +53,17 @@ interface DataTypePrimitive {
   uniqueItems?: boolean;
   maxItems?: number;
   minItems?: number;
+  includes?: string;
 }
 
-interface DataTypeObject extends DataTypePrimitive {
+export interface DataTypeObject extends DataTypePrimitive {
   required?: boolean;
   properties?: (DataTypeObject | DataTypePrimitive | DataTypeArray)[];
 }
 
-interface DataTypeArray extends DataTypePrimitive {
-  includes?: boolean | string;
+export interface DataTypeArray extends DataTypePrimitive {
+  includes?: string;
+  mode?: string; // TODO: Remove this field after front end refactor;
   items?: DataTypeArray | DataTypePrimitive | DataTypeObject;
 }
 
@@ -104,7 +106,7 @@ export interface Trait extends BasicTrait {
 
 export interface Method extends BasicTrait {
   active: boolean;
-  securedBy?: string;
+  securedBy?: string[];
 }
 
 export interface ResourcesType {
@@ -121,12 +123,13 @@ export interface ResourcesType {
 export interface NestedResource {
   id: string;
   path: string;
+  parentId?: string;
 }
 
 export interface Resource extends ResourcesType {
   path: string;
-  securedBy?: string;
-  selectedTraits?: string;
+  securedBy?: string[];
+  selectedTraits?: string[];
   type?: string;
   resources?: NestedResource[];
   parentId?: string;
@@ -158,7 +161,7 @@ export interface Documentation {
   __id: string;
   name: string;
   description?: string;
-  annotations: Annotation[];
+  annotations?: Annotation[];
 }
 
 interface BasicAnnotationType {

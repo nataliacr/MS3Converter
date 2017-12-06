@@ -5,7 +5,7 @@ interface OverlaySettings extends apiInterfaces.Settings {
   extends: string | apiInterfaces.API;
 }
 
-interface Overlay {
+export default interface Overlay {
   entityTypeName: apiInterfaces.entityName;
   ms3_version: string;
   settings: OverlaySettings;
@@ -20,5 +20,3 @@ interface Overlay {
   examples?: apiInterfaces.Example[];
   libraries?: apiInterfaces.IncludedLibrary[];
 }
-
-export { Overlay };

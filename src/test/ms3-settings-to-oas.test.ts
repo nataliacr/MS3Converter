@@ -1,7 +1,7 @@
-import MS3toOAS from './../ms3/ms3-to-oas';
+import MS3toOAS from './../ms3/ms3-to-oas/index';
 import * as LibraryInterfaces from './../ms3/ms3-v1-library-interface';
 import * as ApiInterfaces from './../ms3/ms3-v1-api-interface';
-import * as OASInterfaces from './../oas/oas-20-api-interface';
+import * as OASInterfaces from './../oas/oas-30-api-interface';
 import { format } from '../common/convertor-options-interface';
 import { writeFile, exists } from 'fs';
 import { promisify } from 'util';
@@ -23,12 +23,13 @@ const project: ApiInterfaces.API = {
 
 test('MS3 settings should be converted to OAS successfully', async() => {
   const expectedResult: OASInterfaces.API = {
-    openapi: '2.0',
+    openapi: '3.0',
     info: {
       title: 'params',
       description: 'API description',
-      version: '2.0'
+      version: '3.0',
     },
+    components: {},
     paths: {}
   };
   await expect(MS3toOAS.create(project).convert()).resolves.toEqual(expectedResult);
