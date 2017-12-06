@@ -29,8 +29,11 @@ export default class MS3toOAS {
     if (this.oasAPI.openapi) {
       return convertOAS30toMS3(this.oasAPI);
     }
-    if (this.oasAPI.swagger == '2.0') {
+    else if (this.oasAPI.swagger == '2.0') {
       return convertOAS20toMS3(this.oasAPI);
+    }
+    else {
+      throw new Error('Wrong Swagger format');
     }
   }
 

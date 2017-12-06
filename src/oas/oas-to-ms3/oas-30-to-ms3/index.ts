@@ -14,13 +14,24 @@ class MS3toOAS30toMS3 {
     this.ms3API = {
       entityTypeName: 'api',
       ms3_version: '1.0',
-      settings: {
-        title: 'title',
-        baseUri: 'baseuri'
-      }
+      settings: this.convertSettings()
     };
 
     return this.ms3API;
+  }
+
+  convertSettings() {
+    const info = this.oasAPI.info;
+
+    const settings: MS3Interface.Settings = {
+      title: info.title,
+      baseUri: 'http://base.uri',
+      version: info.version
+    };
+
+    if (info.description) settings.description = info.description;
+
+    return settings;
   }
 }
 
