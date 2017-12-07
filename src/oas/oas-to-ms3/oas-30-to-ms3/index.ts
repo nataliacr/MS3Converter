@@ -1,6 +1,9 @@
 import * as MS3Interface from '../../../ms3/ms3-v1-api-interface';
 import * as OAS30Interface from '../../../oas/oas-30-api-interface';
 
+import { reduce } from 'lodash';
+import { v4 } from 'uuid';
+
 class MS3toOAS30toMS3 {
   ms3API: MS3Interface.API;
 
@@ -14,7 +17,8 @@ class MS3toOAS30toMS3 {
     this.ms3API = {
       entityTypeName: 'api',
       ms3_version: '1.0',
-      settings: this.convertSettings()
+      settings: this.convertSettings(),
+      resources: this.convertPaths()
     };
 
     return this.ms3API;
@@ -32,6 +36,20 @@ class MS3toOAS30toMS3 {
     if (info.description) settings.description = info.description;
 
     return settings;
+  }
+
+  convertPaths() {
+    return reduce(this.oasAPI.paths, (resultResources: any, pathValue: object, pathKey: string) => {
+      const resource: any = {
+        __id: v4(),
+        path: pathKey,
+        methods: []
+      };
+
+      resultResources.push(resource);
+
+      return resultResources;
+    }, []);
   }
 }
 

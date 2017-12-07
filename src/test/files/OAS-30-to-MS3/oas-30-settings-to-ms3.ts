@@ -20,5 +20,6 @@ export const ms3Settings: MS3Interface.API = {
     version: '3.0'
   },
   ms3_version: '1.0',
-  entityTypeName: 'api'
+  entityTypeName: 'api',
+  resources: []
 };
