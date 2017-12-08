@@ -59,6 +59,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@types/yamljs": "^0.2.30",
     "@types/jest": "^21.1.5",
     "@types/lodash": "^4.14.63",
     "@types/node": "^8.0.47",
