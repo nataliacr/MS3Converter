@@ -42,10 +42,10 @@ class MS3toOAS30toMS3 {
     const methodsKeys = ['get', 'post', 'put', 'delete', 'options', 'head', 'patch'];
 
     return methodsKeys.reduce((methodsArray: any[], methodKey: string) => {
-      const operation: any = operations[methodKey];
+      const operation: OAS30Interface.Operation = operations[methodKey];
       if (!operation) return methodsArray;
 
-      const method = this.convertOpertation(operation, methodKey);
+      const method: MS3Interface.Method = this.convertOpertation(operation, methodKey);
       methodsArray.push(method);
 
       return methodsArray;
@@ -59,17 +59,40 @@ class MS3toOAS30toMS3 {
     };
 
     if (operation.description) method.description = operation.description;
-    const parameters = this.getParameters(operation.parameters);
+    const parameters: any = this.getParameters(operation.parameters);
 
     if (parameters.queryParameters) method.queryParameters = parameters.queryParameters;
     if (parameters.headers) method.headers = parameters.headers;
+    if (operation.requestBody) method.body = this.convertRequestBody(<OAS30Interface.RequestBodyObject>operation.requestBody);
 
     return method;
   }
 
+  convertRequestBody(requestBody: OAS30Interface.RequestBodyObject): MS3Interface.Body[] {
+    return reduce(requestBody.content, (resultArray: any, value: any, key: string) => {
+      const convertedBody: MS3Interface.Body = {
+         contentType: <MS3Interface.contentType>key
+      };
+
+      if (value.schema.$ref) {
+        const splitArr: string[] = value.schema.$ref.split('/');
+        const name: string = splitArr.pop();
+        convertedBody.type = name;
+      }
+      else {
+        // push schemas to datatypes
+        convertedBody.type = value.schema.name;
+      }
+
+      resultArray.push(convertedBody);
+
+      return resultArray;
+    }, []);
+  }
+
   getParameters(parameters: OAS30Interface.ParameterObject[]): any {
-    const query = filter(parameters, ['in', 'query']);
-    const header = filter(parameters, ['in', 'header']);
+    const query: OAS30Interface.ParameterObject[] = filter(parameters, ['in', 'query']);
+    const header: OAS30Interface.ParameterObject[] = filter(parameters, ['in', 'header']);
 
     const convertedParameters: any = {};
 
@@ -90,23 +113,22 @@ class MS3toOAS30toMS3 {
       if (parameter.required) convertedParameter.required = parameter.required;
 
       if (parameter.schema) {
-         const schema: any = parameter.schema;
-         if (schema.pattern) convertedParameter.pattern = schema.pattern;
-         if (schema.default) convertedParameter.default = schema.default;
-         if (schema.maxLength) convertedParameter.maxLength = schema.maxLength;
-         if (schema.minLength) convertedParameter.minLength = schema.minLength;
-         if (schema.minimum) convertedParameter.minimum = schema.minimum;
-         if (schema.maximum) convertedParameter.maximum = schema.maximum;
-         if (schema.enum) convertedParameter.enum = schema.enum;
-         if (schema.type) {
-           if (schema.type == 'array' && schema.items && schema.items.type) {
-            convertedParameter.type = schema.items.type;
-            convertedParameter.repeat = true;
+        const schema: any = parameter.schema;
+        if (schema.pattern) convertedParameter.pattern = schema.pattern;
+        if (schema.default) convertedParameter.default = schema.default;
+        if (schema.maxLength) convertedParameter.maxLength = schema.maxLength;
+        if (schema.minLength) convertedParameter.minLength = schema.minLength;
+        if (schema.minimum) convertedParameter.minimum = schema.minimum;
+        if (schema.maximum) convertedParameter.maximum = schema.maximum;
+        if (schema.enum) convertedParameter.enum = schema.enum;
+        if (schema.type) {
+          if (schema.type == 'array' && schema.items && schema.items.type) {
+          convertedParameter.type = schema.items.type;
+          convertedParameter.repeat = true;
+        } else {
+          convertedParameter.type = schema.type;
           }
-          else {
-            convertedParameter.type = schema.type;
-           }
-         }
+        }
       }
 
       return convertedParameter;

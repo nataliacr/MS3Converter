@@ -1,7 +1,7 @@
 import * as MS3Interface from '../../../ms3/ms3-v1-api-interface';
 import * as OASInterface from '../../../oas/oas-30-api-interface';
 
-export const oasPaths: OASInterface.API = {
+export const oasPathsWithParameters: OASInterface.API = {
   openapi: '3.0',
   info: {
     title: 'params',
@@ -107,7 +107,7 @@ export const oasPaths: OASInterface.API = {
   }
 };
 
-export const ms3Resources: MS3Interface.API = {
+export const ms3ResourcesWithParameters: MS3Interface.API = {
   settings: {
     title: 'params',
     baseUri: 'http://base.uri',
