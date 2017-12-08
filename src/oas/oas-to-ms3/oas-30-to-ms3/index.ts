@@ -1,7 +1,7 @@
 import * as MS3Interface from '../../../ms3/ms3-v1-api-interface';
 import * as OAS30Interface from '../../../oas/oas-30-api-interface';
 
-import { reduce } from 'lodash';
+import { reduce, filter } from 'lodash';
 import { v4 } from 'uuid';
 
 class MS3toOAS30toMS3 {
@@ -38,13 +38,90 @@ class MS3toOAS30toMS3 {
     return settings;
   }
 
+  convertOperations(operations: OAS30Interface.PathItemObject | any): MS3Interface.Method[] {
+    const methodsKeys = ['get', 'post', 'put', 'delete', 'options', 'head', 'patch'];
+
+    return methodsKeys.reduce((methodsArray: any[], methodKey: string) => {
+      const operation: any = operations[methodKey];
+      if (!operation) return methodsArray;
+
+      const method = this.convertOpertation(operation, methodKey);
+      methodsArray.push(method);
+
+      return methodsArray;
+    }, []);
+  }
+
+  convertOpertation(operation: OAS30Interface.Operation, name: string): MS3Interface.Method {
+    const method: MS3Interface.Method = {
+      name: name.toUpperCase(),
+      active: true
+    };
+
+    if (operation.description) method.description = operation.description;
+    const parameters = this.getParameters(operation.parameters);
+
+    if (parameters.queryParameters) method.queryParameters = parameters.queryParameters;
+    if (parameters.headers) method.headers = parameters.headers;
+
+    return method;
+  }
+
+  getParameters(parameters: OAS30Interface.ParameterObject[]): any {
+    const query = filter(parameters, ['in', 'query']);
+    const header = filter(parameters, ['in', 'header']);
+
+    const convertedParameters: any = {};
+
+    if (query && query.length) convertedParameters.queryParameters = this.convertParameters(query);
+    if (header && header.length) convertedParameters.headers = this.convertParameters(header);
+
+    return convertedParameters;
+  }
+
+  convertParameters(parameters: OAS30Interface.ParameterObject[]) {
+    return parameters.map((parameter) => {
+      const convertedParameter: MS3Interface.Parameter = {
+        displayName: parameter.name,
+        type: 'string' // default
+      };
+
+      if (parameter.description) convertedParameter.description = parameter.description;
+      if (parameter.required) convertedParameter.required = parameter.required;
+
+      if (parameter.schema) {
+         const schema: any = parameter.schema;
+         if (schema.pattern) convertedParameter.pattern = schema.pattern;
+         if (schema.default) convertedParameter.default = schema.default;
+         if (schema.maxLength) convertedParameter.maxLength = schema.maxLength;
+         if (schema.minLength) convertedParameter.minLength = schema.minLength;
+         if (schema.minimum) convertedParameter.minimum = schema.minimum;
+         if (schema.maximum) convertedParameter.maximum = schema.maximum;
+         if (schema.enum) convertedParameter.enum = schema.enum;
+         if (schema.type) {
+           if (schema.type == 'array' && schema.items && schema.items.type) {
+            convertedParameter.type = schema.items.type;
+            convertedParameter.repeat = true;
+          }
+          else {
+            convertedParameter.type = schema.type;
+           }
+         }
+      }
+
+      return convertedParameter;
+    });
+  }
+
   convertPaths() {
-    return reduce(this.oasAPI.paths, (resultResources: any, pathValue: object, pathKey: string) => {
-      const resource: any = {
+    return reduce(this.oasAPI.paths, (resultResources: any, pathValue: OAS30Interface.PathItemObject, pathKey: string) => {
+      const resource: MS3Interface.Resource = {
         __id: v4(),
         path: pathKey,
-        methods: []
+        methods: this.convertOperations(pathValue)
       };
+
+      if (pathValue.description) resource.description = pathValue.description;
 
       resultResources.push(resource);
 

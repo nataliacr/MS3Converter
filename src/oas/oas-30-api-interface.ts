@@ -204,7 +204,7 @@ interface Tag {}
 
 interface ExternalDocs {}
 
-interface PathItemObject {
+export interface PathItemObject {
   '$ref'?: string;
   summary?: string;
   description?: string;

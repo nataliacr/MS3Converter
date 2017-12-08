@@ -35,7 +35,7 @@ export const oasPaths: OASInterface.API = {
           },
           {
             name: 'integer',
-            in: 'header',
+            in: 'query',
             description: 'description',
             required: true,
             schema: {
@@ -120,7 +120,63 @@ export const ms3Resources: MS3Interface.API = {
     {
       __id: 'uuid',
       path: '/res',
-      methods: []
+      methods: [
+        {
+          name: 'GET',
+          active: true,
+          description: 'desc',
+          headers: [
+            {
+              default: 'default',
+              description: 'description',
+              displayName: 'string',
+              enum: [
+                'enum1',
+                'enum2'
+              ],
+              maxLength: 10,
+              minLength: 2,
+              pattern: '.*',
+              required: true,
+              type: 'string'
+            },
+            {
+              default: true,
+              description: 'description',
+              displayName: 'boolean',
+              required: true,
+              type: 'boolean'
+            }
+          ],
+          queryParameters: [
+            {
+              default: 1,
+              description: 'description',
+              displayName: 'integer',
+              enum: [
+                'enum1',
+                'enum2'
+              ],
+              maximum: 1,
+              minimum: 2,
+              required: true,
+              type: 'integer'
+            }
+          ]
+        },
+        {
+          name: 'POST',
+          active: true
+        },
+        {
+          name: 'PUT',
+          active: true
+        },
+        {
+          name: 'DELETE',
+          active: true
+        }
+      ]
     }
   ]
 };
